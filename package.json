@@ -1,0 +1,23 @@
+{
+  "name": "bangbangbang",
+  "version": "1.0.0",
+  "description": "Bang!Bang!Bang! 최종 프로젝트",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.11.4",
+    "protobufjs": "^7.4.0",
+    "redis": "^4.7.0",
+    "uuid": "^11.0.3"
+  }
+}

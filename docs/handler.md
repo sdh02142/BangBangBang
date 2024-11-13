@@ -12,6 +12,17 @@
 > 예시로 든 회원가입의 경우 `payload.registerRequest`로 해당 데이터를 받아올 수 있는데
 > 해당하는 필드 이름은 `game.proto`의 GamePacket 메세지에서 확인할 수 있음.
 
+## 핸들러 함수 예시
+
+```javascript
+export const registerHandler = (socket, payload) => {
+  const { id, password, email } = payload.registerRequest;
+  console.log(`id: ${id}, password: ${password}, email: ${email}`);
+
+  // 회원가입 처리
+};
+```
+
 ## 핸들러 맵핑 예시
 
 ```javascript

@@ -20,6 +20,17 @@ export const registerHandler = (socket, payload) => {
   console.log(`id: ${id}, password: ${password}, email: ${email}`);
 
   // 회원가입 처리
+
+  // Response 생성
+  const responsePayload = {
+    registerResponse: {
+      success: true,
+      message: '회원가입 성공',
+      failCode: GlobalFailCode.NONE_FAILCODE,
+    },
+  };
+
+  socket.write(createResponse(PACKET_TYPE.REGISTER_RESPONSE, 0, responsePayload));
 };
 ```
 

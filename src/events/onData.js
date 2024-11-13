@@ -1,4 +1,5 @@
 import { config } from '../config/config.js';
+import { getHandlerByPacketType } from '../handler/index.js';
 import { GamePacket } from '../init/loadProtos.js';
 import getPacketTypeName from '../utils/getPacketTypeName.js';
 
@@ -7,7 +8,7 @@ const VERSION_LENGTH_SIZE = config.header.VERSION_LENGTH_SIZE;
 const SEQUENCE_SIZE = config.header.SEQUENCE_SIZE;
 const PAYLOAD_LENGTH_SIZE = config.header.PAYLOAD_LENGTH_SIZE;
 
-export const onData = (socket) => (data) => {
+export const onData = (socket) => async (data) => {
   socket.buffer = Buffer.concat([socket.buffer, data]);
 
   const headerSize =
@@ -45,15 +46,21 @@ export const onData = (socket) => (data) => {
     const payload = socket.buffer.slice(totalHeaderLength, packetLength);
     // 남은 데이터(payloadLength를 초과)가 있다면 다시 버퍼에 넣어줌
     socket.buffer = socket.buffer.slice(packetLength);
+    // TEST: 확인용 로그
     console.log(`패킷 타입: ${getPacketTypeName(payloadOneofCase)}`);
     console.log(`버전: ${version}`);
     console.log(`시퀸스: ${sequence}`);
     console.log(`패킷길이: ${packetLength}`);
-    console.log(`페이로드: ${payload}`);
 
     try {
       const decodedPacket = GamePacket.decode(payload);
-      console.log(decodedPacket);
+      // TEST: 확인용 로그
+      console.log(`페이로드: ${decodedPacket}`);
+
+      const handler = getHandlerByPacketType(payloadOneofCase);
+      if (handler) {
+        await handler(socket, decodedPacket);
+      }
     } catch (err) {
       console.error(err);
     }

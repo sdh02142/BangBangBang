@@ -30,7 +30,7 @@ export const config = {
     PAYLOAD_LENGTH_SIZE,
   },
   database: {
-    DB: {
+    USER_DB: {
       name: DB_NAME,
       user: DB_USER,
       password: DB_PASSWORD,

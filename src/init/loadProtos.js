@@ -6,6 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const protoPath = path.resolve(__dirname, '../protobuf/game.proto');
 
+// TODO: 이거 객체로 관리하게 리팩토링
 export let GamePacket = null;
 export let GlobalFailCode = null;
 export let WarningType = null;

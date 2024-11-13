@@ -26,7 +26,7 @@ const createHeader = (payloadOneofCase, sequence, payloadLength) => {
 };
 
 export const createResponse = (payloadOneofCase, sequence, payload) => {
-  const payloadBuffer = GamePacket.encode(GamePacket.create(payload));
+  const payloadBuffer = GamePacket.encode(GamePacket.create(payload)).finish();
   const header = createHeader(payloadOneofCase, sequence, payloadBuffer.length);
 
   return Buffer.concat([header, payloadBuffer]);

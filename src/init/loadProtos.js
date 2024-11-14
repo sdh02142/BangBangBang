@@ -34,6 +34,7 @@ export const loadProto = async () => {
     GlobalFailCode = root.lookupEnum('GlobalFailCode');
     WarningType = root.lookupEnum('WarningType');
     WinType = root.lookupEnum('WinType');
+
     CharacterType = root.lookupEnum('CharacterType');
     CharacterStateType = root.lookupEnum('CharacterStateType');
     CardType = root.lookupEnum('CardType');
@@ -49,3 +50,24 @@ export const loadProto = async () => {
     process.exit(1);
   }
 };
+
+// const protoMessages = {};
+
+// export const loadProtos = async () => {
+//   try {
+//     const root = new protobuf.Root();
+
+//     await Promise.all(protoFiles.map((file) => root.load(file)));
+
+//     for (const [namespace, types] of Object.entries(packetNames)) {
+//       protoMessages[namespace] = {};
+//       for (const [type, typeName] of Object.entries(types)) {
+//         protoMessages[namespace][type] = root.lookupType(typeName);
+//       }
+//     }
+
+//     console.log('Protobuf 파일이 로드되었습니다.');
+//   } catch (error) {
+//     console.error('Protobuf 파일 로드 중 오류가 발생했습니다:', error);
+//   }
+// };

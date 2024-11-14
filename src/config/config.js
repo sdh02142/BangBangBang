@@ -6,6 +6,7 @@ import {
   DB_PORT,
   DB_USER,
   HOST,
+  JWT_SECRET_KEY,
   PORT,
 } from '../constants/env.js';
 import {
@@ -38,4 +39,7 @@ export const config = {
       port: DB_PORT,
     },
   },
+  jwt: {
+    SCRET_KEY: JWT_SECRET_KEY
+  }
 };

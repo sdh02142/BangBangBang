@@ -3,7 +3,8 @@ import CharacterData from './characterData.class.js';
 // TODO: 완성
 class User {
   constructor(id, nickname) {
-    this.id = id; // 유저 이메일이나 아이디가 아니라 DB의 기본키를 사용
+    // proto가 수정되었고, 따로 세션에서 해당 id를 발급해주는 식으로 처리, getUserByNickName 대신 getUserById를 사용 가능
+    this.id = id;
     this.nickname = nickname;
   
     this.characterData = new CharacterData();

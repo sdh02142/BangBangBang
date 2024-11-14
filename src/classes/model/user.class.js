@@ -1,13 +1,19 @@
+import CharacterData from './characterData.class.js';
+
 // TODO: 완성
 class User {
-    constructor(id, nickname) {
-        this.id = id;
-        this.nickname = nickname;
-    
-        // this.characterType = CharacterType.NONE_CHARACTER;
-        // this.roleType = RoleType.NONE_ROLE;
-        // this.hp = 0; // <-- 튜터님께 질문. 캐릭터 초기화는 어떻게?
-    }
+  constructor(id, nickname) {
+    this.id = id; // 유저 이메일이나 아이디가 아니라 DB의 기본키를 사용
+    this.nickname = nickname;
+  
+    this.characterData = new CharacterData();
+  }
 }
 
 export default User;
+
+// message UserData {
+//     string id = 1;
+//     string nickname = 2;
+//     CharacterData character = 3;
+// }

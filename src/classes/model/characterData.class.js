@@ -1,4 +1,5 @@
-import CharacterStateInfoData from './characterStateInfoData.class.js'
+import { CharacterType, RoleType } from '../../init/loadProtos.js';
+import CharacterStateInfoData from './characterStateInfoData.class.js';
 
 class CharacterData {
     constructor() {

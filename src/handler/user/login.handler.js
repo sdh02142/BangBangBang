@@ -5,6 +5,9 @@ import { findUserByEmail } from '../../db/user/user.db.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { config } from '../../config/config.js';
 import bcrypt from 'bcrypt';
+import { addUser } from '../../sessions/user.session.js';
+import User from '../../classes/model/user.class.js';
+import { addGameSession } from '../../sessions/game.session.js';
 
 export const loginHandler = async (socket, payload) => {
   const { id, password } = payload.loginRequest;
@@ -48,6 +51,8 @@ export const loginHandler = async (socket, payload) => {
     }
 
     // TODO: 세션에 유저 추가
+    const newUser = new User(id, id, socket);
+    addUser(newUser);
     // TODO: 중복로그인 체크
 
     const token = jwt.sign({ id, password }, config.jwt.SCRET_KEY, { expiresIn: '1h' });
@@ -62,6 +67,10 @@ export const loginHandler = async (socket, payload) => {
     };
 
     socket.write(createResponse(PACKET_TYPE.LOGIN_RESPONSE, 0, responsePayload));
+
+    addGameSession(0, 'test', '테스트', 5);
+    addGameSession(1, 'test', '테스트', 5);
+    addGameSession(2, 'test', '테스트', 5);
   } catch (err) {
     console.error(`로그인 에러: ${err}`);
   }

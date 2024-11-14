@@ -7,7 +7,7 @@ const { database } = config;
 const createPool = (dbConfig) => {
   const pool = mysql.createPool({
     host: dbConfig.host,
-    post: dbConfig.port,
+    port: dbConfig.port,
     user: dbConfig.user,
     password: dbConfig.password,
     database: dbConfig.name,

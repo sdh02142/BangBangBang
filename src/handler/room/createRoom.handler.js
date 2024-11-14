@@ -27,20 +27,22 @@ export const createRoomHandler = (socket, payload) => {
       socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponse));
     }
 
-    const createRoomResponse = {
-      success: true,
-      room: {
-        id: gameSession.id,
-        ownerId: gameSession.ownerId,
-        name: gameSession.name,
-        maxUserNum: gameSession.maxUserNum,
-        state: 0,
-        users: [],
+    const payloadResponse = {
+      createRoomResponse: {
+        success: true,
+        room: {
+          id: gameSession.id,
+          ownerId: gameSession.ownerId,
+          name: gameSession.name,
+          maxUserNum: gameSession.maxUserNum,
+          state: 0,
+          users: [],
+        },
+        failCode: GlobalFailCode.NONE_FAILECODE,
       },
-      failCode: GlobalFailCode.NONE_FAILECODE,
     };
-    console.log(createRoomResponse);
-    socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, createRoomResponse));
+    console.log(payloadResponse);
+    socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, payloadResponse));
   } catch (err) {
     console.error(`방 만들기 실패: ${err}`);
   }

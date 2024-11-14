@@ -1,17 +1,17 @@
-import { CharacterStateType } from "../../init/loadProtos";
+import { CharacterStateType } from '../../init/loadProtos.js';
 
 class CharacterStateInfoData {
-    constructor() {
-        this.state = CharacterStateType.NONE_CHARACTER_STATE;
-        this.nextState = CharacterStateType.NONE_CHARACTER_STATE;
-        this.nextStateAt = 0; // int64 아마 timestamp?
-        this.stateTargetUserId = '';
-    }
+  constructor() {
+    this.state = CharacterStateType.NONE_CHARACTER_STATE;
+    this.nextState = CharacterStateType.NONE_CHARACTER_STATE;
+    this.nextStateAt = 0; // int64 아마 timestamp?
+    this.stateTargetUserId = '';
+  }
 }
 
 export default CharacterStateInfoData;
 // message CharacterStateInfoData {
-//     CharacterStateType state = 1; 
+//     CharacterStateType state = 1;
 //     CharacterStateType nextState = 2;
 //     int64 nextStateAt = 3; // state가 nextState로 풀리는 밀리초 타임스탬프. state가 NONE이면 0
 //     string stateTargetUserId = 4; // state에 target이 있을 경우

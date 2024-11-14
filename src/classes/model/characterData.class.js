@@ -1,20 +1,21 @@
-import CharacterStateInfoData from './characterStateInfoData.class.js'
+import { CharacterType, RoleType } from '../../init/loadProtos.js';
+import CharacterStateInfoData from './characterStateInfoData.class.js';
 
 class CharacterData {
-    constructor() {
-        this.characterType = CharacterType.NONE_CHARACTER;
-        this.roleType = RoleType.NONE_ROLE;
-        this.hp = 0;
-        this.weapon = 0;
-        this.stateInfo = new CharacterStateInfoData(); // CharacterStateInfoData Object
-        this.equips = []; // int32
-        this.debuffs = [] // int32
-        this.handCards = []; // CardData Object
-        this.bbangCount = 0;
-        this.handCardsCount = 0;
-    }
+  constructor() {
+    this.characterType = CharacterType.NONE_CHARACTER;
+    this.roleType = RoleType.NONE_ROLE;
+    this.hp = 0;
+    this.weapon = 0;
+    this.stateInfo = new CharacterStateInfoData(); // CharacterStateInfoData Object
+    this.equips = []; // int32
+    this.debuffs = []; // int32
+    this.handCards = []; // CardData Object
+    this.bbangCount = 0;
+    this.handCardsCount = 0;
+  }
 
-    // CardData를 이용하여 handCards 관련 매서드 고려
+  // CardData를 이용하여 handCards 관련 매서드 고려
 }
 
 export default CharacterData;

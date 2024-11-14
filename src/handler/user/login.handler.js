@@ -7,6 +7,8 @@ import { config } from '../../config/config.js';
 import bcrypt from 'bcrypt';
 import { addUser } from '../../sessions/user.session.js';
 import User from '../../classes/model/user.class.js';
+import { addGameSession } from '../../sessions/game.session.js';
+
 
 export const loginHandler = async (socket, payload) => {
   const { id, password } = payload.loginRequest;
@@ -66,6 +68,10 @@ export const loginHandler = async (socket, payload) => {
     };
 
     socket.write(createResponse(PACKET_TYPE.LOGIN_RESPONSE, 0, responsePayload));
+
+    addGameSession(0, 'test', '테스트', 5);
+    addGameSession(1, 'test', '테스트', 5);
+    addGameSession(2, 'test', '테스트', 5);
   } catch (err) {
     console.error(`로그인 에러: ${err}`);
   }

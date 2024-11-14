@@ -1,4 +1,4 @@
-import { CharacterStateType } from '../../init/loadProtos.js';
+import { CharacterStateType } from "../../init/loadProtos.js";
 
 class CharacterStateInfoData {
   constructor() {

@@ -7,7 +7,7 @@ class User {
     this.id = id;
     this.nickname = nickname;
     this.socket = socket;
-  
+
     this.characterData = new CharacterData();
   }
 }

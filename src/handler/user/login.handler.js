@@ -9,12 +9,13 @@ import { addUser } from '../../sessions/user.session.js';
 import User from '../../classes/model/user.class.js';
 import { addGameSession } from '../../sessions/game.session.js';
 
+
 export const loginHandler = async (socket, payload) => {
   const { id, password } = payload.loginRequest;
   console.log({ id, password });
 
   try {
-    const user = await findUserByEmail(id)
+    const user = await findUserByEmail(id);
     if (!user) {
       const errorMessage = `${id}: 없는 id입니다.`;
       console.error(errorMessage);
@@ -24,14 +25,14 @@ export const loginHandler = async (socket, payload) => {
           message: errorMessage,
           token: '',
           myInfo: {},
-          failCode: GlobalFailCode.AUTHENTICATION_FAILED
-        }
-      }
+          failCode: GlobalFailCode.AUTHENTICATION_FAILED,
+        },
+      };
 
       socket.write(createResponse(PACKET_TYPE.LOGIN_RESPONSE, 0, errorResponse));
       return;
     }
-    
+
     //패스워드 확인
     if (!(await bcrypt.compare(password, user.password))) {
       const errorMessage = '비밀번호가 틀렸습니다.';
@@ -42,9 +43,9 @@ export const loginHandler = async (socket, payload) => {
           message: errorMessage,
           token: '',
           myInfo: {},
-          failCode: GlobalFailCode.AUTHENTICATION_FAILED
-        }
-      }
+          failCode: GlobalFailCode.AUTHENTICATION_FAILED,
+        },
+      };
 
       socket.write(createResponse(PACKET_TYPE.LOGIN_RESPONSE, 0, errorResponse));
       return;
@@ -71,5 +72,4 @@ export const loginHandler = async (socket, payload) => {
   } catch (err) {
     console.error(`로그인 에러: ${err}`);
   }
-
 };

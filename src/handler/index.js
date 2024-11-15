@@ -4,12 +4,14 @@ import getRoomListHandler from './room/getList.handler.js';
 import { joinRandomRoomHandler, joinRoomHandler } from './room/joinRoom.handler.js';
 import { loginHandler } from './user/login.handler.js';
 import { registerHandler } from './user/register.handler.js';
+import { createRoomHandler } from './room/createRoom.handler.js';
 
 const handlers = {
   // 회원가입 및 로그인
   [PACKET_TYPE.REGISTER_REQUEST]: { handler: registerHandler },
   [PACKET_TYPE.LOGIN_REQUEST]: { handler: loginHandler },
   [PACKET_TYPE.GET_ROOM_LIST_REQUEST]: { handler: getRoomListHandler },
+  [PACKET_TYPE.CREATE_ROOM_REQUEST]: { handler: createRoomHandler },
   [PACKET_TYPE.JOIN_ROOM_REQUEST]: { handler: joinRoomHandler },
   [PACKET_TYPE.JOIN_RANDOM_ROOM_REQUEST]: { handler: joinRandomRoomHandler },
 };

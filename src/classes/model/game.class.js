@@ -11,7 +11,7 @@ class Game {
     // gameStartRequest -> gamePrepareNotification -> gameStart
     // 방에 아무도 못들어온다 --> PREPARE --> GamePrepareNotification이 날라올 때
     // WAIT, PREPARE, INAGAME
-    this.roomStateType = RoomStateType.WAIT; // 초기값 <-- 생성 기준이니 WAIT (0)
+    this.state = RoomStateType.WAIT; // 초기값 <-- 생성 기준이니 WAIT (0)
     this.users = []; // UserData가 들어감 <-- User 클래스에서 CharacterData 관리하기
   }
 

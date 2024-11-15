@@ -69,9 +69,6 @@ export const loginHandler = async (socket, payload) => {
 
     socket.write(createResponse(PACKET_TYPE.LOGIN_RESPONSE, 0, responsePayload));
 
-    addGameSession(0, 'test', '테스트', 5);
-    addGameSession(1, 'test', '테스트', 5);
-    addGameSession(2, 'test', '테스트', 5);
   } catch (err) {
     console.error(`로그인 에러: ${err}`);
   }

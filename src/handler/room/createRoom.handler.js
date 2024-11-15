@@ -19,12 +19,14 @@ export const createRoomHandler = (socket, payload) => {
     const gameSession = addGameSession(gameId++, ownerId, name, maxUserNum);
 
     if (!gameSession) {
-      const errorResponse = {
-        success: false,
-        room: {},
-        failCode: GlobalFailCode.CREATE_ROOM_FAILED,
+      const errorResponsePayload = {
+        createRoomResponse: {
+          success: false,
+          room: {},
+          failCode: GlobalFailCode.CREATE_ROOM_FAILED,
+        },
       };
-      socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponse));
+      socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponsePayload));
     }
 
     const payloadResponse = {

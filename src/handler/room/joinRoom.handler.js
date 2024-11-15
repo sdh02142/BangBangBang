@@ -44,7 +44,6 @@ export const joinRoomHandler = (socket, payload) => {
 export const joinRandomRoomHandler = (socket, payload) => {
     // const {roomId} = payload.joinRandomRoomRequest;
     // console.log("roomId:",roomId)
-
     
     const user = getUserBySocket(socket);
     if (!user) {
@@ -62,7 +61,7 @@ export const joinRandomRoomHandler = (socket, payload) => {
     }
 
     const rooms = getAllGameSessions();
-    const roomId = rooms.length
+    const roomId = Math.floor(Math.random() * rooms.length);
 
     const room = joinGameSession(roomId, user);
     console.log(room)
@@ -70,7 +69,7 @@ export const joinRandomRoomHandler = (socket, payload) => {
     room.users.forEach((user) => {
         joinRoomNotification(user);
     });
-    
+
     const responsePayload = {
         joinRandomRoomResponse: {
             success: true,

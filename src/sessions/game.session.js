@@ -19,6 +19,12 @@ export const removeGameSession = (gameId) => {
   return gameSession.splice(index, 1)[0];
 };
 
+export const findGameById = (gameId) => {
+    const index = gameSession.findIndex((game) => game.id === gameId);
+    if (index !== -1) {
+      return gameSession[index];
+    }
+}
 
 export const joinGameSession = (gameId, user) => {
     const index = gameSession.findIndex((game) => game.id === gameId);
@@ -31,12 +37,9 @@ export const joinGameSession = (gameId, user) => {
     // console.log(gameSession[index])
     gameSession[index].users.push(user);
     
-
     return gameSession[index];
-
 }
 
-// 방 리스트 가져오는 핸들러에서 사용
 export const getAllGameSessions = () => {
   return gameSession;
 };

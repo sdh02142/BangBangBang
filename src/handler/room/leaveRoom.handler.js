@@ -1,30 +1,42 @@
-import { GlobalFailCode } from "../../init/loadProtos.js"
+import { PACKET_TYPE } from "../../constants/header.js"
 import { getAllGameSessions } from "../../sessions/game.session.js"
 import { getUserBySocket } from "../../sessions/user.session.js"
+import leaveRoomNotification from "../../utils/notification/leaveRoom.nofitication.js"
 import { createResponse } from "../../utils/response/createResponse.js"
 
 export const leaveRoomHandler = (socket, payload) => {
-    const responsePayload = {
-        leaveRoomResponse: {
-            success: true,
-            failCode: GlobalFailCode.NONE_FAILCODE,
+    try {
+        const leaveUser = getUserBySocket(socket);
+
+        const currentGameId = leaveUser.roomId;
+        const games = getAllGameSessions();
+        const currentGame = games[currentGameId - 1]
+        const users = currentGame.users;
+        leaveUser.roomId = null;
+        currentGame.removeUser(leaveUser);
+
+        
+        users.forEach((user) => {
+            const payload = leaveRoomNotification(leaveUser);
+            
+            console.log(`${user.id} 유저에게 notification 전송, payload: ${payload}`)
+            user.socket.write(createResponse(PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, 0, payload));
+        });
+
+        
+        console.log(getAllGameSessions())
+        
+
+        const responsePayload = {
+            leaveRoomResponse: {
+                success: true,
+                failCode: 0,
+            }
         }
+        socket.write(createResponse(PACKET_TYPE.LEAVE_ROOM_RESPONSE, 0, responsePayload))
+    } catch (err) {
+        console.error(err);
     }
-
-    // ISSUE: 게임 나가는 유저가 있던 게임 세션을 알아야 함.(S2CLeaveRoomNotification를 쏴주기 위함)
-    const game = getAllGameSessions();
-    const user = getUserBySocket(socket);
-    const users = game[user.gameId].users;
-    users.forEach((user) => {
-        const response = {
-            leaveRoomNotification: { userId: user.id },
-        }
-        user.socket.write(response)
-    })
-
-    user.roomId = null;
-
-    socket.write(createResponse(responsePayload))
 }
 
 // message S2CLeaveRoomResponse {

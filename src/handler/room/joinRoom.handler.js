@@ -8,36 +8,37 @@ import { joinRoomNotification } from "../../utils/notification/joinRoom.notifica
 export const joinRoomHandler = (socket, payload) => {
     const {roomId} = payload.joinRoomRequest;
 
-    const user = getUserBySocket(socket);
-    if (!user) {
+    const joinUser = getUserBySocket(socket);
+    if (!joinUser) {
         const errorMessage = '유저를 찾을 수 없습니다.';
         console.error(errorMessage);
         const errorResponsePayload = {
             joinRoomResponse: {
                 success: false,
                 room: null,
-                failCode: GlobalFailCode.JOIN_ROOM_FAILED
+                failCode: 5,
             }
         }
 
         socket.write(createResponse(PACKET_TYPE.JOIN_ROOM_RESPONSE, 0, errorResponsePayload));
     }
 
-    const room = joinGameSession(roomId, user);
-    console.log(room)
+    joinUser.roomId = roomId;
 
-    // user.roomId = roomId;
+    const room = joinGameSession(roomId, joinUser);
+    console.log(room)
 
     // 방 안의 모든 유저에게 해당 유저 join 알림
     room.users.forEach((user) => {
-        joinRoomNotification(user);
+        const response = joinRoomNotification(joinUser);
+        user.socket.write(createResponse(PACKET_TYPE.JOIN_ROOM_NOTIFICATION, 0, response));
     });
     
     const responsePayload = {
         joinRoomResponse: {
             success: true,
             room: room,
-            failCode: GlobalFailCode.NONE_FAILCODE,
+            failCode: 0,
         }
     }
 
@@ -48,15 +49,15 @@ export const joinRandomRoomHandler = (socket, payload) => {
     // const {roomId} = payload.joinRandomRoomRequest;
     // console.log("roomId:",roomId)
     
-    const user = getUserBySocket(socket);
-    if (!user) {
+    const joinUser = getUserBySocket(socket);
+    if (!joinUser) {
         const errorMessage = '유저를 찾을 수 없습니다.';
         console.error(errorMessage);
         const errorResponsePayload = {
             joinRandomRoomResponse: {
                 success: false,
                 room: null,
-                failCode: GlobalFailCode.NONE_FAILCODE,
+                failCode: 0,
             }
         }
 
@@ -66,18 +67,20 @@ export const joinRandomRoomHandler = (socket, payload) => {
     const rooms = getAllGameSessions();
     const roomId = Math.floor(Math.random() * rooms.length) + 1;
 
-    const room = joinGameSession(roomId, user);
+    const room = joinGameSession(roomId, joinUser);
     console.log(room)
     // 방 안의 모든 유저에게 해당 유저 join 알림
     room.users.forEach((user) => {
         joinRoomNotification(user);
     });
 
+    joinUser.roomId = roomId;
+
     const responsePayload = {
         joinRandomRoomResponse: {
             success: true,
             room: room,
-            failCode: GlobalFailCode.NONE_FAILCODE,
+            failCode: 0,
         }
     }
 

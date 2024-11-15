@@ -5,6 +5,20 @@ class CardData {
         this.type = CardType.NONE;
         this.count = 0;
     }
+
+    getType() {
+        return this.type;
+    }
+    getCount() {
+        return this.count;
+    }
+
+    setType(type) {
+        this.type = type;
+    }
+    setCount(count) {
+        this.count = count;
+    }
 }
 
 export default CardData;

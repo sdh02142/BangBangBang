@@ -1,6 +1,3 @@
-import { PACKET_TYPE } from "../../constants/header.js"
-import { createResponse } from "../response/createResponse.js"
-
 export const joinRoomNotification = (user) => {
     const responsePayload = {
         joinRoomNotification: {
@@ -12,9 +9,8 @@ export const joinRoomNotification = (user) => {
         }
     };
 
-    // sequence에 user.sequence
-    const response = createResponse(PACKET_TYPE.JOIN_ROOM_NOTIFICATION, 0, responsePayload);
-    user.socket.write(response)
+    return responsePayload;
+    // user.socket.write(response)
 }
 
 // message S2CJoinRoomNotification {
@@ -22,7 +18,7 @@ export const joinRoomNotification = (user) => {
 // }
 
 // message UserData {
-//     string id = 1;
+//     int64 id = 1;
 //     string nickname = 2;
 //     CharacterData character = 3;
 // }

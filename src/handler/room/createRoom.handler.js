@@ -3,7 +3,6 @@ import { addGameSession, joinGameSession } from '../../sessions/game.session.js'
 import { getUserBySocket } from '../../sessions/user.session.js';
 import CustomError from '../../utils/error/customError.js';
 import { createResponse } from '../../utils/response/createResponse.js';
-import { GlobalFailCode } from '../../init/loadProtos.js';
 
 let gameId = 1;
 
@@ -17,37 +16,40 @@ export const createRoomHandler = (socket, payload) => {
   const ownerId = user.id;
   try {
     const gameSession = addGameSession(gameId, ownerId, name, maxUserNum);
-
+ 
     if (!gameSession) {
       const errorResponsePayload = {
         createRoomResponse: {
           success: false,
           room: {},
-          failCode: GlobalFailCode.CREATE_ROOM_FAILED,
+          failCode: 4,
         },
       };
       socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponsePayload));
     }
 
-    const room = joinGameSession(gameId++, user);
-    console.log(room);
+    joinGameSession(gameId, user);
+
+    user.roomId = gameId;
 
     const payloadResponse = {
       createRoomResponse: {
         success: true,
-        room: room,
-        // room: {
-        //   id: gameSession.id,
-        //   ownerId: gameSession.ownerId,
-        //   name: gameSession.name,
-        //   maxUserNum: gameSession.maxUserNum,
-        //   state: 0,
-        //   users: [],
-        // },
-        failCode: GlobalFailCode.NONE_FAILECODE,
+        // room: room,
+        room: {
+          id: gameSession.id,
+          ownerId: gameSession.ownerId,
+          name: gameSession.name,
+          maxUserNum: gameSession.maxUserNum,
+          state: 0,
+          users: gameSession.users,
+        },
+        failCode: 0,
       },
     };
+
     console.log(payloadResponse);
+    gameId = gameId + 1;
     socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, payloadResponse));
   } catch (err) {
     console.error(`방 만들기 실패: ${err}`);
@@ -69,7 +71,7 @@ message S2CCreateRoomResponse {
 
 message RoomData {
     int32 id = 1;
-    string ownerId = 2;
+    int64 ownerId = 2;
     string name = 3;
     int32 maxUserNum = 4;
     RoomStateType state = 5; // WAIT 0, PREPARE 1, INAGAME 2

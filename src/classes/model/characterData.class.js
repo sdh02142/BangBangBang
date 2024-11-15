@@ -15,6 +15,85 @@ class CharacterData {
     this.handCardsCount = 0;
   }
 
+  getCharacterType() {
+    return this.characterType;
+  }
+
+  setCharacterType(characterType) {
+    this.characterType = characterType;
+  }
+
+  getRoleType() {
+    return this.roleType;
+  }
+
+  setRoleType(roleType) {
+    this.roleType = roleType;
+  }
+
+  getHp() {
+    return this.hp;
+  }
+
+  setHp(hp) {
+    this.hp = hp;
+  }
+
+  getWeapon() {
+    return this.weapon;
+  }
+
+  setWeapon(weapon) {
+    this.weapon = weapon;
+  }
+
+  getStateInfo() {
+    return this.stateInfo;
+  }
+
+  setStateInfo(stateInfo) {
+    this.stateInfo = stateInfo;
+  }
+
+  getEquips() {
+    return this.equips;
+  }
+
+  setEquips(equips) {
+    this.equips = equips;
+  }
+  
+  getDebuffs() {
+    return this.debuffs;
+  }
+
+  
+  setDebuffs(debuffs) {
+    this.debuffs = debuffs;
+  }
+
+  getHandCards() {
+    return this.handCards;
+  }
+
+  setHandCards(handCards) {
+    this.handCards = handCards;
+  }
+
+  getBbangCount() {
+    return this.bbangCount;
+  }
+  setBbangCount(bbangCount) {
+    this.bbangCount = bbangCount;
+  }
+
+  getHandCardsCount() {
+    return this.handCardsCount;
+  }
+  
+  setHandCardsCount(handCardsCount){
+    this.handCardsCount = handCardsCount;
+  }
   // CardData를 이용하여 handCards 관련 매서드 고려
 }
 

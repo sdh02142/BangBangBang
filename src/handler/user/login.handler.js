@@ -9,13 +9,13 @@ import { addUser } from '../../sessions/user.session.js';
 import User from '../../classes/model/user.class.js';
 
 export const loginHandler = async (socket, payload) => {
-  const { id, password } = payload.loginRequest;
-  console.log({ id, password });
+  const { email, password } = payload.loginRequest;
+  console.log({ email, password });
 
   try {
-    const user = await findUserByEmail(id);
+    const user = await findUserByEmail(email);
     if (!user) {
-      const errorMessage = `${id}: 없는 id입니다.`;
+      const errorMessage = `${email}: 없는 email입니다.`;
       console.error(errorMessage);
       const errorResponse = {
         loginResponse: {
@@ -23,7 +23,7 @@ export const loginHandler = async (socket, payload) => {
           message: errorMessage,
           token: '',
           myInfo: {},
-          failCode: GlobalFailCode.AUTHENTICATION_FAILED,
+          failCode: 3,
         },
       };
 
@@ -41,7 +41,7 @@ export const loginHandler = async (socket, payload) => {
           message: errorMessage,
           token: '',
           myInfo: {},
-          failCode: GlobalFailCode.AUTHENTICATION_FAILED,
+          failCode: 3,
         },
       };
 
@@ -49,8 +49,10 @@ export const loginHandler = async (socket, payload) => {
       return;
     }
 
-    // TODO: 세션에 유저 추가
-    const newUser = new User(id, id, socket);
+    // 세션에 유저 추가
+    const id = user.id;
+    const nickname = user.nickname;
+    const newUser = new User(id, nickname, socket);
     addUser(newUser);
     // TODO: 중복로그인 체크
 
@@ -60,8 +62,8 @@ export const loginHandler = async (socket, payload) => {
         success: true,
         message: '로그인 성공',
         token: token,
-        myInfo: { id: id, nickname: id, character: {} },
-        failCode: GlobalFailCode.NONE_FAILECODE,
+        myInfo: { id: id, nickname: nickname, character: {} },
+        failCode: 0,
       },
     };
 

@@ -5,7 +5,39 @@ class CharacterStateInfoData {
     this.state = CharacterStateType.NONE_CHARACTER_STATE;
     this.nextState = CharacterStateType.NONE_CHARACTER_STATE;
     this.nextStateAt = 0; // int64 아마 timestamp?
-    this.stateTargetUserId = '';
+    this.stateTargetUserId = 0;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getNextState() {
+    return this.nextState;
+  }
+
+  getNextStateAt() {
+    return this.nextStateAt;
+  }
+
+  getStateTargetUserId() {
+    return this.stateTargetUserId;
+  }
+
+  setState(state) {
+    this.state = state;
+  }
+
+  setNextState(nextState) {
+    this.nextState = nextState;
+  }
+
+  setNextStateAt(nextStateAt) {
+    this.nextStateAt = nextStateAt;
+  }
+
+  setStateTargetUserId(stateTargetUserId) {
+    this.stateTargetUserId = stateTargetUserId;
   }
 }
 

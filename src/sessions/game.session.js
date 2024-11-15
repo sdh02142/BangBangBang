@@ -1,7 +1,6 @@
 import Game from '../classes/model/game.class.js';
 import { gameSession } from './session.js';
 
-// 방 생성 핸들러에서 gameId는 UUIDv4로 넘겨주기
 export const addGameSession = (gameId, ownerId, name, maxUserNum) => {
   // id, ownerId, name, maxUserNum
   const session = new Game(gameId, ownerId, name, maxUserNum);

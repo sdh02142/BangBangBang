@@ -61,7 +61,7 @@ export const joinRandomRoomHandler = (socket, payload) => {
     }
 
     const rooms = getAllGameSessions();
-    const roomId = Math.floor(Math.random() * rooms.length);
+    const roomId = Math.floor(Math.random() * rooms.length) + 1;
 
     const room = joinGameSession(roomId, user);
     console.log(room)

@@ -7,8 +7,6 @@ import { config } from '../../config/config.js';
 import bcrypt from 'bcrypt';
 import { addUser } from '../../sessions/user.session.js';
 import User from '../../classes/model/user.class.js';
-import { addGameSession } from '../../sessions/game.session.js';
-
 
 export const loginHandler = async (socket, payload) => {
   const { id, password } = payload.loginRequest;

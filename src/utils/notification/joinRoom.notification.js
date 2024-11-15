@@ -4,7 +4,11 @@ import { createResponse } from "../response/createResponse.js"
 export const joinRoomNotification = (user) => {
     const responsePayload = {
         joinRoomNotification: {
-            joinUser: user.id
+            joinUser: {
+                Id: user.id,
+                nickname: user.nickname,
+                character: user.characterData
+            },
         }
     };
 
@@ -15,4 +19,10 @@ export const joinRoomNotification = (user) => {
 
 // message S2CJoinRoomNotification {
 //     UserData joinUser = 1;
+// }
+
+// message UserData {
+//     string id = 1;
+//     string nickname = 2;
+//     CharacterData character = 3;
 // }

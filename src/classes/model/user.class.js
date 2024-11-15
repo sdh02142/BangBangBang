@@ -9,6 +9,8 @@ class User {
     this.socket = socket;
 
     this.characterData = new CharacterData();
+
+    // this.roomId = null;
   }
 }
 

@@ -25,6 +25,9 @@ export const joinRoomHandler = (socket, payload) => {
 
     const room = joinGameSession(roomId, user);
     console.log(room)
+
+    // user.roomId = roomId;
+
     // 방 안의 모든 유저에게 해당 유저 join 알림
     room.users.forEach((user) => {
         joinRoomNotification(user);

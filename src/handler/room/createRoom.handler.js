@@ -1,5 +1,5 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { addGameSession } from '../../sessions/game.session.js';
+import { addGameSession, joinGameSession } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
 import CustomError from '../../utils/error/customError.js';
 import { createResponse } from '../../utils/response/createResponse.js';
@@ -16,7 +16,7 @@ export const createRoomHandler = (socket, payload) => {
 
   const ownerId = user.id;
   try {
-    const gameSession = addGameSession(gameId++, ownerId, name, maxUserNum);
+    const gameSession = addGameSession(gameId, ownerId, name, maxUserNum);
 
     if (!gameSession) {
       const errorResponsePayload = {
@@ -29,17 +29,21 @@ export const createRoomHandler = (socket, payload) => {
       socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponsePayload));
     }
 
+    const room = joinGameSession(gameId++, user);
+    console.log(room);
+
     const payloadResponse = {
       createRoomResponse: {
         success: true,
-        room: {
-          id: gameSession.id,
-          ownerId: gameSession.ownerId,
-          name: gameSession.name,
-          maxUserNum: gameSession.maxUserNum,
-          state: 0,
-          users: [],
-        },
+        room: room,
+        // room: {
+        //   id: gameSession.id,
+        //   ownerId: gameSession.ownerId,
+        //   name: gameSession.name,
+        //   maxUserNum: gameSession.maxUserNum,
+        //   state: 0,
+        //   users: [],
+        // },
         failCode: GlobalFailCode.NONE_FAILECODE,
       },
     };

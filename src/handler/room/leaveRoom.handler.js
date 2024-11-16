@@ -15,9 +15,8 @@ export const leaveRoomHandler = (socket, payload) => {
         leaveUser.roomId = null;
         currentGame.removeUser(leaveUser);
 
-        
+        const payload = leaveRoomNotification(leaveUser);
         users.forEach((user) => {
-            const payload = leaveRoomNotification(leaveUser);
             
             console.log(`${user.id} 유저에게 notification 전송, payload: ${payload}`)
             user.socket.write(createResponse(PACKET_TYPE.LEAVE_ROOM_NOTIFICATION, 0, payload));

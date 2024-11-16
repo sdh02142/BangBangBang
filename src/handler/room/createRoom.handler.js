@@ -27,10 +27,10 @@ export const createRoomHandler = (socket, payload) => {
       };
       socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponsePayload));
     }
-
+    user.roomId = gameId;
     joinGameSession(gameId, user);
 
-    user.roomId = gameId;
+    
 
     const payloadResponse = {
       createRoomResponse: {

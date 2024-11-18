@@ -28,21 +28,19 @@ export const createRoomHandler = (socket, payload) => {
       socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponsePayload));
     }
     user.roomId = gameId;
-    joinGameSession(gameId, user);
-
-    
+    const gameJoinSession = joinGameSession(gameId, user);
 
     const payloadResponse = {
       createRoomResponse: {
         success: true,
         // room: room,
         room: {
-          id: gameSession.id,
+          id: gameJoinSession.id,
           ownerId: gameSession.ownerId,
-          name: gameSession.name,
-          maxUserNum: gameSession.maxUserNum,
+          name: gameJoinSession.name,
+          maxUserNum: gameJoinSession.maxUserNum,
           state: 0,
-          users: gameSession.users,
+          users: gameJoinSession.users,
         },
         failCode: 0,
       },

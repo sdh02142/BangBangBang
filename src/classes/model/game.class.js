@@ -61,6 +61,10 @@ class Game {
   setUsers (users) {
     this.users = users;
   }
+
+  isFullRoom() {
+    return (parseInt(this.users.length) >= parseInt(this.maxUserNum)) ? true : false;    
+  }
   
   addUser(user) {
     if (this.users.length >= this.maxUserNum) {

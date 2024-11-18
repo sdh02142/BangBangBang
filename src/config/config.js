@@ -41,5 +41,5 @@ export const config = {
   },
   jwt: {
     SCRET_KEY: JWT_SECRET_KEY
-  }
+  },
 };

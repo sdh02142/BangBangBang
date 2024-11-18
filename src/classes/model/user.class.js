@@ -13,31 +13,29 @@ class User {
     this.roomId = null;
   }
 
-  getId () {
-    return this.id;
+  makeRawObject() {
+    return {
+      id: this.id,
+      nickname: this.nickname,
+      character: {
+        characterType: this.characterData.characterType, // 1
+        roleType: this.characterData.roleType, // 2
+        hp: this.characterData.hp, // 3
+        weapon: this.characterData.weapon,
+        stateInfo: {
+          state: this.characterData.stateInfo.state,
+          nextState: this.characterData.stateInfo.nextState,
+          nextStateAt: this.characterData.stateInfo.nextStateAt,
+          stateTargetUserId: this.characterData.stateInfo.stateTargetUserId,
+        },
+        equips: this.characterData.equips,
+        debuffs: this.characterData.debuffs,
+        handCards: this.characterData.handCards, // 4
+        bbangCount: this.characterData.bbangCount, // 5
+        handCardsCount: this.characterData.handCardsCount, // this.characterData.handCards.length
+      }
+    }
   }
-
-  setId (id) {
-    this.id = id;
-  }
-
-  getNickname () {
-    return this.nickname;
-  }
-
-  setNickname (nickname) {
-    this.nickname = nickname;
-  }
-
-  getCharacterData () {
-    return this.characterData;
-  }
-
-  setCharacterData (characterData) {
-    this.characterData = characterData;
-  }
-
-
 }
 
 

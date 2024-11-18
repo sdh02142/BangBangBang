@@ -40,7 +40,7 @@ export const createRoomHandler = (socket, payload) => {
           ownerId: gameSession.ownerId,
           name: gameJoinSession.name,
           maxUserNum: gameJoinSession.maxUserNum,
-          state: 0,
+          state: Packets.RoomStateType.WAIT,
           users: gameJoinSession.users,
         },
         failCode: Packets.GlobalFailCode.NONE_FAILCODE,

@@ -35,7 +35,7 @@ message CharacterData {
 }
 
 message CharacterPositionData {
-    int64 id = 1;
+    int64 id = 1; // 유저의 아이디
     double x = 2;
     double y = 3;
 }

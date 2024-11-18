@@ -1,4 +1,4 @@
-import { RoomStateType } from '../../init/loadProtos.js';
+import { Packets } from '../../init/loadProtos.js';
 
 // 1. 방 === 게임 <--- 기존 강의나 전 팀플에서 썼던 game세션과 game 클래스 같이 써도 되지않을까?
 class Game {
@@ -86,7 +86,7 @@ class Game {
 
   // 게임 준비 관련해서 튜터님께 <--- GameStartRequest, GameStartResponse가 방 참여해서 준비하는게 맞는지
   gameStart() {
-    this.roomStateType = 2;
+    this.roomStateType = Packets.RoomStateType.INGAME;
     // 게임 시작 시 모든 유저한테 게임 시작 알림
     this.users.forEach((user) => {
       // 게임 시작 notification

@@ -3,6 +3,7 @@ import { getAllGameSessions } from "../../sessions/game.session.js"
 import { getUserBySocket } from "../../sessions/user.session.js"
 import leaveRoomNotification from "../../utils/notification/leaveRoom.nofitication.js"
 import { createResponse } from "../../utils/response/createResponse.js"
+import { Packets } from '../../init/loadProtos.js';
 
 export const leaveRoomHandler = async (socket, payload) => {
     try {
@@ -26,7 +27,7 @@ export const leaveRoomHandler = async (socket, payload) => {
         const responsePayload = {
             leaveRoomResponse: {
                 success: true,
-                failCode: 0,
+                failCode: Packets.GlobalFailCode.NONE_FAILCODE,
             }
         }
         socket.write(createResponse(PACKET_TYPE.LEAVE_ROOM_RESPONSE, 0, responsePayload))

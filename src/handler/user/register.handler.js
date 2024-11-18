@@ -1,5 +1,5 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { GlobalFailCode } from '../../init/loadProtos.js';
+import { Packets } from '../../init/loadProtos.js';
 import { createResponse } from '../../utils/response/createResponse.js';
 import { createUser, findUserByEmail } from '../../db/user/user.db.js';
 import bcrypt from 'bcrypt'
@@ -28,7 +28,7 @@ export const registerHandler = async (socket, payload) => {
         registerResponse: {
           success: false,
           message: errorMessage,
-          failCode: 3,
+          failCode: Packets.GlobalFailCode.AUTHENTICATION_FAILED,
         }
       }
       socket.write(createResponse(PACKET_TYPE.REGISTER_RESPONSE, 0, errorResponse));
@@ -44,7 +44,7 @@ export const registerHandler = async (socket, payload) => {
         registerResponse: {
           success: false,
           message: errorMessage,
-          failCode: 3,
+          failCode: Packets.GlobalFailCode.AUTHENTICATION_FAILED,
         }
       }
       socket.write(createResponse(PACKET_TYPE.REGISTER_RESPONSE, 0, errorResponse));
@@ -61,7 +61,7 @@ export const registerHandler = async (socket, payload) => {
       registerResponse: {
         success: true,
         message: '회원가입 성공',
-        failCode: 0,
+        failCode: PACKET_TYPE.GlobalFailCode.NONE_FAILCODE,
       },
     };
 

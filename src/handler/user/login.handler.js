@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { GlobalFailCode } from '../../init/loadProtos.js';
+import { Packets } from '../../init/loadProtos.js';
 import { createResponse } from '../../utils/response/createResponse.js';
 import { findUserByEmail } from '../../db/user/user.db.js';
 import { PACKET_TYPE } from '../../constants/header.js';
@@ -23,7 +23,7 @@ export const loginHandler = async (socket, payload) => {
           message: errorMessage,
           token: '',
           myInfo: {},
-          failCode: 3,
+          failCode: Packets.GlobalFailCode.AUTHENTICATION_FAILED,
         },
       };
 
@@ -41,7 +41,7 @@ export const loginHandler = async (socket, payload) => {
           message: errorMessage,
           token: '',
           myInfo: {},
-          failCode: 3,
+          failCode: Packets.GlobalFailCode.AUTHENTICATION_FAILED,
         },
       };
 
@@ -63,7 +63,7 @@ export const loginHandler = async (socket, payload) => {
         message: '로그인 성공',
         token: token,
         myInfo: { id: id, nickname: nickname, character: {} },
-        failCode: 0,
+        failCode: Packets.GlobalFailCode.NONE_FAILCODE,
       },
     };
 

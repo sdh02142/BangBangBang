@@ -3,6 +3,7 @@ import { addGameSession, joinGameSession } from '../../sessions/game.session.js'
 import { getUserBySocket } from '../../sessions/user.session.js';
 import CustomError from '../../utils/error/customError.js';
 import { createResponse } from '../../utils/response/createResponse.js';
+import { Packets } from '../../init/loadProtos.js';
 
 let gameId = 1;
 
@@ -22,7 +23,7 @@ export const createRoomHandler = (socket, payload) => {
         createRoomResponse: {
           success: false,
           room: {},
-          failCode: 4,
+          failCode: Packets.GlobalFailCode.CREATE_ROOM_FAILED,
         },
       };
       socket.write(createResponse(PACKET_TYPE.CREATE_ROOM_RESPONSE, 0, errorResponsePayload));
@@ -42,7 +43,7 @@ export const createRoomHandler = (socket, payload) => {
           state: 0,
           users: gameJoinSession.users,
         },
-        failCode: 0,
+        failCode: Packets.GlobalFailCode.NONE_FAILCODE,
       },
     };
 

@@ -1,10 +1,10 @@
-import { CharacterType, RoleType } from '../../init/loadProtos.js';
+import { Packets } from '../../init/loadProtos.js';
 import CharacterStateInfoData from './characterStateInfoData.class.js';
 
 class CharacterData {
   constructor() {
-    this.characterType = CharacterType.NONE_CHARACTER;
-    this.roleType = RoleType.NONE_ROLE;
+    this.characterType = Packets.CharacterType.NONE_CHARACTER;
+    this.roleType = Packets.RoleType.NONE_ROLE;
     this.hp = 0;
     this.weapon = 0;
     this.stateInfo = new CharacterStateInfoData(); // CharacterStateInfoData Object

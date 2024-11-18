@@ -1,9 +1,9 @@
 import { findGameById, getAllGameSessions, joinGameSession } from "../../sessions/game.session.js";
 import { getUserBySocket } from "../../sessions/user.session.js";
-import { GlobalFailCode } from '../../init/loadProtos.js';
 import { PACKET_TYPE } from "../../constants/header.js";
 import { createResponse } from "../../utils/response/createResponse.js";
 import { joinRoomNotification } from "../../utils/notification/joinRoom.notification.js";
+import { Packets } from '../../init/loadProtos.js';
 
 export const joinRoomHandler = (socket, payload) => {
     const {roomId} = payload.joinRoomRequest;
@@ -16,7 +16,7 @@ export const joinRoomHandler = (socket, payload) => {
             joinRoomResponse: {
                 success: false,
                 room: null,
-                failCode: 5,
+                failCode: Packets.GlobalFailCode.JOIN_ROOM_FAILED,
             }
         }
 
@@ -32,7 +32,7 @@ export const joinRoomHandler = (socket, payload) => {
             joinRoomResponse: {
                 success: false,
                 room: null,
-                failCode: 5,
+                failCode: Packets.GlobalFailCode.JOIN_ROOM_FAILED,
             }
         }
 
@@ -56,7 +56,8 @@ export const joinRoomHandler = (socket, payload) => {
         joinRoomResponse: {
             success: true,
             room: room,
-            failCode: 0,
+            failCode: Packets.GlobalFailCode.NONE_FAILCODE,
+            
         }
     }
 
@@ -75,7 +76,7 @@ export const joinRandomRoomHandler = (socket, payload) => {
             joinRandomRoomResponse: {
                 success: false,
                 room: null,
-                failCode: 5,
+                failCode: Packets.GlobalFailCode.JOIN_ROOM_FAILED,
             }
         }
 
@@ -95,7 +96,7 @@ export const joinRandomRoomHandler = (socket, payload) => {
             joinRandomRoomResponse: {
                 success: false,
                 room: null,
-                failCode: 8,
+                failCode: Packets.GlobalFailCode.ROOM_NOT_FOUND,
             }
         }
 
@@ -118,7 +119,7 @@ export const joinRandomRoomHandler = (socket, payload) => {
         joinRandomRoomResponse: {
             success: true,
             room: room,
-            failCode: 0,
+            failCode: Packets.GlobalFailCode.NONE_FAILCODE,
         }
     }
 

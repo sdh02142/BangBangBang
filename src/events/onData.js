@@ -1,6 +1,6 @@
 import { config } from '../config/config.js';
 import { getHandlerByPacketType } from '../handler/index.js';
-import { GamePacket } from '../init/loadProtos.js';
+import { Packets } from '../init/loadProtos.js';
 import getPacketTypeName from '../utils/getPacketTypeName.js';
 
 const PAYLOAD_ONEOF_CASE_SIZE = config.header.PAYLOAD_ONEOF_CASE_SIZE;
@@ -53,7 +53,7 @@ export const onData = (socket) => async (data) => {
     console.log(`패킷길이: ${packetLength}`);
 
     try {
-      const decodedPacket = GamePacket.decode(payload);
+      const decodedPacket = Packets.GamePacket.decode(payload);
       // TEST: 확인용 로그
       console.log(`페이로드: ${JSON.stringify(decodedPacket)}\n`);
 

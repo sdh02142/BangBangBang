@@ -1,4 +1,5 @@
 import CharacterData from './characterData.class.js';
+import Position from './position.class.js';
 
 // TODO: 완성
 class User {
@@ -10,7 +11,68 @@ class User {
 
     this.characterData = new CharacterData();
 
+    this.position = new Position();
     this.roomId = null;
+  }
+
+  setCharacterType(characterType) {
+    this.characterData.characterType = characterType;
+  }
+  
+  setCharacterRoleType(roleType) {
+    this.characterData.roleType = roleType;
+  }
+  
+  setHp(hp) {
+    this.characterData.hp = hp;
+  }
+
+  increaseHp() {
+    this.characterData.hp += 1;
+  }
+
+  decreaseHp() {
+    this.characterData.hp -= 1;
+  }
+
+  setWeapon(weapon) {
+    this.characterData.weapon = weapon;
+  }
+
+  setCharacterStateType (characterStateType) {
+    this.characterData.stateInfo.state = characterStateType;
+  }
+  
+  setNextCharacterStateType (characterNextStateType) {
+    this.characterData.stateInfo.nextState = characterNextStateType;
+  }
+
+  setNextStateAt (nextStateAt) {
+    this.characterData.stateInfo.nextStateAt = nextStateAt;
+  }
+  
+  setStateTargetUserId (stateTargetUserId) {
+    this.characterData.stateInfo.stateTargetUserId = stateTargetUserId;
+  }
+  
+  addEquip(equip) {
+    this.characterData.equips.push(equip);
+  }
+
+  addDebuff(debuff) {
+    this.characterData.debuffs.push(debuff);
+  }
+
+  addHandCard(card) {
+    this.characterData.handCards.push(card);
+  }
+
+  increaseBbangCount() {
+    this.characterData.bbangCount += 1;
+  }
+
+  increaseHandCardsCount() {
+    this.characterData.handCardsCount += 1;
   }
 
   makeRawObject() {

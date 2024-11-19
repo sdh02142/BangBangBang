@@ -1,5 +1,5 @@
 import { PACKET_TYPE } from "../../constants/header.js"
-import { getAllGameSessions } from "../../sessions/game.session.js"
+import { findGameById, getAllGameSessions, removeGameSession } from "../../sessions/game.session.js"
 import { getUserBySocket } from "../../sessions/user.session.js"
 import leaveRoomNotification from "../../utils/notification/leaveRoom.nofitication.js"
 import { createResponse } from "../../utils/response/createResponse.js"
@@ -11,8 +11,24 @@ export const leaveRoomHandler = async (socket, payload) => {
         console.log(`${leaveUser.id} 유저 나감`)
 
         const currentGameId = leaveUser.roomId;
-        const games = getAllGameSessions();
-        const currentGame = games[currentGameId - 1]
+        const currentGame = findGameById(leaveUser.roomId);
+
+        //방장이 나갔을 경우
+        if (leaveUser.id === currentGame.ownerId) {
+            const responsePayload = {
+                leaveRoomResponse: {
+                    success: true,
+                    failCode: Packets.GlobalFailCode.NONE_FAILCODE,
+                }
+            }
+            currentGame.users.forEach((user) => {
+                user.roomId = null;
+                user.socket.write(createResponse(PACKET_TYPE.LEAVE_ROOM_RESPONSE, 0, responsePayload));
+            });
+            
+            removeGameSession(currentGameId);
+            return;
+        }
 
         leaveUser.roomId = null;
         currentGame.removeUser(leaveUser);
@@ -30,6 +46,7 @@ export const leaveRoomHandler = async (socket, payload) => {
                 failCode: Packets.GlobalFailCode.NONE_FAILCODE,
             }
         }
+
         socket.write(createResponse(PACKET_TYPE.LEAVE_ROOM_RESPONSE, 0, responsePayload))
     } catch (err) {
         console.error(err);

@@ -1,6 +1,12 @@
 import { Packets } from '../../init/loadProtos.js';
 
-export const gamePrepareNotification = (room) => {
+/**
+ * 
+ * @param {Game} room 
+ * @param {User} me: <<---- 노티 받는 사람
+ * @returns 
+ */
+export const gamePrepareNotification = (room, me) => {
     const responsePayload = {
         gamePrepareNotification: {
             room: {
@@ -10,6 +16,21 @@ export const gamePrepareNotification = (room) => {
                 maxUserNum: room.maxUserNum,
                 state: Packets.RoomStateType.PREPARE,
                 users: room.users.map((user) => {
+                    // 본인이 아닌 경우 or target이 아닌 경우 handCards, roleType 빈 값
+                    // target인 경우 본인이 아니어도 roleType을 알고있어야함.
+                    // handCards는 본인이 아닌경우 아무도 몰라야함.
+                    if (user.id !== me.id) {
+                        const otherUser = user.makeRawObject();
+                        otherUser.character.handCards = [];
+                        if (otherUser.character.roleType !== Packets.RoleType.TARGET) {
+                            otherUser.character.roleType = Packets.RoleType.NONE_ROLE;
+                        }
+                        console.log('다른놈:', otherUser);
+                        return otherUser;
+                    }
+
+                    // 본인인 경우 그대로
+                    console.log('본인:', user.makeRawObject())
                     return user.makeRawObject();
                 }),
             },

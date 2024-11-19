@@ -2,11 +2,11 @@ import { Packets } from "../../init/loadProtos.js"
 
 export const gameStartNotification = (users, characterPositions) => {
     const responsePayload = {
-        gameStartNotification: {
+        gameStartNotification: { 
             gameState: {
                 // phaseType : Packets.PhaseType.NONE_PHASE,
-                phaseType : Packets.PhaseType.DAY,
-                nextPhaseAt: 180000,
+                phaseType : Packets.PhaseType.DAY, // 인자로 phaseType
+                nextPhaseAt: Date.now() + 180000, // game 인스턴스에서 관리, IntervalManager
             },
             users: users.map((user) => {
                 return user.makeRawObject();
@@ -29,7 +29,6 @@ export const gameStartNotification = (users, characterPositions) => {
 // message GameStateData {
 //     PhaseType phaseType = 1; // DAY 1, EVENING 2, END 3 (하루 종료시 카드 버리는 턴)
 //     int64 nextPhaseAt = 2; // 다음 페이즈 시작 시점(밀리초 타임
-//     END = 3;
 // }
 
 // 포지션 번호

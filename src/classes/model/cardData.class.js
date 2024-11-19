@@ -1,22 +1,8 @@
 import { Packets } from "../../init/loadProtos.js";
 
 class CardData {
-    constructor() {
-        this.type = Packets.CardType.NONE;
-        this.count = 0;
-    }
-
-    getType() {
-        return this.type;
-    }
-    getCount() {
-        return this.count;
-    }
-
-    setType(type) {
+    constructor(type, count) {
         this.type = type;
-    }
-    setCount(count) {
         this.count = count;
     }
 }

@@ -1,6 +1,7 @@
 import { Packets } from '../../init/loadProtos.js';
 
 // 1. 방 === 게임 <--- 기존 강의나 전 팀플에서 썼던 game세션과 game 클래스 같이 써도 되지않을까?
+// IntervalManager 게임 세션별로 하나씩 두고 얘가 낮밤 관리하게
 class Game {
   constructor(id, ownerId, name, maxUserNum) {
     this.id = id;
@@ -22,8 +23,6 @@ class Game {
   addUser(user) {
     if (this.users.length >= this.maxUserNum) {
       console.error('방이 꽉 찼습니다.');
-      // TODO: JOIN_ROOM_FAILED 관련해서 에러 응답 보내기
-      // user.socket.write()
       return;
     }
 

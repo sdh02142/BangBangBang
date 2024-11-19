@@ -20,6 +20,10 @@ export const removeUser = (socket) => {
     return userSession.splice(index, 1)[0];
 }
 
+export const findUserById = (id) => {
+    return userSession.find((user) => user.id === id);
+}
+
 export const getUserBySocket = (socket) => {
     return userSession.find((user) => user.socket === socket);
 }

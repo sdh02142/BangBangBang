@@ -1,9 +1,9 @@
-import { CardType } from "../../init/loadProtos.js";
+import { Packets } from "../../init/loadProtos.js";
 
 class CardData {
-    constructor() {
-        this.type = CardType.NONE;
-        this.count = 0;
+    constructor(type, count) {
+        this.type = type;
+        this.count = count;
     }
 }
 

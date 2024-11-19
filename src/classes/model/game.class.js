@@ -1,6 +1,7 @@
-import { RoomStateType } from '../../init/loadProtos.js';
+import { Packets } from '../../init/loadProtos.js';
 
 // 1. 방 === 게임 <--- 기존 강의나 전 팀플에서 썼던 game세션과 game 클래스 같이 써도 되지않을까?
+// IntervalManager 게임 세션별로 하나씩 두고 얘가 낮밤 관리하게
 class Game {
   constructor(id, ownerId, name, maxUserNum) {
     this.id = id;
@@ -11,29 +12,38 @@ class Game {
     // gameStartRequest -> gamePrepareNotification -> gameStart
     // 방에 아무도 못들어온다 --> PREPARE --> GamePrepareNotification이 날라올 때
     // WAIT, PREPARE, INAGAME
-    this.state = RoomStateType.WAIT; // 초기값 <-- 생성 기준이니 WAIT (0)
+    this.state = Packets.RoomStateType.WAIT; // 초기값 <-- 생성 기준이니 WAIT (0)
     this.users = []; // UserData가 들어감 <-- User 클래스에서 CharacterData 관리하기
+  }
+
+  isFullRoom() {
+    return (parseInt(this.users.length) >= parseInt(this.maxUserNum)) ? true : false;
   }
 
   addUser(user) {
     if (this.users.length >= this.maxUserNum) {
       console.error('방이 꽉 찼습니다.');
-      // TODO: JOIN_ROOM_FAILED 관련해서 에러 응답 보내기
-      // user.socket.write()
       return;
     }
 
     this.users.push(user);
   }
 
+  removeUser(user) {
+    const index = this.users.findIndex((u) => u.id === user.id)
+    if (index !== -1) {
+      this.users.splice(index, 1);
+    }
+  }
+
   // 게임 준비 관련해서 튜터님께 <--- GameStartRequest, GameStartResponse가 방 참여해서 준비하는게 맞는지
   gameStart() {
-    this.roomStateType = RoomStateType.INAGAME;
+    this.state = Packets.RoomStateType.PREPARE;
     // 게임 시작 시 모든 유저한테 게임 시작 알림
-    this.users.forEach((user) => {
-      // 게임 시작 notification
-      // user.socket.write()
-    });
+    // this.users.forEach((user) => {
+    //   // 게임 시작 notification
+    //   // user.socket.write()
+    // });
   }
 }
 

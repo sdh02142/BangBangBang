@@ -1,6 +1,6 @@
 import { config } from '../config/config.js';
 import { getHandlerByPacketType } from '../handler/index.js';
-import { GamePacket } from '../init/loadProtos.js';
+import { Packets } from '../init/loadProtos.js';
 import getPacketTypeName from '../utils/getPacketTypeName.js';
 
 const PAYLOAD_ONEOF_CASE_SIZE = config.header.PAYLOAD_ONEOF_CASE_SIZE;
@@ -47,15 +47,15 @@ export const onData = (socket) => async (data) => {
     // 남은 데이터(payloadLength를 초과)가 있다면 다시 버퍼에 넣어줌
     socket.buffer = socket.buffer.slice(packetLength);
     // TEST: 확인용 로그
-    console.log(`패킷 타입: ${getPacketTypeName(payloadOneofCase)}`);
+    console.log(`\n패킷 타입: ${getPacketTypeName(payloadOneofCase)}`);
     console.log(`버전: ${version}`);
     console.log(`시퀸스: ${sequence}`);
     console.log(`패킷길이: ${packetLength}`);
 
     try {
-      const decodedPacket = GamePacket.decode(payload);
+      const decodedPacket = Packets.GamePacket.decode(payload);
       // TEST: 확인용 로그
-      console.log(`페이로드: ${decodedPacket}`);
+      console.log(`페이로드: ${JSON.stringify(decodedPacket)}\n`);
 
       const handler = getHandlerByPacketType(payloadOneofCase);
       if (handler) {

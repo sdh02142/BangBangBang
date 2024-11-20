@@ -14,7 +14,7 @@ export const loadProto = async () => {
     const root = await protobuf.load(protoPath);
     Packets.GamePacket = root.lookupType('GamePacket');
 
-    Packets.GlobalFailCode = root.lookupEnum('GlobalFailCode').values
+    Packets.GlobalFailCode = root.lookupEnum('GlobalFailCode').values;
     Packets.WarningType = root.lookupEnum('WarningType').values;
     Packets.WinType = root.lookupEnum('WinType').values;
     Packets.CharacterType = root.lookupEnum('CharacterType').values;

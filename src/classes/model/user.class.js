@@ -15,14 +15,27 @@ class User {
     this.roomId = null;
   }
 
+  updatePosition(x, y) {
+    this.position.x = x;
+    this.position.y = y;
+  }
+
+  getX() {
+    return this.position.x;
+  }
+
+  getY() {
+    return this.position.y;
+  }
+
   setCharacterType(characterType) {
     this.characterData.characterType = characterType;
   }
-  
+
   setCharacterRoleType(roleType) {
     this.characterData.roleType = roleType;
   }
-  
+
   setHp(hp) {
     this.characterData.hp = hp;
   }
@@ -39,22 +52,22 @@ class User {
     this.characterData.weapon = weapon;
   }
 
-  setCharacterStateType (characterStateType) {
+  setCharacterStateType(characterStateType) {
     this.characterData.stateInfo.state = characterStateType;
   }
-  
-  setNextCharacterStateType (characterNextStateType) {
+
+  setNextCharacterStateType(characterNextStateType) {
     this.characterData.stateInfo.nextState = characterNextStateType;
   }
 
-  setNextStateAt (nextStateAt) {
+  setNextStateAt(nextStateAt) {
     this.characterData.stateInfo.nextStateAt = nextStateAt;
   }
-  
-  setStateTargetUserId (stateTargetUserId) {
+
+  setStateTargetUserId(stateTargetUserId) {
     this.characterData.stateInfo.stateTargetUserId = stateTargetUserId;
   }
-  
+
   addEquip(equip) {
     this.characterData.equips.push(equip);
   }
@@ -95,12 +108,10 @@ class User {
         handCards: this.characterData.handCards, // 4
         bbangCount: this.characterData.bbangCount, // 5
         handCardsCount: this.characterData.handCardsCount, // this.characterData.handCards.length
-      }
-    }
+      },
+    };
   }
 }
-
-
 
 export default User;
 
@@ -109,7 +120,6 @@ export default User;
 //     string nickname = 2;
 //     CharacterData character = 3;
 // }
-
 
 // message UserData {
 //   int64 id = 1;

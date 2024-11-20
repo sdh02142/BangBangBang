@@ -28,7 +28,6 @@ export const gamePrepareNotification = (room, me) => {
                         console.log('다른놈:', otherUser);
                         return otherUser;
                     }
-
                     // 본인인 경우 그대로
                     console.log('본인:', user.makeRawObject())
                     return user.makeRawObject();

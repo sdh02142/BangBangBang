@@ -35,36 +35,37 @@ export const useCardHandler = (socket, payload) => {
 
   cardUsingUser.decreaseHandCardsCount() // 카드 사용자의 손에 들고 있던 카드 수 감소
   cardUsingUser.removeHandCard(userCardType) // 카드 사용자의 손에 들고 있던 카드 제거
-  currentGame.deck.push(userCardType) // 카드 덱으로 복귀
-  // 4. 대상자 지정 유저 전체에서 해당 대상자ID의 state 변경
+
+  inGame.deck.append(userCardType) // 카드 덱으로 복귀
   
   // 5. 캐릭터 특성
   switch (userCardType) {
     case Packets.CardType.BBANG:
         // 빵야 카운트 확인 (TODO : prepare 핸들러나 Notification 단계에서 bbangCount를 기본값 1로 수정해야할 듯?)
-        // if (cardUsingUser.bbangCount === 0) { 
-        //     // 빵야 카운트 없으면 return       
-        //     const responsePayload = {
-        //         useCardResponse: {
-        //           success: false,
-        //           failCode: Packets.GlobalFailCode.NONE_FAILCODE, //TODO: 실패코드 변경
-        //         },
-        //       };
+        console.log("cardUsingUser.characterData.bbangCount:",cardUsingUser.characterData.bbangCount)
+        //캐릭터 특성 체크 - 빨강군
+        //장착카드 체크 - 핸드건, 자동소총
+        if (cardUsingUser.characterData.bbangCount !== 0) { //쏠 수 있는 기회 x 쏜 횟수 
+            // 빵야 카운트 없으면 return       
+            const responsePayload = {
+                useCardResponse: {
+                  success: false,
+                  failCode: Packets.GlobalFailCode.ALREADY_USED_BBANG,
+                },
+              };
             
-        //       socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, responsePayload));
-        //     return;
-        // }
+              socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, responsePayload));
+            return;
+        }
 
-        // 
 
-        // 3. 빵야 카운트 변경 bbangCount - 1
-        cardUsingUser.decreaseBbangCount();
+        // 3. 빵야 카운트 변경 bbangCount + 1
+        cardUsingUser.increaseBbangCount();
         // 4. 시전자 state 변경
         cardUsingUser.characterData.stateInfo.state = Packets.CharacterStateType.BBANG_SHOOTER;
         cardUsingUser.characterData.stateInfo.nextState = Packets.CharacterStateType.NONE_CHARACTER_STATE;
         cardUsingUser.characterData.stateInfo.nextStateAt = 5000;
         cardUsingUser.characterData.stateInfo.stateTargetUserId = userTargetUserId;
-        cardUsingUser.decreaseBbangCount()
         // 대상자 state 변경 
         const index = inGameUsers.findIndex((user) => user.id === userTargetUserId)
         inGameUsers[index].characterData.stateInfo.state = Packets.CharacterStateType.BBANG_TARGET;

@@ -2,7 +2,7 @@ const userUpdateNotification = (users) => {
     const responsePayload = {
         userUpdateNotification: { 
             userData: {
-                
+                users
             }
          }
     };

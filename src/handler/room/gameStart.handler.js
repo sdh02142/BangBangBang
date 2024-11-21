@@ -33,11 +33,9 @@ export const gameStartHandler = (socket, payload) => {
     const randId = Math.floor(Math.random() * 20);
     selectedPositions.add(characterPositions[randId]); // 0부터 방의 20 길이까지의 랜덤
   }
-  console.log(selectedPositions);
 
   // 선택된 위치 정보는 JSON의 id고, 그걸 접속한 유저의 아이디로 치환
   const posArr = [...selectedPositions];
-  console.log('posArr:', posArr);
   for (let i = 0; i < inGameUsers.length; i++) {
     posArr[i].id = inGameUsers[i].id;
     // UPDATE: 초기 좌표 세팅
@@ -59,7 +57,7 @@ export const gameStartHandler = (socket, payload) => {
   };
 
   // 페이즈 시작
-  currentGame.changePhase(Packets.PhaseType.DAY, phaseTime[Packets.PhaseType.DAY]);
+  currentGame.changePhase();
 
   socket.write(createResponse(PACKET_TYPE.GAME_START_RESPOSNE, 0, responsePayload));
 };

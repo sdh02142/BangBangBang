@@ -55,13 +55,13 @@ export const registerHandler = async (socket, payload) => {
     const hashedPW = await bcrypt.hash(password, 10);
 
     await createUser(email, hashedPW, nickname)
-    
+    console.log("PACKET_TYPE.GlobalFailCode:",PACKET_TYPE.GlobalFailCode)
     // 응답 생성
     const responsePayload = {
       registerResponse: {
         success: true,
         message: '회원가입 성공',
-        failCode: PACKET_TYPE.GlobalFailCode.NONE_FAILCODE,
+        failCode: Packets.GlobalFailCode.NONE_FAILCODE,
       },
     };
 

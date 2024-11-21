@@ -80,12 +80,24 @@ class User {
     this.characterData.handCards.push(card);
   }
 
+  removeHandCard(usingCard) {
+    this.characterData.handCards = this.characterData.handCards.filter((card) => card !== usingCard);
+  }
+
   increaseBbangCount() {
     this.characterData.bbangCount += 1;
   }
 
+  decreaseBbangCount() {
+    this.characterData.bbangCount -= 1;
+  }
+
   increaseHandCardsCount() {
     this.characterData.handCardsCount += 1;
+  }
+
+  decreaseHandCardsCount() {
+    this.characterData.handCardsCount -= 1;
   }
 
   makeRawObject() {

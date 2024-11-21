@@ -1,22 +1,23 @@
-import { Packets } from "../../init/loadProtos.js"
+import phaseTime from '../../constants/phaseTime.js';
+import { Packets } from '../../init/loadProtos.js';
 
 export const gameStartNotification = (users, characterPositions) => {
-    const responsePayload = {
-        gameStartNotification: { 
-            gameState: {
-                // phaseType : Packets.PhaseType.NONE_PHASE,
-                phaseType : Packets.PhaseType.DAY, // 인자로 phaseType
-                nextPhaseAt: Date.now() + 180000, // game 인스턴스에서 관리, IntervalManager
-            },
-            users: users.map((user) => {
-                return user.makeRawObject();
-            }),
-            characterPositions: characterPositions,
-        }
-    }
+  const responsePayload = {
+    gameStartNotification: {
+      gameState: {
+        // phaseType : Packets.PhaseType.NONE_PHASE,
+        phaseType: Packets.PhaseType.DAY, // 인자로 phaseType
+        nextPhaseAt: Date.now() + phaseTime[Packets.PhaseType.DAY],
+      },
+      users: users.map((user) => {
+        return user.makeRawObject();
+      }),
+      characterPositions: characterPositions,
+    },
+  };
 
-    return responsePayload;
-}
+  return responsePayload;
+};
 
 // message S2CGameStartNotification {
 //     GameStateData gameState = 1;

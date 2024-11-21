@@ -21,33 +21,24 @@ class Game {
 
     this.deck = null;
 
-    this.currentPhaseTime = 0; // 게임 시작시 Date.now()
-    this.nextPhaseAt = 0; // 게임 시작시 Date.now() + 180000
-    // enum PhaseType {
-    //     NONE_PHASE = 0;
-    //     DAY = 1;
-    //     EVENING = 2;
-    //     END = 3;
-    // }
     this.currentPhase = Packets.PhaseType.DAY;
     this.nextPhase = Packets.PhaseType.END;
   }
 
-  changePhase(timeout) {
-    console.log('다음 페이즈:', this.nextPhase);
+  // 1. 3분 낮 -> 2분 45초 낮 -> 갑자기 30초 밤(카드버리기 안뜸)
+  changePhase() {
     setTimeout(() => {
       const tmp = this.currentPhase;
       this.currentPhase = this.nextPhase;
       this.nextPhase = tmp;
       const responseNotification = phaseUpdateNotification(this);
       this.users.forEach((user) => {
-        // 바뀐 현재 phase를 payload로 notification 생성 후 socket.write
         user.socket.write(
           createResponse(PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, 0, responseNotification),
         );
       });
-      this.changePhase(phaseTime[this.nextPhase]);
-    }, timeout);
+      this.changePhase();
+    }, phaseTime[this.currentPhase]);
   }
 
   isFullRoom() {

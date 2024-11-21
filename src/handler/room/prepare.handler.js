@@ -147,7 +147,12 @@ export const gamePrepareHandler = (socket, payload) => {
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);
-      user.characterData.handCards = result;
+      // user.characterData.handCards = result;
+      // WARN: Test code
+      user.characterData.handCards = [
+        { type: Packets.CardType.BBANG, count: 2 },
+        { type: Packets.CardType.SHIELD, count: 2 },
+      ];
     });
 
     // 유저들한테 손패 나눠주고 게임 객체에 덱 저장
@@ -157,6 +162,7 @@ export const gamePrepareHandler = (socket, payload) => {
     // 카드 배분은 정상적으로 하고, 보내지만 않기
     // 방 유저에게 알림(gamePrepareNotification)
     inGameUsers.forEach((user) => {
+      user.maxHp = user.characterData.hp;
       const notificationPayload = gamePrepareNotification(currentGame, user);
       user.socket.write(
         createResponse(PACKET_TYPE.GAME_PREPARE_NOTIFICATION, 0, notificationPayload),

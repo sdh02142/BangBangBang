@@ -1,5 +1,6 @@
 import { config } from '../../config/config.js';
 import { Packets } from '../../init/loadProtos.js';
+import getPacketTypeName from '../getPacketTypeName.js';
 
 const createHeader = (payloadOneofCase, sequence, payloadLength) => {
   const payloadOneofCaseBuffer = Buffer.alloc(config.header.PAYLOAD_ONEOF_CASE_SIZE);
@@ -28,6 +29,9 @@ const createHeader = (payloadOneofCase, sequence, payloadLength) => {
 export const createResponse = (payloadOneofCase, sequence, payload) => {
   const payloadBuffer = Packets.GamePacket.encode(Packets.GamePacket.create(payload)).finish();
   const header = createHeader(payloadOneofCase, sequence, payloadBuffer.length);
+
+  // console.log('\n패킷 타입:', getPacketTypeName(payloadOneofCase));
+  // console.dir(Packets.GamePacket.decode(payloadBuffer), { depth: null });
 
   return Buffer.concat([header, payloadBuffer]);
 };

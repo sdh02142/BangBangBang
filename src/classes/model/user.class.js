@@ -1,3 +1,7 @@
+import { PACKET_TYPE } from '../../constants/header.js';
+import { Packets } from '../../init/loadProtos.js';
+import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
+import { createResponse } from '../../utils/response/createResponse.js';
 import CharacterData from './characterData.class.js';
 import Position from './position.class.js';
 
@@ -13,6 +17,7 @@ class User {
 
     this.position = new Position();
     this.roomId = null;
+    this.maxHp = null;
   }
 
   updatePosition(x, y) {
@@ -81,7 +86,42 @@ class User {
   }
 
   removeHandCard(usingCard) {
-    this.characterData.handCards = this.characterData.handCards.filter((card) => card !== usingCard);
+    this.characterData.handCards = this.characterData.handCards.filter(
+      (card) => card !== usingCard,
+    );
+  }
+
+  hasShieldCard() {
+    const shieldCard = this.characterData.handCards.find((card) => {
+      return card.type === Packets.CardType.SHIELD;
+    });
+    console.log('유저의 핸드 카드들:', this.characterData.handCards);
+
+    return shieldCard ? true : false;
+  }
+
+  userStateTimeout(state) {
+    //nextStateAt
+    const { inGameUsers, currentState, nextState, nextStateAt, targetUserId, time } = state;
+    setTimeout(() => {
+      this.characterData.stateInfo.state = currentState;
+      this.characterData.stateInfo.nextState = nextState;
+      this.characterData.stateInfo.nextStateAt = Date.now() + nextStateAt;
+      this.characterData.stateInfo.stateTargetUserId = targetUserId;
+      const userUpdateResponse = userUpdateNotification(inGameUsers); //updateUserData
+      this.socket.write(
+        createResponse(PACKET_TYPE.USER_UPDATE_NOTIFICATION, 0, userUpdateResponse),
+      );
+    }, time); // time초 뒤에 callback 실행
+  }
+
+  useShieldCard() {
+    const shieldCard = this.characterData.handCards.find((card) => {
+      return card.type === Packets.CardType.SHIELD;
+    });
+
+    console.log('실드 카드 사용');
+    shieldCard.count--;
   }
 
   increaseBbangCount() {
@@ -98,6 +138,15 @@ class User {
 
   decreaseHandCardsCount() {
     this.characterData.handCardsCount -= 1;
+  }
+
+  setCharacterState(state) {
+    const { currentState, nextState, nextStateAt, targetUserId } = state;
+
+    this.characterData.stateInfo.state = currentState;
+    this.characterData.stateInfo.nextState = nextState;
+    this.characterData.stateInfo.nextStateAt = nextStateAt;
+    this.characterData.stateInfo.stateTargetUserId = targetUserId;
   }
 
   makeRawObject() {

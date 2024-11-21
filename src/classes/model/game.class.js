@@ -23,6 +23,8 @@ class Game {
 
     this.currentPhase = Packets.PhaseType.DAY;
     this.nextPhase = Packets.PhaseType.END;
+
+    this.eventQueue = [];
   }
 
   // 1. 3분 낮 -> 2분 45초 낮 -> 갑자기 30초 밤(카드버리기 안뜸)
@@ -41,6 +43,18 @@ class Game {
     }, phaseTime[this.currentPhase]);
   }
 
+  removeEvent(cardUsingUserId) {
+    const index = this.eventQueue.findIndex((e) => {
+      console.log(cardUsingUserId);
+      return e.targetId === cardUsingUserId;
+    });
+
+    if (index !== -1) {
+      clearTimeout(this.eventQueue[index].id);
+      this.eventQueue.splice(index, 1);
+    }
+  }
+
   isFullRoom() {
     return parseInt(this.users.length) >= parseInt(this.maxUserNum) ? true : false;
   }
@@ -52,6 +66,10 @@ class Game {
     }
 
     this.users.push(user);
+  }
+
+  findInGameUserById(userId) {
+    return this.users.find((user) => user.id === userId);
   }
 
   removeUser(user) {

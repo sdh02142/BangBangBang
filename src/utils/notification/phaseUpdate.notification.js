@@ -27,6 +27,10 @@ export const phaseUpdateNotification = (game) => {
     }
   }
 
+  // inGameUsers.forEach((user) => {
+  //   user.resetBbangCount(); // 내부에서 캐릭터 특성에 따라
+  // })
+
   const responsePayload = {
     phaseUpdateNotification: {
       phaseType: game.currentPhase,

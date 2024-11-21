@@ -1,6 +1,5 @@
 class IntervalManager {
   constructor() {
-    super();
     this.intervals = new Map();
   }
 

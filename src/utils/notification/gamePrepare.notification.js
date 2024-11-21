@@ -6,6 +6,7 @@ import { Packets } from '../../init/loadProtos.js';
  * @param {User} me: <<---- 노티 받는 사람
  * @returns
  */
+export const gamePrepareNotification = (room, me) => {
   const responsePayload = {
     gamePrepareNotification: {
       room: {

@@ -58,7 +58,6 @@ export const useCardHandler = (socket, payload) => {
             return;
         }
 
-
         // 3. 빵야 카운트 변경 bbangCount + 1
         cardUsingUser.increaseBbangCount();
         // 4. 시전자 state 변경
@@ -66,6 +65,9 @@ export const useCardHandler = (socket, payload) => {
         cardUsingUser.characterData.stateInfo.nextState = Packets.CharacterStateType.NONE_CHARACTER_STATE;
         cardUsingUser.characterData.stateInfo.nextStateAt = 5000;
         cardUsingUser.characterData.stateInfo.stateTargetUserId = userTargetUserId;
+        // 대상자 보유 카드 확인
+        // 쉴드 보유중
+        // 쉴드 미보유중
         // 대상자 state 변경 
         const index = inGameUsers.findIndex((user) => user.id === userTargetUserId)
         inGameUsers[index].characterData.stateInfo.state = Packets.CharacterStateType.BBANG_TARGET;

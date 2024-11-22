@@ -57,12 +57,6 @@ export const useCardHandler = (socket, payload) => {
   // TODO: 덱에 복귀하는지 테스트 필요
   inGame.deck.append(userCardType); // 카드 덱으로 복귀
 
-  const isFailed = handleCards(userCardType, cardUsingUser, targetUser, inGame);
-  if (isFailed) {
-    socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, isFailed));
-    return;
-  }
-
   //여기서 유저 전체 데이터 중에 카드 사용자와 대상자의 state, nextState, nextStateAt, 카드,빵야카운트 등 변경 정보 담아서 ex) updateUserData
 
   inGameUsers.forEach((user) => {
@@ -271,20 +265,23 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame, targetUser
       // }
       break;
     case Packets.CardType.CALL_119: //자신의 체력을 1 회복하거나, 나머지의 체력을 1 회복.
-    // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: targetUser)
-    if(targetUser === cardUsingUser){
-      cardUsingUser.increaseHp();
-    }
-    else{
-      // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
-      inGame.users.forEach((user) => {
-        if (cardUsingUser.id !== user.id && 0 < user.characterData.hp && user.characterData.hp < user.maxHp){ //자신을 제외한 모두에게 체력 1 증가
-          user.increaseHp();
-        }
-      })
-    }
+      // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: targetUser)
+      if (targetUser === cardUsingUser) {
+        cardUsingUser.increaseHp();
+      } else {
+        // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
+        inGame.users.forEach((user) => {
+          if (
+            cardUsingUser.id !== user.id &&
+            0 < user.characterData.hp &&
+            user.characterData.hp < user.maxHp
+          ) {
+            //자신을 제외한 모두에게 체력 1 증가
+            user.increaseHp();
+          }
+        });
+      }
 
-    
     case Packets.CardType.DEATH_MATCH: // 플레이어 한명을 지정하여 번갈아가며 빵야!카드를 낸다. 빵야!를 못내면 체력 1 소모  타겟 : 목록에서 선택  방어 카드 : 빵야!
 
     case Packets.CardType.GUERRILLA: // 자신을 제외한 모든 플레이어가 1의 데미지를 입는다, 방어 카드 : 빵야!

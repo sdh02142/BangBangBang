@@ -1,7 +1,8 @@
-import { Packets } from "../../init/loadProtos.js";
+import { Packets } from '../../init/loadProtos.js';
 
 class CharacterStateInfoData {
-  constructor() { 
+  constructor() {
+    this.prevState = Packets.CharacterStateType.NONE_CHARACTER_STATE;
     this.state = Packets.CharacterStateType.NONE_CHARACTER_STATE; //빵야
     this.nextState = Packets.CharacterStateType.NONE_CHARACTER_STATE; //현피
     this.nextStateAt = 0; // int64 아마 timestamp? //5초
@@ -10,7 +11,6 @@ class CharacterStateInfoData {
 }
 
 export default CharacterStateInfoData;
-
 
 // message CharacterStateInfoData {
 //     CharacterStateType state = 1;

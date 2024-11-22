@@ -1,8 +1,10 @@
+import EventEmitter from 'events';
 import { PACKET_TYPE } from '../../constants/header.js';
 import phaseTime from '../../constants/phaseTime.js';
 import { Packets } from '../../init/loadProtos.js';
 import { phaseUpdateNotification } from '../../utils/notification/phaseUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
+import EventManager from '../manager/event.manager.js';
 
 // 1. 방 === 게임 <--- 기존 강의나 전 팀플에서 썼던 game세션과 game 클래스 같이 써도 되지않을까?
 // IntervalManager 게임 세션별로 하나씩 두고 얘가 낮밤 관리하게
@@ -19,12 +21,18 @@ class Game {
     this.state = Packets.RoomStateType.WAIT; // 초기값 <-- 생성 기준이니 WAIT (0)
     this.users = []; // UserData가 들어감 <-- User 클래스에서 CharacterData 관리하기
 
-    this.deck = null;
+    this.deck = [];
 
     this.currentPhase = Packets.PhaseType.DAY;
     this.nextPhase = Packets.PhaseType.END;
 
-    this.eventQueue = [];
+    // this.eventQueue = [];
+    this.events = new EventManager();
+    this.events.init();
+  }
+
+  returnCardToDeck(cardType) {
+    this.deck.push(cardType);
   }
 
   // 1. 3분 낮 -> 2분 45초 낮 -> 갑자기 30초 밤(카드버리기 안뜸)
@@ -43,17 +51,17 @@ class Game {
     }, phaseTime[this.currentPhase]);
   }
 
-  removeEvent(cardUsingUserId) {
-    const index = this.eventQueue.findIndex((e) => {
-      console.log(cardUsingUserId);
-      return e.targetId === cardUsingUserId;
-    });
+  // removeEvent(cardUsingUserId) {
+  //   const index = this.eventQueue.findIndex((e) => {
+  //     console.log(cardUsingUserId);
+  //     return e.targetId === cardUsingUserId;
+  //   });
 
-    if (index !== -1) {
-      clearTimeout(this.eventQueue[index].id);
-      this.eventQueue.splice(index, 1);
-    }
-  }
+  //   if (index !== -1) {
+  //     clearTimeout(this.eventQueue[index].id);
+  //     this.eventQueue.splice(index, 1);
+  //   }
+  // }
 
   isFullRoom() {
     return parseInt(this.users.length) >= parseInt(this.maxUserNum) ? true : false;

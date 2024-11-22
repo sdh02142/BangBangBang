@@ -8,6 +8,7 @@ import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
+import { animationNotification } from '../../utils/notification/animation.notification.js';
 import { gameStartNotification } from '../../utils/notification/gameStart.notification.js';
 import useCardNotification from '../../utils/notification/useCard.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
@@ -38,17 +39,21 @@ export const useCardHandler = (socket, payload) => {
   // 행동카드를 사용한 유저와 대상이 된 유저는 행동카드 사용이 종료 될 때 까지 움직일 수 없고, 다른 유저의 타겟이 될 수 없다.
   // (유저1이 유저2에게 발포 사용 시 쉴드 카드를 사용하거나 사용하지 않을 때 까지 정지상태. 선택 여부를 결정하는데 주어진 시간은 카드별로 3~5초)
 
+  const isFailed = handleCards(userCardType, cardUsingUser, targetUser, inGame);
+  if (isFailed) {
+    socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, isFailed));
+    return;
+  }
+
   // 공통 로직
   cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
   // TODO: 아마 형태가 {type: CardType.blah, count: n }일텐데, removeHandCard 테스트 필요
   cardUsingUser.removeHandCard(userCardType); // 카드 사용자의 손에 들고 있던 카드 제거
+  console.log('카드 사용 후');
+  cardUsingUser.logUserHandCards();
   // TODO: 덱에 복귀하는지 테스트 필요
   inGame.deck.append(userCardType); // 카드 덱으로 복귀
 
-  const isFailed = handleCards(userCardType, cardUsingUser, targetUser, inGame);
-  if (isFailed) {
-    socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, isFailed));
-  }
   //여기서 유저 전체 데이터 중에 카드 사용자와 대상자의 state, nextState, nextStateAt, 카드,빵야카운트 등 변경 정보 담아서 ex) updateUserData
 
   inGameUsers.forEach((user) => {
@@ -192,29 +197,29 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
     case Packets.CardType.SHIELD: // 빵야의 타겟이 되었을 때 막음
       // 빵야 맞은 target이 실드 사용을 하면 리퀘 날라옴
       console.log('쉴드 쓴 사람:', cardUsingUser.id);
-      cardUsingUser.useShieldCard();
       // 이벤트 큐에서 삭제
       inGame.removeEvent(cardUsingUser.id);
 
       cardUsingUser.setCharacterState(getStateNormal());
       targetUser.setCharacterState(getStateNormal());
+      animationNotification(inGame.users, cardUsingUser, Packets.CardType.SHIELD);
       break;
     case Packets.CardType.VACCINE: //체력 1 회복
-      // 풀피일 때
-      // 실패코드 반환
-      if (cardUsingUser.hp === cardUsingUser.maxHp) {
-        return {
-          useCardResponse: {
-            success: false,
-            failCode: Packets.GlobalFailCode.CHARACTER_STATE_ERROR,
-          },
-        };
-      }
-      // 풀피가 아닐 때
-      // hp + 1
+      // 풀피일 때도 카드 사용이 성공해야 한다 함.
+      console.log('백신 카드 사용 전');
+      cardUsingUser.logUserHandCards();
       cardUsingUser.increaseHp();
+      // if (!cardUsingUser.increaseHp()) {
+      //   console.log('백신 카드 사용 실패');
+      //   cardUsingUser.logUserHandCards();
+      //   return {
+      //     useCardResponse: {
+      //       success: false,
+      //       failCode: Packets.GlobalFailCode.CHARACTER_STATE_ERROR,
+      //     },
+      //   };
+      // }
       break;
-
     case Packets.CardType.CALL_119: //자신의 체력을 1 회복하거나, 나머지의 체력을 1 회복.
     // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: cardUsingUser)
     // 풀피가 아니면 hp + 1

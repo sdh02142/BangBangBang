@@ -152,6 +152,7 @@ export const gamePrepareHandler = (socket, payload) => {
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 2 },
         { type: Packets.CardType.SHIELD, count: 2 },
+        { type: Packets.CardType.VACCINE, count: 2 },
       ];
     });
 

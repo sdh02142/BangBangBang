@@ -46,7 +46,12 @@ class User {
   }
 
   increaseHp() {
+    if (this.characterData.hp >= this.maxHp) {
+      return false;
+    }
+
     this.characterData.hp += 1;
+    return true;
   }
 
   decreaseHp() {
@@ -86,9 +91,26 @@ class User {
   }
 
   removeHandCard(usingCard) {
-    this.characterData.handCards = this.characterData.handCards.filter(
-      (card) => card !== usingCard,
-    );
+    const index = this.characterData.handCards.findIndex((card) => card.type === usingCard);
+
+    // { type: enum, count: 1} enum값이 handCards에 존재하면 count++
+    // 존재하지 않으면 addHandCard({ type: newType, count: 1})
+    // count-- => count === 0 객체를 아예 삭제
+    if (index !== -1) {
+      // 카드를 덱으로 복귀 시키는건 어디서?
+      const cnt = this.characterData.handCards[index].count--;
+      this.decreaseHandCardsCount();
+      if (cnt === 0) {
+        // 남은 카드 없음
+        this.characterData.handCards.splice(index, 1);
+      }
+    }
+  }
+
+  // TEST: 테스트용임
+  logUserHandCards() {
+    console.log(`[${this.id}] ${this.nickname}의 핸드 카드`);
+    console.dir(this.characterData.handCards, { depth: null });
   }
 
   hasShieldCard() {
@@ -113,15 +135,6 @@ class User {
         createResponse(PACKET_TYPE.USER_UPDATE_NOTIFICATION, 0, userUpdateResponse),
       );
     }, time); // time초 뒤에 callback 실행
-  }
-
-  useShieldCard() {
-    const shieldCard = this.characterData.handCards.find((card) => {
-      return card.type === Packets.CardType.SHIELD;
-    });
-
-    console.log('실드 카드 사용');
-    shieldCard.count--;
   }
 
   increaseBbangCount() {

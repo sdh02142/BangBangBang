@@ -2,6 +2,8 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import {
   getStateBbangShooter,
   getStateBbangTarget,
+  getStateBigBbangShooter,
+  getStateBigBbangTarget,
   getStateNormal,
 } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
@@ -30,8 +32,8 @@ export const useCardHandler = (socket, payload) => {
   const inGame = findGameById(cardUsingUser.roomId);
   const inGameUsers = inGame.users; // 게임 내 전체유저
   const targetUser = inGame.findInGameUserById(userTargetUserId); // 타겟 유저
+  const targetUsers = inGameUsers.filter((user) => user !== cardUsingUser); // 타겟이 될 유저들
 
-  
   ////////////////////////////
   // 빵야 타겟이 되면 -> 유저 상태 업데이트 -> 쉴드 쓸래 말래? -> 사용하면 방어, 안하면 -1 -> 상태 업데이트
   // 빵야 타겟이 되면 움직이지 못하고 제자리에 고정 (5초)
@@ -74,7 +76,7 @@ export const useCardHandler = (socket, payload) => {
   socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, responsePayload));
 };
 
-const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
+const handleCards = (userCardType, cardUsingUser, targetUser, inGame, targetUsers) => {
   // 5. 캐릭터 특성
   switch (userCardType) {
     case Packets.CardType.BBANG:
@@ -189,7 +191,48 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
          */
       break;
     case Packets.CardType.BIG_BBANG: // 자신을 제외한 모든 플레이어 난사 1데미지
+      const nonShieldUsers = [];
+      // BIG_BBANG 일땐 방어카드 쉴드
 
+      // 시전자 상태변경
+      cardUsingUser.setCharacterState(getStateBigBbangShooter()); // targetUserId가 다수 일땐?
+      // 시전자를 제외한 유저들의 상태변경
+      targetUsers.forEach((user) => {
+        user.setCharacterState(getStateBigBbangTarget(cardUsingUser.id));
+
+        // 쉴드 미보유시
+        if (!user.hasShieldCard()) {
+          user.decreaseHp();
+
+          user.setCharacterState(getStateNormal());
+
+          nonShieldUsers.push(user);
+          return;
+        }
+      });
+      const hasShieldUsers = targetUsers.filter((user) => !nonShieldUsers.includes(user));
+
+      const bigBbangEventId = setTimeout(() => {
+        const index = inGame.eventQueue.findIndex((e) => {
+          return e.targetId === cardUsingUser.id;
+        });
+
+        if (index !== -1) {
+          inGame.eventQueue.splice(index, 1);
+        }
+        // 대상자 state 변경
+        hasShieldUsers.forEach((user) => {
+          user.setCharacterState(getStateNormal());
+          user.decreaseHp();
+          return;
+        });
+        userUpdateNotification(inGame.users); //updateUserData
+      }, 5000);
+      // BIGBBANG은 그냥 위 로직들을 다 수행하면 바로 상태를 변경?
+      cardUsingUser.setCharacterState(getStateNormal());
+
+      inGame.eventQueue.push({ id: bigBbangEventId, targetId: cardUsingUser.id });
+      break;
     case Packets.CardType.SHIELD: // 빵야의 타겟이 되었을 때 막음
       // 빵야 맞은 target이 실드 사용을 하면 리퀘 날라옴
       console.log('쉴드 쓴 사람:', cardUsingUser.id);

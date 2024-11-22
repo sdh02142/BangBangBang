@@ -30,6 +30,8 @@ export const useCardHandler = (socket, payload) => {
   const inGame = findGameById(cardUsingUser.roomId);
   const inGameUsers = inGame.users; // 게임 내 전체유저
   const targetUser = inGame.findInGameUserById(userTargetUserId); // 타겟 유저
+
+  
   ////////////////////////////
   // 빵야 타겟이 되면 -> 유저 상태 업데이트 -> 쉴드 쓸래 말래? -> 사용하면 방어, 안하면 -1 -> 상태 업데이트
   // 빵야 타겟이 되면 움직이지 못하고 제자리에 고정 (5초)
@@ -215,10 +217,20 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
       break;
 
     case Packets.CardType.CALL_119: //자신의 체력을 1 회복하거나, 나머지의 체력을 1 회복.
-    // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: cardUsingUser)
-    // 풀피가 아니면 hp + 1
-    // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
-    // 풀피가 아니면 hp + 1
+    // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: targetUser)
+    if(targetUser === cardUsingUser){
+      cardUsingUser.increaseHp();
+    }
+    else{
+      // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
+      inGame.users.forEach((user) => {
+        if (cardUsingUser.id !== user.id && 0 < user.characterData.hp && user.characterData.hp < user.maxHp){ //자신을 제외한 모두에게 체력 1 증가
+          user.increaseHp();
+        }
+      })
+    }
+
+    
     case Packets.CardType.DEATH_MATCH: // 플레이어 한명을 지정하여 번갈아가며 빵야!카드를 낸다. 빵야!를 못내면 체력 1 소모  타겟 : 목록에서 선택  방어 카드 : 빵야!
 
     case Packets.CardType.GUERRILLA: // 자신을 제외한 모든 플레이어가 1의 데미지를 입는다, 방어 카드 : 빵야!

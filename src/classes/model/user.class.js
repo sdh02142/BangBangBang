@@ -62,6 +62,14 @@ class User {
     this.characterData.weapon = weapon;
   }
 
+  setCharacterPrevState(characterStateType) {
+    this.characterData.stateInfo.prevState = characterStateType;
+  }
+
+  getCharacterPrevState() {
+    return this.characterData.stateInfo.prevState;
+  }
+
   setCharacterStateType(characterStateType) {
     this.characterData.stateInfo.state = characterStateType;
   }
@@ -97,7 +105,6 @@ class User {
     // 존재하지 않으면 addHandCard({ type: newType, count: 1})
     // count-- => count === 0 객체를 아예 삭제
     if (index !== -1) {
-      // 카드를 덱으로 복귀 시키는건 어디서?
       const cnt = this.characterData.handCards[index].count--;
       this.decreaseHandCardsCount();
       if (cnt === 0) {

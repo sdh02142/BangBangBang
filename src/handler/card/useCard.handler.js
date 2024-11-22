@@ -2,9 +2,10 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import {
   getStateBbangShooter,
   getStateBbangTarget,
+  getStateBigBbangShooter,
+  getStateBigBbangTarget,
   getStateNormal,
 } from '../../constants/stateType.js';
-import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
@@ -33,6 +34,8 @@ export const useCardHandler = (socket, payload) => {
   const inGame = findGameById(cardUsingUser.roomId);
   const inGameUsers = inGame.users; // 게임 내 전체유저
   const targetUser = inGame.findInGameUserById(userTargetUserId); // 타겟 유저
+  const targetUsers = inGameUsers.filter((user) => user !== cardUsingUser); // 타겟이 될 유저들
+
   ////////////////////////////
   // 빵야 타겟이 되면 -> 유저 상태 업데이트 -> 쉴드 쓸래 말래? -> 사용하면 방어, 안하면 -1 -> 상태 업데이트
   // 빵야 타겟이 되면 움직이지 못하고 제자리에 고정 (5초)
@@ -53,6 +56,12 @@ export const useCardHandler = (socket, payload) => {
   cardUsingUser.logUserHandCards();
   // TODO: 덱에 복귀하는지 테스트 필요
   inGame.deck.append(userCardType); // 카드 덱으로 복귀
+
+  const isFailed = handleCards(userCardType, cardUsingUser, targetUser, inGame);
+  if (isFailed) {
+    socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, isFailed));
+    return;
+  }
 
   //여기서 유저 전체 데이터 중에 카드 사용자와 대상자의 state, nextState, nextStateAt, 카드,빵야카운트 등 변경 정보 담아서 ex) updateUserData
 
@@ -78,7 +87,7 @@ export const useCardHandler = (socket, payload) => {
   socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, responsePayload));
 };
 
-const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
+const handleCards = (userCardType, cardUsingUser, targetUser, inGame, targetUsers) => {
   // 5. 캐릭터 특성
   switch (userCardType) {
     case Packets.CardType.BBANG:
@@ -193,7 +202,48 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
          */
       break;
     case Packets.CardType.BIG_BBANG: // 자신을 제외한 모든 플레이어 난사 1데미지
+      const nonShieldUsers = [];
+      // BIG_BBANG 일땐 방어카드 쉴드
 
+      // 시전자 상태변경
+      cardUsingUser.setCharacterState(getStateBigBbangShooter()); // targetUserId가 다수 일땐?
+      // 시전자를 제외한 유저들의 상태변경
+      targetUsers.forEach((user) => {
+        user.setCharacterState(getStateBigBbangTarget(cardUsingUser.id));
+
+        // 쉴드 미보유시
+        if (!user.hasShieldCard()) {
+          user.decreaseHp();
+
+          user.setCharacterState(getStateNormal());
+
+          nonShieldUsers.push(user);
+          return;
+        }
+      });
+      const hasShieldUsers = targetUsers.filter((user) => !nonShieldUsers.includes(user));
+
+      const bigBbangEventId = setTimeout(() => {
+        const index = inGame.eventQueue.findIndex((e) => {
+          return e.targetId === cardUsingUser.id;
+        });
+
+        if (index !== -1) {
+          inGame.eventQueue.splice(index, 1);
+        }
+        // 대상자 state 변경
+        hasShieldUsers.forEach((user) => {
+          user.setCharacterState(getStateNormal());
+          user.decreaseHp();
+          return;
+        });
+        userUpdateNotification(inGame.users); //updateUserData
+      }, 5000);
+      // BIGBBANG은 그냥 위 로직들을 다 수행하면 바로 상태를 변경?
+      cardUsingUser.setCharacterState(getStateNormal());
+
+      inGame.eventQueue.push({ id: bigBbangEventId, targetId: cardUsingUser.id });
+      break;
     case Packets.CardType.SHIELD: // 빵야의 타겟이 되었을 때 막음
       // 빵야 맞은 target이 실드 사용을 하면 리퀘 날라옴
       console.log('쉴드 쓴 사람:', cardUsingUser.id);
@@ -221,17 +271,59 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
       // }
       break;
     case Packets.CardType.CALL_119: //자신의 체력을 1 회복하거나, 나머지의 체력을 1 회복.
-    // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: cardUsingUser)
-    // 풀피가 아니면 hp + 1
-    // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
-    // 풀피가 아니면 hp + 1
+    // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: targetUser)
+    if(targetUser === cardUsingUser){
+      cardUsingUser.increaseHp();
+    }
+    else{
+      // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
+      inGame.users.forEach((user) => {
+        if (cardUsingUser.id !== user.id && 0 < user.characterData.hp && user.characterData.hp < user.maxHp){ //자신을 제외한 모두에게 체력 1 증가
+          user.increaseHp();
+        }
+      })
+    }
+
+    
     case Packets.CardType.DEATH_MATCH: // 플레이어 한명을 지정하여 번갈아가며 빵야!카드를 낸다. 빵야!를 못내면 체력 1 소모  타겟 : 목록에서 선택  방어 카드 : 빵야!
 
     case Packets.CardType.GUERRILLA: // 자신을 제외한 모든 플레이어가 1의 데미지를 입는다, 방어 카드 : 빵야!
 
     case Packets.CardType.MATURED_SAVINGS: // 은행에서 사용 시 핸드카드 두장을 획득한다  타겟 : 은행 npc
-
-    case Packets.CardType.WIN_LOTTERY: // 복권방에서 사용 시 새로운 카드 세장을 획득한다.
+      // 사용자 : cardUsingUser, 타겟 : npc
+      // 패킷 타입: USE_CARD_REQUEST
+      // 버전: 1.0.0
+      // 시퀸스: 367
+      // 패킷길이: 21
+      // 페이로드: {"useCardRequest":{"cardType":"MATURED_SAVINGS"}}
+      // targetUserId: 0
+      // targetUserId: 0
+      // addHandCard, inGame.deck 에서 shift 두번
+      for (let i = 0; i < 2; i++) {
+        const gainCard = inGame.deck.removeFront(); // return값 없
+        cardUsingUser.addHandCard(gainCard);
+        cardUsingUser.increaseHandCardsCount();
+      }
+      break;
+    case Packets.CardType.WIN_LOTTERY: // 복권방에서 사용 시 새로운 카드 세장을 획득한다. 타겟 : 복권방 npc
+      // 추가하는 카드 타입 -> enum값 user의 핸드카드 검색 -> type, count를 추가
+      // user.characterData.handCards = [
+      //   { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
+      //   { type: Packets.CardType.WIN_LOTTERY, count: 1 },
+      // ];  여기서 없애는 방식 + 추가하는 방식
+      // 패킷 타입: USE_CARD_REQUEST
+      // 버전: 1.0.0
+      // 시퀸스: 226
+      // 패킷길이: 21
+      // 페이로드: {"useCardRequest":{"cardType":"WIN_LOTTERY"}}
+      // targetUserId: 0
+      // targetUserId: 0
+      for (let i = 0; i < 3; i++) {
+        const gainCard = inGame.deck.removeFront();
+        cardUsingUser.addHandCard(gainCard);
+        cardUsingUser.increaseHandCardsCount();
+      }
+      break;
   }
 };
 

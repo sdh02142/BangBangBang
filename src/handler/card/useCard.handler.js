@@ -4,11 +4,9 @@ import {
   getStateBbangTarget,
   getStateNormal,
 } from '../../constants/stateType.js';
-import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
-import { gameStartNotification } from '../../utils/notification/gameStart.notification.js';
 import useCardNotification from '../../utils/notification/useCard.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
@@ -238,8 +236,40 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame) => {
     case Packets.CardType.GUERRILLA: // 자신을 제외한 모든 플레이어가 1의 데미지를 입는다, 방어 카드 : 빵야!
 
     case Packets.CardType.MATURED_SAVINGS: // 은행에서 사용 시 핸드카드 두장을 획득한다  타겟 : 은행 npc
-
-    case Packets.CardType.WIN_LOTTERY: // 복권방에서 사용 시 새로운 카드 세장을 획득한다.
+      // 사용자 : cardUsingUser, 타겟 : npc
+      // 패킷 타입: USE_CARD_REQUEST
+      // 버전: 1.0.0
+      // 시퀸스: 367
+      // 패킷길이: 21
+      // 페이로드: {"useCardRequest":{"cardType":"MATURED_SAVINGS"}}
+      // targetUserId: 0
+      // targetUserId: 0
+      // addHandCard, inGame.deck 에서 shift 두번
+      for (let i = 0; i < 2; i++) {
+        const gainCard = inGame.deck.removeFront(); // return값 없
+        cardUsingUser.addHandCard(gainCard);
+        cardUsingUser.increaseHandCardsCount();
+      }
+      break;
+    case Packets.CardType.WIN_LOTTERY: // 복권방에서 사용 시 새로운 카드 세장을 획득한다. 타겟 : 복권방 npc
+      // 추가하는 카드 타입 -> enum값 user의 핸드카드 검색 -> type, count를 추가
+      // user.characterData.handCards = [
+      //   { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
+      //   { type: Packets.CardType.WIN_LOTTERY, count: 1 },
+      // ];  여기서 없애는 방식 + 추가하는 방식
+      // 패킷 타입: USE_CARD_REQUEST
+      // 버전: 1.0.0
+      // 시퀸스: 226
+      // 패킷길이: 21
+      // 페이로드: {"useCardRequest":{"cardType":"WIN_LOTTERY"}}
+      // targetUserId: 0
+      // targetUserId: 0
+      for (let i = 0; i < 3; i++) {
+        const gainCard = inGame.deck.removeFront();
+        cardUsingUser.addHandCard(gainCard);
+        cardUsingUser.increaseHandCardsCount();
+      }
+      break;
   }
 };
 

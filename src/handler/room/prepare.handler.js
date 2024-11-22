@@ -150,8 +150,8 @@ export const gamePrepareHandler = (socket, payload) => {
       // user.characterData.handCards = result;
       // WARN: Test code
       user.characterData.handCards = [
-        { type: Packets.CardType.CALL_119, count: 2 },
-        { type: Packets.CardType.BBANG, count: 2 },
+        { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
+        { type: Packets.CardType.WIN_LOTTERY, count: 1 },
       ];
     });
 

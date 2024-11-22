@@ -6,11 +6,9 @@ import {
   getStateBigBbangTarget,
   getStateNormal,
 } from '../../constants/stateType.js';
-import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
-import { gameStartNotification } from '../../utils/notification/gameStart.notification.js';
 import useCardNotification from '../../utils/notification/useCard.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
@@ -52,6 +50,7 @@ export const useCardHandler = (socket, payload) => {
   const isFailed = handleCards(userCardType, cardUsingUser, targetUser, inGame);
   if (isFailed) {
     socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, isFailed));
+    return;
   }
   //여기서 유저 전체 데이터 중에 카드 사용자와 대상자의 state, nextState, nextStateAt, 카드,빵야카운트 등 변경 정보 담아서 ex) updateUserData
 
@@ -261,17 +260,59 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame, targetUser
       break;
 
     case Packets.CardType.CALL_119: //자신의 체력을 1 회복하거나, 나머지의 체력을 1 회복.
-    // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: cardUsingUser)
-    // 풀피가 아니면 hp + 1
-    // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
-    // 풀피가 아니면 hp + 1
+    // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: targetUser)
+    if(targetUser === cardUsingUser){
+      cardUsingUser.increaseHp();
+    }
+    else{
+      // 타겟이 내가 아닐 때 (사용자: cardUsingUser, 타겟: oterUsers)
+      inGame.users.forEach((user) => {
+        if (cardUsingUser.id !== user.id && 0 < user.characterData.hp && user.characterData.hp < user.maxHp){ //자신을 제외한 모두에게 체력 1 증가
+          user.increaseHp();
+        }
+      })
+    }
+
+    
     case Packets.CardType.DEATH_MATCH: // 플레이어 한명을 지정하여 번갈아가며 빵야!카드를 낸다. 빵야!를 못내면 체력 1 소모  타겟 : 목록에서 선택  방어 카드 : 빵야!
 
     case Packets.CardType.GUERRILLA: // 자신을 제외한 모든 플레이어가 1의 데미지를 입는다, 방어 카드 : 빵야!
 
     case Packets.CardType.MATURED_SAVINGS: // 은행에서 사용 시 핸드카드 두장을 획득한다  타겟 : 은행 npc
-
-    case Packets.CardType.WIN_LOTTERY: // 복권방에서 사용 시 새로운 카드 세장을 획득한다.
+      // 사용자 : cardUsingUser, 타겟 : npc
+      // 패킷 타입: USE_CARD_REQUEST
+      // 버전: 1.0.0
+      // 시퀸스: 367
+      // 패킷길이: 21
+      // 페이로드: {"useCardRequest":{"cardType":"MATURED_SAVINGS"}}
+      // targetUserId: 0
+      // targetUserId: 0
+      // addHandCard, inGame.deck 에서 shift 두번
+      for (let i = 0; i < 2; i++) {
+        const gainCard = inGame.deck.removeFront(); // return값 없
+        cardUsingUser.addHandCard(gainCard);
+        cardUsingUser.increaseHandCardsCount();
+      }
+      break;
+    case Packets.CardType.WIN_LOTTERY: // 복권방에서 사용 시 새로운 카드 세장을 획득한다. 타겟 : 복권방 npc
+      // 추가하는 카드 타입 -> enum값 user의 핸드카드 검색 -> type, count를 추가
+      // user.characterData.handCards = [
+      //   { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
+      //   { type: Packets.CardType.WIN_LOTTERY, count: 1 },
+      // ];  여기서 없애는 방식 + 추가하는 방식
+      // 패킷 타입: USE_CARD_REQUEST
+      // 버전: 1.0.0
+      // 시퀸스: 226
+      // 패킷길이: 21
+      // 페이로드: {"useCardRequest":{"cardType":"WIN_LOTTERY"}}
+      // targetUserId: 0
+      // targetUserId: 0
+      for (let i = 0; i < 3; i++) {
+        const gainCard = inGame.deck.removeFront();
+        cardUsingUser.addHandCard(gainCard);
+        cardUsingUser.increaseHandCardsCount();
+      }
+      break;
   }
 };
 

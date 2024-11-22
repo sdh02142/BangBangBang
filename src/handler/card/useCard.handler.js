@@ -14,6 +14,7 @@ import { gameStartNotification } from '../../utils/notification/gameStart.notifi
 import useCardNotification from '../../utils/notification/useCard.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
+import getCardHandlerByCardType from './index.js';
 
 //캐릭터 정보
 // 빨강이 (CHA00001) 하루에 원하는만큼 빵야!를 사용할 수 있다. // 캐릭터 데이터 설정할 때 BBangCount 추가 설정
@@ -28,49 +29,51 @@ import { createResponse } from '../../utils/response/createResponse.js';
 
 //불꽃 버튼을 누르면 호출
 export const useCardHandler = (socket, payload) => {
+  const useCardType = payload.useCardRequest.cardType; //사용 카드
+  const targetUserId = payload.useCardRequest.targetUserId.low; //대상자 ID
   const cardUsingUser = getUserBySocket(socket); //카드 사용자
-  const userCardType = payload.useCardRequest.cardType; //사용 카드
-  const userTargetUserId = payload.useCardRequest.targetUserId.low; //대상자 ID
-  const inGame = findGameById(cardUsingUser.roomId);
-  const inGameUsers = inGame.users; // 게임 내 전체유저
-  const targetUser = inGame.findInGameUserById(userTargetUserId); // 타겟 유저
-  const targetUsers = inGameUsers.filter((user) => user !== cardUsingUser); // 타겟이 될 유저들
+  const currentGame = findGameById(cardUsingUser.roomId);
+  const targetUser = currentGame.findInGameUserById(targetUserId);
 
-  ////////////////////////////
-  // 빵야 타겟이 되면 -> 유저 상태 업데이트 -> 쉴드 쓸래 말래? -> 사용하면 방어, 안하면 -1 -> 상태 업데이트
-  // 빵야 타겟이 되면 움직이지 못하고 제자리에 고정 (5초)
-  // 행동카드를 사용한 유저와 대상이 된 유저는 행동카드 사용이 종료 될 때 까지 움직일 수 없고, 다른 유저의 타겟이 될 수 없다.
-  // (유저1이 유저2에게 발포 사용 시 쉴드 카드를 사용하거나 사용하지 않을 때 까지 정지상태. 선택 여부를 결정하는데 주어진 시간은 카드별로 3~5초)
+  const cardHandler = getCardHandlerByCardType(useCardType);
+  if (!cardHandler) {
+    console.error('카드 핸들러를 찾을 수 없습니다.');
+    return;
+  }
 
-  const isFailed = handleCards(userCardType, cardUsingUser, targetUser, inGame);
-  if (isFailed) {
-    socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, isFailed));
+  // response를 반환해서 socket.write를 여기서 할지, 아니면 각 핸들러 안에서 cardUsingUser.socket.write를 해줄지
+  // 일단 지금은 후자 방식으로 구현하겠음. 나중에 공통 처리(동기화, 소켓 송신 등)가 많이 겹치면 수정하기
+  const errorResponse = cardHandler(cardUsingUser, targetUser, currentGame);
+  if (errorResponse) {
+    // 뭔가 에러가 났음.
+    // 에러 안나면 아무것도 반환하지 않기
+    console.error('카드 핸들러: 뭔가 문제 있음');
+    socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, errorResponse));
     return;
   }
 
   // 공통 로직
   cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
-  // TODO: 아마 형태가 {type: CardType.blah, count: n }일텐데, removeHandCard 테스트 필요
-  cardUsingUser.removeHandCard(userCardType); // 카드 사용자의 손에 들고 있던 카드 제거
-  console.log('카드 사용 후');
-  cardUsingUser.logUserHandCards();
-  // TODO: 덱에 복귀하는지 테스트 필요
-  inGame.deck.append(userCardType); // 카드 덱으로 복귀
+  cardUsingUser.removeHandCard(useCardType); // 카드 사용자의 손에 들고 있던 카드 제거
+  currentGame.returnCardToDeck(useCardType); // 카드 덱으로 복귀
 
-  //여기서 유저 전체 데이터 중에 카드 사용자와 대상자의 state, nextState, nextStateAt, 카드,빵야카운트 등 변경 정보 담아서 ex) updateUserData
+  const useCardNotificationResponse = useCardNotification(
+    useCardType,
+    cardUsingUser.id,
+    targetUserId,
+  );
 
-  inGameUsers.forEach((user) => {
-    //게임 방 안에 모든 유저들에게 카드 사용알림
-    const useCardResponse = useCardNotification(userCardType, cardUsingUser, userTargetUserId);
-    user.socket.write(createResponse(PACKET_TYPE.USE_CARD_NOTIFICATION, 0, useCardResponse));
-
-    // 방에 있는 모두에게 UserUpdateNotification
-    // message S2CUserUpdateNotification {
-    // repeaed UserData user = 1;
-    // }
+  //게임 방 안에 모든 유저들에게 카드 사용알림
+  currentGame.users.forEach((user) => {
+    user.socket.write(
+      createResponse(PACKET_TYPE.USE_CARD_NOTIFICATION, 0, useCardNotificationResponse),
+    );
   });
-  userUpdateNotification(inGameUsers); //updateUserData
 
+  // 동기화
+  userUpdateNotification(currentGame.users);
+
+  // 성공 response 전송
   const responsePayload = {
     useCardResponse: {
       success: true,
@@ -79,6 +82,12 @@ export const useCardHandler = (socket, payload) => {
   };
 
   socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, responsePayload));
+
+  ////////////////////////////
+  // 빵야 타겟이 되면 -> 유저 상태 업데이트 -> 쉴드 쓸래 말래? -> 사용하면 방어, 안하면 -1 -> 상태 업데이트
+  // 빵야 타겟이 되면 움직이지 못하고 제자리에 고정 (5초)
+  // 행동카드를 사용한 유저와 대상이 된 유저는 행동카드 사용이 종료 될 때 까지 움직일 수 없고, 다른 유저의 타겟이 될 수 없다.
+  // (유저1이 유저2에게 발포 사용 시 쉴드 카드를 사용하거나 사용하지 않을 때 까지 정지상태. 선택 여부를 결정하는데 주어진 시간은 카드별로 3~5초)
 };
 
 const handleCards = (userCardType, cardUsingUser, targetUser, inGame, targetUsers) => {

@@ -26,6 +26,26 @@ export const getStateBbangTarget = (targetUser) => {
     targetUserId: targetUser,
   };
 };
+
+export const getStateBigBbangShooter = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.BIG_BBANG_SHOOTER,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: targetUser,
+  };
+};
+
+export const getStateBigBbangTarget = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.BIG_BBANG_TARGET,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: targetUser,
+  };
+};
+
+
 /**
  * 
  *   const stateType = {

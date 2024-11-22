@@ -1,9 +1,9 @@
-const useCardNotification = (cardType, cardUsingUser, targetUserId = 0) => {
+const useCardNotification = (cardType, cardUsingUserId, targetUserId = 0) => {
   console.log('targetUserId:', targetUserId);
   const responsePayload = {
     useCardNotification: {
       cardType: cardType,
-      userId: cardUsingUser.id,
+      userId: cardUsingUserId,
       targetUserId: targetUserId,
     },
   };

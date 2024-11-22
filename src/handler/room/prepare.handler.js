@@ -133,6 +133,7 @@ export const gamePrepareHandler = (socket, payload) => {
     inGameUsers.forEach((user) => {
       // 1. 임시로 사람별 덱 구성
       const tmp = [];
+
       for (let i = 0; i < user.characterData.hp; i++) {
         const card = deck.shift();
         tmp.push(card);
@@ -142,8 +143,13 @@ export const gamePrepareHandler = (socket, payload) => {
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);
-      user.characterData.handCards = result;
-
+      // user.characterData.handCards = result;
+      // WARN: Test code
+      user.characterData.handCards = [
+        { type: Packets.CardType.BBANG, count: 2 },
+        { type: Packets.CardType.SHIELD, count: 2 },
+        { type: Packets.CardType.VACCINE, count: 2 },
+      ];
       console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 
@@ -155,6 +161,7 @@ export const gamePrepareHandler = (socket, payload) => {
     // 방 유저에게 알림(gamePrepareNotification)
     inGameUsers.forEach((user) => {
       console.log(`${user.id} 유저에게 게임 시작 알림 전송`);
+      user.maxHp = user.characterData.hp;
       const notificationPayload = gamePrepareNotification(currentGame, user);
       user.socket.write(
         createResponse(PACKET_TYPE.GAME_PREPARE_NOTIFICATION, 0, notificationPayload),

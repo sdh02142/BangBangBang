@@ -10,7 +10,9 @@ export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
   user.decreaseHp();
   const game = findGameById(user.roomId);
-  game.removeEvent(user.id);
+  // game.removeEvent(user.id);
+  game.events.cancelEvent(user.id, 'finishShieldWait');
+  game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
   const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
   user.setCharacterState(getStateNormal());
   targetUser.setCharacterState(getStateNormal());

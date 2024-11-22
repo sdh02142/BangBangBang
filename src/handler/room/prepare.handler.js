@@ -1,4 +1,3 @@
-import DoubleLinkedList from '../../classes/datastructure/doubleLinkedList.js';
 import { cardDeck } from '../../constants/cardDeck.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { Packets } from '../../init/loadProtos.js';
@@ -147,8 +146,12 @@ export const gamePrepareHandler = (socket, payload) => {
       // WARN: Test code
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 2 },
+        { type: Packets.CardType.BIG_BBANG, count: 1 },
         { type: Packets.CardType.SHIELD, count: 2 },
         { type: Packets.CardType.VACCINE, count: 2 },
+        { type: Packets.CardType.CALL_119, count: 2 },
+        { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
+        { type: Packets.CardType.WIN_LOTTERY, count: 1 },
       ];
       console.log(user.id, '의 handCards:', user.characterData.handCards);
     });

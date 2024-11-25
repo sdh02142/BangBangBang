@@ -50,6 +50,68 @@ class User {
   setCharacterRoleType(roleType) {
     this.characterData.roleType = roleType;
   }
+  // 캐릭터 설정
+  setCharacter(characterType) {
+    console.log(characterType);
+    switch (characterType) {
+      case Packets.CharacterType.RED:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 4;
+        this.setBbangCount(40); // max치 빵야 횟수 설정
+        break;
+      case Packets.CharacterType.SHARK:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 4;
+        this.setBbangCount(1);
+        break;
+      case Packets.CharacterType.MALANG:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 4;
+        this.setBbangCount(1);
+        break;
+      case Packets.CharacterType.FROGGY:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 4;
+        this.setBbangCount(1);
+        break;
+      case Packets.CharacterType.PINK:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 4;
+        this.setBbangCount(1);
+        break;
+      // 물안경군 캐릭터 특성은 클라에서 처리
+      case Packets.CharacterType.SWIM_GLASSES:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 4;
+        this.setBbangCount(1);
+        break;
+      case Packets.CharacterType.MASK:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 4;
+        this.setBbangCount(1);
+        break;
+      // 공룡이 캐릭터 특성은 클라에서 처리
+      case Packets.CharacterType.DINOSAUR:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 3;
+        this.setBbangCount(1);
+        break;
+      case Packets.CharacterType.PINK_SLIME:
+        this.characterData.characterType = characterType;
+        this.characterData.bbangCount = 0;
+        this.characterData.hp = 3;
+        this.setBbangCount(1);
+        break;
+    }
+  }
 
   setHp(hp) {
     this.characterData.hp = hp;

@@ -24,6 +24,14 @@ class EventManager {
       user.decreaseHp();
       userUpdateNotification(currentGameUsers);
     });
+
+    this.eventEmitter.on('onDeathMatch', (params) => {
+      const { cardUsingUser, targetUser, stateNormal, userUpdateNotification, currentGameUsers} = params;
+      cardUsingUser.setCharacterState(stateNormal);
+      targetUser.setCharacterState(stateNormal);
+      targetUser.decreaseHp();
+      userUpdateNotification(currentGameUsers);
+    });
   }
 
   // 이벤트 예약

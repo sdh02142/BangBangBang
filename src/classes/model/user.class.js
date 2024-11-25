@@ -122,6 +122,15 @@ class User {
     return shieldCard ? true : false;
   }
 
+  hasBbangCard() {
+    const shieldCard = this.characterData.handCards.find((card) => {
+      return card.type === Packets.CardType.BBANG;
+    });
+    console.log('유저의 핸드 카드들:', this.characterData.handCards);
+
+    return shieldCard ? true : false;
+  }
+
   userStateTimeout(state) {
     //nextStateAt
     const { inGameUsers, currentState, nextState, nextStateAt, targetUserId, time } = state;

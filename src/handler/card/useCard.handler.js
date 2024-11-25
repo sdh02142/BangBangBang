@@ -5,6 +5,11 @@ import {
   getStateBigBbangShooter,
   getStateBigBbangTarget,
   getStateNormal,
+  getStateDeathInitShooter,
+  getStateDeathInitTarget,
+  getStateDeathMatchShooter,
+  getStateDeathMatchTarget,
+  getStateDeathMatchEnd,
 } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';
@@ -14,6 +19,7 @@ import { gameStartNotification } from '../../utils/notification/gameStart.notifi
 import useCardNotification from '../../utils/notification/useCard.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
+import { deathMatchCardHandler } from './deathMatchCard.handler.js';
 
 //캐릭터 정보
 // 빨강이 (CHA00001) 하루에 원하는만큼 빵야!를 사용할 수 있다. // 캐릭터 데이터 설정할 때 BBangCount 추가 설정
@@ -41,12 +47,33 @@ export const useCardHandler = (socket, payload) => {
   // 빵야 타겟이 되면 움직이지 못하고 제자리에 고정 (5초)
   // 행동카드를 사용한 유저와 대상이 된 유저는 행동카드 사용이 종료 될 때 까지 움직일 수 없고, 다른 유저의 타겟이 될 수 없다.
   // (유저1이 유저2에게 발포 사용 시 쉴드 카드를 사용하거나 사용하지 않을 때 까지 정지상태. 선택 여부를 결정하는데 주어진 시간은 카드별로 3~5초)
+  if(cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE){
+    cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
+    // TODO: 아마 형태가 {type: CardType.blah, count: n }일텐데, removeHandCard 테스트 필요
+    cardUsingUser.removeHandCard(userCardType); // 카드 사용자의 손에 들고 있던 카드 제거
+    console.log('카드 사용 후');
+    cardUsingUser.logUserHandCards();
+    // TODO: 덱에 복귀하는지 테스트 필요
+    inGame.deck.append(userCardType); // 카드 덱으로 복귀
+
+    deathMatchCardHandler(userCardType, cardUsingUser, targetUser);
+
+    const responsePayload = {
+      useCardResponse: {
+        success: true,
+        failCode: Packets.GlobalFailCode.NONE_FAILCODE,
+      },
+    };
+  
+    socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, responsePayload));
+    return;
+  }
 
   const isFailed = handleCards(userCardType, cardUsingUser, targetUser, inGame);
   if (isFailed) {
     socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, isFailed));
     return;
-  }
+  }  
 
   // 공통 로직
   cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
@@ -57,10 +84,11 @@ export const useCardHandler = (socket, payload) => {
   // TODO: 덱에 복귀하는지 테스트 필요
   inGame.deck.append(userCardType); // 카드 덱으로 복귀
 
-  //여기서 유저 전체 데이터 중에 카드 사용자와 대상자의 state, nextState, nextStateAt, 카드,빵야카운트 등 변경 정보 담아서 ex) updateUserData
+  
+  // 여기서 유저 전체 데이터 중에 카드 사용자와 대상자의 state, nextState, nextStateAt, 카드,빵야카운트 등 변경 정보 담아서 ex) updateUserData
 
   inGameUsers.forEach((user) => {
-    //게임 방 안에 모든 유저들에게 카드 사용알림
+    // 게임 방 안에 모든 유저들에게 카드 사용알림
     const useCardResponse = useCardNotification(userCardType, cardUsingUser, userTargetUserId);
     user.socket.write(createResponse(PACKET_TYPE.USE_CARD_NOTIFICATION, 0, useCardResponse));
 
@@ -281,9 +309,67 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame, targetUser
           }
         });
       }
-
+      break;
     case Packets.CardType.DEATH_MATCH: // 플레이어 한명을 지정하여 번갈아가며 빵야!카드를 낸다. 빵야!를 못내면 체력 1 소모  타겟 : 목록에서 선택  방어 카드 : 빵야!
+      // 빵야 카드 없는 경우 <<< 바로 처리하고 return <<< fail 코드 없이, 아래쪽 노티들 다 보내고 끝
+      // 빵야 카드 있는 경우 <<< 빵야 카드 사용 대기 <<< 이 경우 state만 처리하고 사용 자체는 다음 card 사용 유저(이전 targetUser)한테 전가
 
+      // 대상자 보유 카드 확인
+      if (!targetUser.hasBbangCard()) {
+        // 빵야 카드 미보유중
+        // 시전자 state 변경
+        cardUsingUser.setCharacterState(getStateDeathMatchEnd(targetUser.id));
+        // 대상자 hp 감소
+        targetUser.decreaseHp();
+        // 사용한 사람 경직 time값은 임시
+        cardUsingUser.userStateTimeout({
+          inGameUsers: inGame.users,
+          ...getStateNormal(),
+          time: 1000,
+        });
+
+        return;
+      }
+
+      // 빵야 카드 있는 경우 > 현피 쓴 사람 DEATH_MATCH_STATE, 맞은 사람 DEATH_MATCH_TURN_STATE
+      // >
+      // TODO: 빵야 카드 있고, 사용 시간 기다리기.
+      // 결정은 다음에 (이전 요청에선 targetUser) 최신 요청에선 cardUseUser
+
+      // 피 달면 안되고 targetUser의 빵야 카드 소모 or 사용 선택
+      // 시전자 state 변경
+      cardUsingUser.setCharacterState(getStateDeathInitShooter(targetUser.id));
+      // 대상자 state 변경
+      targetUser.setCharacterState(getStateDeathInitTarget(cardUsingUser.id));
+
+      const deathMatchEventId = setTimeout(() => {
+        // 실드 사용 대기시간(time)이 지났는데 아무 이벤트도 오지 않은 경우.
+        // 실드 사용을 하게 되면 아래의 case Packets.CardType.SHIELD 부분에 걸릴테니 거기선 clearTimeout으로 직접 지워주기
+        const index = inGame.eventQueue.findIndex((e) => {
+          return e.targetId === targetUser.id;
+        });
+
+        if (index !== -1) {
+          inGame.eventQueue.splice(index, 1);
+        }
+        console.log('timeout 안:', inGame.eventQueue);
+        // 사용 안함 처리 <<< 피 다는건 reaction 핸들러에 위임, 상태만 원상복귀
+        // 빵야 사용 유저, 쉴드 사용 유저 state 원상복귀
+        cardUsingUser.setCharacterState(getStateNormal());
+        // 대상자 state 변경
+        targetUser.setCharacterState(getStateNormal());
+
+        targetUser.decreaseHp();
+
+        userUpdateNotification(inGame.users); //updateUserData
+      }, 5000);
+      inGame.eventQueue.push({ id: deathMatchEventId, targetId: targetUser.id });
+      console.log('현피 당한 사람:', targetUser.id);
+
+      // TODO : 시간이 지났을때 피를 깎아줘야 함 가설 : 시간이 지났을 때 === 피해받기 (reaction => not_use_card)
+
+      // TODO : 피해받기 (reaction => not_use_card), 사용하기 (useCardRequest, animation -> shield_animation) 각 선택 시 서버 처리
+      break;
     case Packets.CardType.GUERRILLA: // 자신을 제외한 모든 플레이어가 1의 데미지를 입는다, 방어 카드 : 빵야!
 
     case Packets.CardType.MATURED_SAVINGS: // 은행에서 사용 시 핸드카드 두장을 획득한다  타겟 : 은행 npc

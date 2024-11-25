@@ -294,7 +294,7 @@ const handleCards = (userCardType, cardUsingUser, targetUser, inGame, targetUser
     case Packets.CardType.DEATH_MATCH: // 플레이어 한명을 지정하여 번갈아가며 빵야!카드를 낸다. 빵야!를 못내면 체력 1 소모  타겟 : 목록에서 선택  방어 카드 : 빵야!
 
     case Packets.CardType.GUERRILLA: // 자신을 제외한 모든 플레이어가 1의 데미지를 입는다, 방어 카드 : 빵야!
-
+      break;
     case Packets.CardType.MATURED_SAVINGS: // 은행에서 사용 시 핸드카드 두장을 획득한다  타겟 : 은행 npc
       // 사용자 : cardUsingUser, 타겟 : npc
       // 패킷 타입: USE_CARD_REQUEST

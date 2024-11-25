@@ -44,7 +44,26 @@ export const getStateBigBbangTarget = (targetUser) => {
     targetUserId: targetUser,
   };
 };
+//   GUERRILLA_SHOOTER = 7; // 게릴라 시전자
+//   GUERRILLA_TARGET = 8; // 게릴라 대상
 
+export const getStateGuerrillaShooter = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.GUERRILLA_SHOOTER,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: targetUser,
+  };
+};
+
+export const getStateGuerrillaTarget = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.GUERRILLA_TARGET,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: targetUser,
+  };
+};
 
 /**
  * 

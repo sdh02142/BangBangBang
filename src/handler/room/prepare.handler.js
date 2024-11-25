@@ -152,6 +152,7 @@ export const gamePrepareHandler = (socket, payload) => {
         { type: Packets.CardType.CALL_119, count: 2 },
         { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
         { type: Packets.CardType.WIN_LOTTERY, count: 1 },
+        { type: Packets.CardType.GUERRILLA, count: 1 },
       ];
       console.log(user.id, '의 handCards:', user.characterData.handCards);
     });

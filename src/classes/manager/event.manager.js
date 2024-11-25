@@ -24,6 +24,14 @@ class EventManager {
       user.decreaseHp();
       userUpdateNotification(currentGameUsers);
     });
+
+    this.eventEmitter.on('finishBbangWaitOnGuerrilla', (params) => {
+      const { user, cardUsingUser, stateNormal, userUpdateNotification, currentGameUsers } = params;
+      user.setCharacterState(stateNormal);
+      cardUsingUser.setCharacterState(stateNormal);
+      user.decreaseHp();
+      userUpdateNotification(currentGameUsers);
+    });
   }
 
   // 이벤트 예약

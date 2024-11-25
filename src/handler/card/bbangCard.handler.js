@@ -2,6 +2,8 @@ import {
   getStateBbangShooter,
   getStateBbangTarget,
   getStateNormal,
+  getStateDeathInitShooter,
+  getStateDeathInitTarget,
 } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
@@ -9,19 +11,28 @@ import userUpdateNotification from '../../utils/notification/userUpdate.notifica
 // bbang 카드랑 실드 카드가 좀 특수한 경우가 있어서 어떻게 나눠야 할지 고민중
 export const bbangCardHandler = (cardUsingUser, targetUser, currentGame) => {
   // TODO: user.prevState가 NONE이면 일반 빵야 핸들러, 현피면 현피 핸들러 호출하기
-  // if (cardUsingUser.prevState === Packets.CharacterStateType.NONE_CHARACTER_STATE) {
-  //   normalBbangHandler(cardUsingUser, targetUser, currentGame);
-  // }
-  normalBbangHandler(cardUsingUser, targetUser, currentGame);
+  if (cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.NONE_CHARACTER_STATE) {
+    normalBbangHandler(cardUsingUser, targetUser, currentGame);
+  } else if (cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
+    deathMatchBbangHandler(cardUsingUser, targetUser, currentGame);
+  }
 };
+
+const deathMatchBbangHandler = (cardUsingUser, targetUser, currentGame) => {
+  currentGame.events.cancelEvent(cardUsingUser.id, 'onDeathMatch');
+  currentGame.events.scheduleEvent(targetUser.id, 'onDeathMatch', 5000, { cardUsingUser, targetUser, stateNormal: getStateNormal(), userUpdateNotification, currentGameUsers: currentGame.users})
+
+  // 시전자 state 변경(빵야 카드 사용 시: 현피 기다림)
+  cardUsingUser.setCharacterState(getStateDeathInitShooter(targetUser.id));
+  // 대상자 state 변경(현피 대상: 빵야 카드 소지 여부 및 사용 여부)
+  targetUser.setCharacterState(getStateDeathInitTarget(cardUsingUser.id));
+}
 
 const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   const currentGameUsers = currentGame.users;
-
-  const maxBbangCount = 0;
   // TODO: 이것도 나중에 cardUsingUser.canUseBbang() 이런식으로 구현
   //    이유: user에 this.maxBbangCount를 추가 해두고 내부적으로 처리하는 게 좋을 것 같기 때문
-  if (cardUsingUser.characterData.bbangCount > maxBbangCount) {
+  if (cardUsingUser.canUseBbang()) {
     // 빵야 실패
     const errorResponse = {
       useCardResponse: {
@@ -35,21 +46,6 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   // 여기서부터 빵야 사용 로직
   // 빵야 카운트 증가
   cardUsingUser.increaseBbangCount();
-
-  // 기존 로직: 실드 없으면 바로 데미지 입게하고 로직 종료
-  // TODO: event emitter로 변경하기
-  if (!targetUser.hasShieldCard()) {
-    cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
-    targetUser.decreaseHp();
-    // TODO: setUserStateTimeout으로 이름 변경하기
-    cardUsingUser.userStateTimeout({
-      inGameUsers: currentGameUsers,
-      ...getStateNormal(),
-      time: 1000,
-    });
-
-    return;
-  }
 
   // 실드가 있는 경우 로직
   // 사용 시간 기다려야 함.

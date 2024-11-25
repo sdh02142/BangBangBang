@@ -11,11 +11,22 @@ export const reactionHandler = (socket, payload) => {
   user.decreaseHp();
   const game = findGameById(user.roomId);
   // game.removeEvent(user.id);
-  game.events.cancelEvent(user.id, 'finishShieldWait');
-  game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
+  if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
+    game.events.cancelEvent(user.id, 'finishShieldWait');
+  }
+
+  if (user.characterData.stateInfo.state === Packets.CharacterStateType.BIG_BBANG_TARGET) {
+    game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
+  }
+
+  if (user.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
+    game.events.cancelEvent(user.id, 'onDeathMatch');
+  }
   const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
   user.setCharacterState(getStateNormal());
-  targetUser.setCharacterState(getStateNormal());
+  if (targetUser) {
+    targetUser.setCharacterState(getStateNormal());
+  }
   userUpdateNotification(game.users); //updateUserData
 
   const responsePayload = {

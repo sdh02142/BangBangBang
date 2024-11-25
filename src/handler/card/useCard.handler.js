@@ -33,7 +33,6 @@ import getCardHandlerByCardType from './index.js';
 // 공룡이 (CHA00012) 다른 유저에게서 미니맵 상 위치를 감춤 - 클라
 // 핑크슬라임 (CHA00013) 피격 시 가해자의 카드를 한장 가져옴. //
 
-//불꽃 버튼을 누르면 호출
 export const useCardHandler = (socket, payload) => {
   const useCardType = payload.useCardRequest.cardType; //사용 카드
   const targetUserId = payload.useCardRequest.targetUserId.low; //대상자 ID
@@ -46,13 +45,11 @@ export const useCardHandler = (socket, payload) => {
     console.error('카드 핸들러를 찾을 수 없습니다.');
     return;
   }
-
-  // response를 반환해서 socket.write를 여기서 할지, 아니면 각 핸들러 안에서 cardUsingUser.socket.write를 해줄지
-  // 일단 지금은 후자 방식으로 구현하겠음. 나중에 공통 처리(동기화, 소켓 송신 등)가 많이 겹치면 수정하기
+  
+  // 에러 안나면 아무것도 반환하지 않기
   const errorResponse = cardHandler(cardUsingUser, targetUser, currentGame);
   if (errorResponse) {
     // 뭔가 에러가 났음.
-    // 에러 안나면 아무것도 반환하지 않기
     console.error('카드 핸들러: 뭔가 문제 있음');
     socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, errorResponse));
     return;

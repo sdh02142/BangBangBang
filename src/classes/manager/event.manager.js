@@ -25,11 +25,20 @@ class EventManager {
       userUpdateNotification(currentGameUsers);
     });
 
+
     this.eventEmitter.on('onDeathMatch', (params) => {
       const { cardUsingUser, targetUser, stateNormal, userUpdateNotification, currentGameUsers} = params;
       cardUsingUser.setCharacterState(stateNormal);
       targetUser.setCharacterState(stateNormal);
       targetUser.decreaseHp();
+      userUpdateNotification(currentGameUsers);
+    });
+
+    this.eventEmitter.on('finishBbangWaitOnGuerrilla', (params) => {
+      const { user, cardUsingUser, stateNormal, userUpdateNotification, currentGameUsers } = params;
+      user.setCharacterState(stateNormal);
+      cardUsingUser.setCharacterState(stateNormal);
+      user.decreaseHp();
       userUpdateNotification(currentGameUsers);
     });
   }

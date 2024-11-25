@@ -8,9 +8,8 @@ import { getStateNormal } from '../../constants/stateType.js';
 
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
-  user.decreaseHp();
   const game = findGameById(user.roomId);
-  // game.removeEvent(user.id);
+
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
     game.events.cancelEvent(user.id, 'finishShieldWait');
   }
@@ -22,6 +21,13 @@ export const reactionHandler = (socket, payload) => {
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
     game.events.cancelEvent(user.id, 'onDeathMatch');
   }
+  
+  if (user.characterData.stateInfo.state === Packets.CharacterStateType.GUERRILLA_TARGET) {
+    game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
+  }
+  
+  user.decreaseHp();
+
   const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
   user.setCharacterState(getStateNormal());
   if (targetUser) {
@@ -35,33 +41,6 @@ export const reactionHandler = (socket, payload) => {
       failCode: Packets.GlobalFailCode.NONE_FAILCODE,
     },
   };
+  
   socket.write(createResponse(PACKET_TYPE.REACTION_RESPONSE, 0, responsePayload));
-
-  //   const reactionType = payload.reactionRequest.reactionType;
-
-  //   if (reactionType !== Packets.reactionType.NOT_USE_CARD) {
-  //     const errorPayload = {
-  //       reactionResponse: {
-  //         success: false,
-  //         failCode: Packets.GlobalFailCode.INVALID_REQUEST,
-  //       },
-  //     };
-  //     socket.write(createResponse(PACKET_TYPE.REACTION_RESPONSE, 0, errorPayload));
-  //     return;
-  //   }
 };
-
-/**
- * 
- * message C2SReactionRequest {
-    ReactionType reactionType = 1; // NOT_USE_CARD = 1
-}
- *  message S2CReactionResponse {
-    bool success = 1;
-    GlobalFailCode failCode = 2;    
-}
- * enum ReactionType {
-    NONE_REACTION = 0;
-    NOT_USE_CARD = 1;  // 이거 위주
-}
- */

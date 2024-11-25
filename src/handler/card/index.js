@@ -2,6 +2,7 @@
 import { bbangCardHandler } from './bbangCard.handler.js';
 import { bigBbangCardHandler } from './bigBbangCard.handler.js';
 import { call119CardHandler } from './call119Card.handler.js';
+import { guerrillaCardHandler } from './guerrillaCard.handler.js';
 import { maturedSavingsCardHandler } from './maturedSavingsCard.handler.js';
 import { shieldCardHandler } from './shieldCard.handler.js';
 import { vaccineCardHandler } from './vaccineCard.handler.js';
@@ -22,7 +23,7 @@ const cardHandlers = {
   // DEATH_MATCH 6
   [6]: deathMatchCardHandler,
   // GUERRILLA 7
-  [7]: () => {},
+  [7]: guerrillaCardHandler,
   // ABSORB 8
   // HALLUCINATION 9
   // FLEA_MARKET 10

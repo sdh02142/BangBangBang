@@ -22,6 +22,12 @@ class User {
     this.maxBbangCount = 0; // 나중에 prepare에서 캐릭터 특성에 따라 처리, 게임 진행 도중 장비에 따라 증감
   }
 
+  overHandedCount() {
+    // 만약 손패가 5, 피가 4인 경우 양수 반환
+    // 음수면 ㄱㅊ
+    return this.characterData.handCards.length - this.maxHp;
+  }
+
   resetBbangCount() {
     this.characterData.bbangCount = this.maxBbangCount;
   }

@@ -66,8 +66,6 @@ export const gamePrepareHandler = (socket, payload) => {
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
     inGameUsers.forEach((user, i) => {
-      // user.setCharacterType(shuffledCharacter[i].type);
-      // user.setHp(shuffledCharacter[i].hp);
       user.setCharacter(shuffledCharacter[i].type);
     });
 

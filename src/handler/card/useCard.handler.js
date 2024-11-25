@@ -1,25 +1,10 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import {
-  getStateBbangShooter,
-  getStateBbangTarget,
-  getStateBigBbangShooter,
-  getStateBigBbangTarget,
-  getStateNormal,
-  getStateDeathInitShooter,
-  getStateDeathInitTarget,
-  getStateDeathMatchShooter,
-  getStateDeathMatchTarget,
-  getStateDeathMatchEnd,
-} from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
-import { animationNotification } from '../../utils/notification/animation.notification.js';
-import { gameStartNotification } from '../../utils/notification/gameStart.notification.js';
 import useCardNotification from '../../utils/notification/useCard.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
-import { deathMatchCardHandler } from './deathMatchCard.handler.js';
 import getCardHandlerByCardType from './index.js';
 
 //캐릭터 정보

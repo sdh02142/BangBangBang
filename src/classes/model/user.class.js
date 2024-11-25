@@ -18,6 +18,16 @@ class User {
     this.position = new Position();
     this.roomId = null;
     this.maxHp = null;
+
+    this.maxBbangCount = 0; // 나중에 prepare에서 캐릭터 특성에 따라 처리, 게임 진행 도중 장비에 따라 증감
+  }
+
+  canUseBbang() {
+    return this.characterData.bbangCount < this.maxBbangCount;
+  }
+
+  setBbangCount(count) {
+    this.maxBbangCount = count;
   }
 
   updatePosition(x, y) {
@@ -123,6 +133,15 @@ class User {
   hasShieldCard() {
     const shieldCard = this.characterData.handCards.find((card) => {
       return card.type === Packets.CardType.SHIELD;
+    });
+    console.log('유저의 핸드 카드들:', this.characterData.handCards);
+
+    return shieldCard ? true : false;
+  }
+
+  hasBbangCard() {
+    const shieldCard = this.characterData.handCards.find((card) => {
+      return card.type === Packets.CardType.BBANG;
     });
     console.log('유저의 핸드 카드들:', this.characterData.handCards);
 

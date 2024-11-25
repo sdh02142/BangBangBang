@@ -44,8 +44,51 @@ export const getStateBigBbangTarget = (targetUser) => {
     targetUserId: targetUser,
   };
 };
-//   GUERRILLA_SHOOTER = 7; // 게릴라 시전자
-//   GUERRILLA_TARGET = 8; // 게릴라 대상
+
+export const getStateDeathInitShooter = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.DEATH_MATCH_STATE,
+    nextState: Packets.CharacterStateType.DEATH_MATCH_TURN_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: targetUser,
+  };
+};
+
+export const getStateDeathInitTarget = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.DEATH_MATCH_TURN_STATE,
+    nextState: Packets.CharacterStateType.DEATH_MATCH_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: targetUser,
+  };
+};
+
+export const getStateDeathMatchShooter = (User) => {
+  return {
+    currentState: Packets.CharacterStateType.DEATH_MATCH_STATE,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: User.characterData.stateInfo.stateTargetUserId,
+  };
+};
+
+export const getStateDeathMatchTarget = (User) => {
+  return {
+    currentState: Packets.CharacterStateType.DEATH_MATCH_TURN_STATE,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: User.characterData.stateInfo.stateTargetUserId,
+  };
+};
+
+export const getStateDeathMatchEnd = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.DEATH_MATCH_STATE,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + 5000,
+    targetUserId: targetUser,
+  };
+};
 
 export const getStateGuerrillaShooter = (targetUser) => {
   return {
@@ -64,17 +107,3 @@ export const getStateGuerrillaTarget = (targetUser) => {
     targetUserId: targetUser,
   };
 };
-
-/**
- * 
- *   const stateType = {
-    normal:{
-        currentState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
-        nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
-        nextStateAt: Date.now(),
-        targetUserId: 0,
-    },
-    
-    
-  };
- */

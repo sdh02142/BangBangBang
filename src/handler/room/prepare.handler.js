@@ -53,15 +53,15 @@ export const gamePrepareHandler = (socket, payload) => {
 
     // 캐릭터 셔플
     const characterList = [
-      { type: Packets.CharacterType.RED, hp: 4 },
-      { type: Packets.CharacterType.SHARK, hp: 4 },
-      { type: Packets.CharacterType.MALANG, hp: 4 },
-      { type: Packets.CharacterType.FROGGY, hp: 4 },
-      { type: Packets.CharacterType.PINK, hp: 4 },
-      { type: Packets.CharacterType.SWIM_GLASSES, hp: 4 },
-      { type: Packets.CharacterType.MASK, hp: 4 },
-      { type: Packets.CharacterType.DINOSAUR, hp: 3 },
-      { type: Packets.CharacterType.PINK_SLIME, hp: 3 },
+      { type: Packets.CharacterType.RED },
+      { type: Packets.CharacterType.SHARK },
+      { type: Packets.CharacterType.MALANG },
+      { type: Packets.CharacterType.FROGGY },
+      { type: Packets.CharacterType.PINK },
+      { type: Packets.CharacterType.SWIM_GLASSES },
+      { type: Packets.CharacterType.MASK },
+      { type: Packets.CharacterType.DINOSAUR },
+      { type: Packets.CharacterType.PINK_SLIME },
     ];
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);

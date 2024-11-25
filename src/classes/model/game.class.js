@@ -67,6 +67,10 @@ class Game {
     return parseInt(this.users.length) >= parseInt(this.maxUserNum) ? true : false;
   }
 
+  isGamingRoom() {
+    return this.state !== Packets.RoomStateType.WAIT;
+  }
+
   addUser(user) {
     if (this.users.length >= this.maxUserNum) {
       console.error('방이 꽉 찼습니다.');

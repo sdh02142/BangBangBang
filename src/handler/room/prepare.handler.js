@@ -1,4 +1,3 @@
-import DoubleLinkedList from '../../classes/datastructure/doubleLinkedList.js';
 import { cardDeck } from '../../constants/cardDeck.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { Packets } from '../../init/loadProtos.js';
@@ -126,11 +125,7 @@ export const gamePrepareHandler = (socket, payload) => {
     // 카드 (총 77장) 분배 / 몇장씩 분배할거냐 : 1장씩?
     // 카드덱에서는 pop -> 플레이어 손 push
     // head랑 tail Double Linked List
-    const shuffledCardsArr = shuffle(cardDeck);
-    const deck = new DoubleLinkedList();
-    shuffledCardsArr.forEach((element) => {
-      deck.append(element);
-    });
+    const deck = shuffle(cardDeck);
     console.log(deck);
 
     // 카드 배분
@@ -139,7 +134,7 @@ export const gamePrepareHandler = (socket, payload) => {
       const tmp = [];
 
       for (let i = 0; i < user.characterData.hp; i++) {
-        const card = deck.removeFront();
+        const card = deck.shift();
         tmp.push(card);
         // user.addHandCard(card); // card === type
         // { type: card, count: 1}
@@ -151,9 +146,13 @@ export const gamePrepareHandler = (socket, payload) => {
       // WARN: Test code
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 2 },
+        { type: Packets.CardType.BIG_BBANG, count: 1 },
         { type: Packets.CardType.SHIELD, count: 2 },
         { type: Packets.CardType.DEATH_MATCH, count: 1 },
+        { type: Packets.CardType.VACCINE, count: 2 },
+        { type: Packets.CardType.CALL_119, count: 2 },
       ];
+      // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 
     // 유저들한테 손패 나눠주고 게임 객체에 덱 저장
@@ -163,6 +162,7 @@ export const gamePrepareHandler = (socket, payload) => {
     // 카드 배분은 정상적으로 하고, 보내지만 않기
     // 방 유저에게 알림(gamePrepareNotification)
     inGameUsers.forEach((user) => {
+      console.log(`${user.id} 유저에게 게임 시작 알림 전송`);
       user.maxHp = user.characterData.hp;
       const notificationPayload = gamePrepareNotification(currentGame, user);
       user.socket.write(

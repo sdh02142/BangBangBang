@@ -15,6 +15,13 @@ export const animationNotification = (users, animationUser, animationType) => {
 };
 
 // message S2CAnimationNotification {
-//     int64 userId = 1;
-//     AnimationType animationType = 2;
+//   string userId = 1;
+//   AnimationType animationType = 2;
+// }
+
+// enum AnimationType {
+//   NO_ANIMATION = 0;
+//   SATELLITE_TARGET_ANIMATION = 1;
+//   BOMB_ANIMATION = 2;
+//   SHIELD_ANIMATION = 3;
 // }

@@ -7,7 +7,7 @@ import { Packets } from '../../init/loadProtos.js';
 
 let gameId = 1;
 
-export const createRoomHandler = (socket, payload) => {
+export const createRoomHandler = async (socket, payload) => {
   const { name, maxUserNum } = payload.createRoomRequest;
   const user = getUserBySocket(socket);
   if (!user) {
@@ -16,8 +16,8 @@ export const createRoomHandler = (socket, payload) => {
 
   const ownerId = user.id;
   try {
-    const gameSession = addGameSession(gameId, ownerId, name, maxUserNum);
- 
+    const gameSession = await addGameSession(gameId, ownerId, name, maxUserNum);
+
     if (!gameSession) {
       const errorResponsePayload = {
         createRoomResponse: {

@@ -20,6 +20,24 @@ class User {
     this.maxHp = null;
 
     this.maxBbangCount = 0; // 나중에 prepare에서 캐릭터 특성에 따라 처리, 게임 진행 도중 장비에 따라 증감
+    this.damage = 1;
+  }
+
+  equipWepon(weapon) {
+    switch (weapon) {
+      case Packets.CardType.HAND_GUN:
+        this.maxBbangCount = 1;
+        setWeapon(weapon);
+        break;
+      case Packets.CardType.DESERT_EAGLE:
+        this.damage = 2;
+        setWeapon(weapon);
+        break;
+      case Packets.CardType.AUTO_RIFLE:
+        this.maxBbangCount = 10;
+        setWeapon(weapon);
+        break;
+    }
   }
 
   canUseBbang() {

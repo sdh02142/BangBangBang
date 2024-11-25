@@ -22,6 +22,10 @@ class User {
     this.maxBbangCount = 0; // 나중에 prepare에서 캐릭터 특성에 따라 처리, 게임 진행 도중 장비에 따라 증감
   }
 
+  resetBbangCount() {
+    this.characterData.bbangCount = this.maxBbangCount;
+  }
+
   canUseBbang() {
     return this.characterData.bbangCount < this.maxBbangCount;
   }

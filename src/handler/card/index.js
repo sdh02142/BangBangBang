@@ -6,6 +6,7 @@ import { maturedSavingsCardHandler } from './maturedSavingsCard.handler.js';
 import { shieldCardHandler } from './shieldCard.handler.js';
 import { vaccineCardHandler } from './vaccineCard.handler.js';
 import { winLotteryCardHandler } from './winLotteryCard.handler.js';
+import { deathMatchCardHandler } from './deathMatchCard.handler.js';
 
 const cardHandlers = {
   // BBANG 1
@@ -19,7 +20,7 @@ const cardHandlers = {
   // CALL_119 5
   [5]: call119CardHandler,
   // DEATH_MATCH 6
-  [6]: () => {},
+  [6]: deathMatchCardHandler,
   // GUERRILLA 7
   [7]: () => {},
   // ABSORB 8

@@ -1,4 +1,7 @@
 import { getStateNormal } from '../../constants/stateType.js';
+import { animationNotification } from '../../utils/notification/animation.notification.js';
+import { Packets } from '../../init/loadProtos.js';
+
 
 export const shieldCardHandler = (cardUsingUser, targetUser, currentGame) => {
   console.log('쉴드 쓴 사람:', cardUsingUser.id);
@@ -10,5 +13,5 @@ export const shieldCardHandler = (cardUsingUser, targetUser, currentGame) => {
 
   cardUsingUser.setCharacterState(getStateNormal());
   targetUser.setCharacterState(getStateNormal());
-  // TODO: animationNotification
 };
+

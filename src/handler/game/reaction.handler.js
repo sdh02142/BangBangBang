@@ -11,8 +11,10 @@ export const reactionHandler = (socket, payload) => {
   user.decreaseHp();
   const game = findGameById(user.roomId);
   // game.removeEvent(user.id);
+  // TODO: 쉴드랑 빵야 구분? 피해받기 (빵야, 난사, 게릴라 때 피해받기를 누르면 reactionRequest가 날라옴)
   game.events.cancelEvent(user.id, 'finishShieldWait');
   game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
+  game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
   const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
   user.setCharacterState(getStateNormal());
   targetUser.setCharacterState(getStateNormal());

@@ -8,9 +8,8 @@ import {
 import { Packets } from '../../init/loadProtos.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 
-// bbang 카드랑 실드 카드가 좀 특수한 경우가 있어서 어떻게 나눠야 할지 고민중
 export const bbangCardHandler = (cardUsingUser, targetUser, currentGame) => {
-  // TODO: user.prevState가 NONE이면 일반 빵야 핸들러, 현피면 현피 핸들러 호출하기
+
   if (cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.NONE_CHARACTER_STATE) {
     normalBbangHandler(cardUsingUser, targetUser, currentGame);
   } else if (cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {

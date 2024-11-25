@@ -1,5 +1,4 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import phaseTime from '../../constants/phaseTime.js';
 import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';

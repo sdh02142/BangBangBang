@@ -4,6 +4,7 @@ import { getUserBySocket } from "../../sessions/user.session.js"
 import leaveRoomNotification from "../../utils/notification/leaveRoom.nofitication.js"
 import { createResponse } from "../../utils/response/createResponse.js"
 import { Packets } from '../../init/loadProtos.js';
+import { roomManager } from "../../classes/manager/room.manager.js"
 
 export const leaveRoomHandler = async (socket, payload) => {
     try {
@@ -27,6 +28,7 @@ export const leaveRoomHandler = async (socket, payload) => {
             });
             
             removeGameSession(currentGameId);
+            roomManager.deleteRoom(currentGameId);
             return;
         }
 

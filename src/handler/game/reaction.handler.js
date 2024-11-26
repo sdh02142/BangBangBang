@@ -5,24 +5,55 @@ import { findUserById, getUserBySocket } from '../../sessions/user.session.js';
 import { findGameById } from '../../sessions/game.session.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { getStateNormal } from '../../constants/stateType.js';
+import { malangHandler } from '../character/malang.handler.js';
+import { froggyHandler } from '../character/froggy.handler.js';
+import { pinkSlimeHandler } from '../character/pinkSlime.handler.js';
 
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
-  user.decreaseHp();
   const game = findGameById(user.roomId);
-  // game.removeEvent(user.id);
+  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
+
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
     game.events.cancelEvent(user.id, 'finishShieldWait');
+    user.decreaseHp(targetUser.damage);
   }
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.BIG_BBANG_TARGET) {
     game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
+    user.decreaseHp(1);
   }
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
     game.events.cancelEvent(user.id, 'onDeathMatch');
+    user.decreaseHp(1);
   }
+
+  if (user.characterData.stateInfo.state === Packets.CharacterStateType.GUERRILLA_TARGET) {
+    game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
+    user.decreaseHp(1);
+  }
+
+  if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
+    user.decreaseHp();
+  } else {
+    const autoSheild = Math.random();
+    // hp가 0이 되었을 때 추가
+    if (autoSheild <= 0.25) {
+      froggyHandler(user, game);
+    } else {
+      user.decreaseHp();
+    }
+  }
+
   const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
+
+  if (user.characterData.characterType === Packets.CharacterType.MALANG) {
+    malangHandler(user, game);
+  } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
+    pinkSlimeHandler(user, targetUser, game);
+  }
+  
   user.setCharacterState(getStateNormal());
   if (targetUser) {
     targetUser.setCharacterState(getStateNormal());
@@ -35,33 +66,6 @@ export const reactionHandler = (socket, payload) => {
       failCode: Packets.GlobalFailCode.NONE_FAILCODE,
     },
   };
+
   socket.write(createResponse(PACKET_TYPE.REACTION_RESPONSE, 0, responsePayload));
-
-  //   const reactionType = payload.reactionRequest.reactionType;
-
-  //   if (reactionType !== Packets.reactionType.NOT_USE_CARD) {
-  //     const errorPayload = {
-  //       reactionResponse: {
-  //         success: false,
-  //         failCode: Packets.GlobalFailCode.INVALID_REQUEST,
-  //       },
-  //     };
-  //     socket.write(createResponse(PACKET_TYPE.REACTION_RESPONSE, 0, errorPayload));
-  //     return;
-  //   }
 };
-
-/**
- * 
- * message C2SReactionRequest {
-    ReactionType reactionType = 1; // NOT_USE_CARD = 1
-}
- *  message S2CReactionResponse {
-    bool success = 1;
-    GlobalFailCode failCode = 2;    
-}
- * enum ReactionType {
-    NONE_REACTION = 0;
-    NOT_USE_CARD = 1;  // 이거 위주
-}
- */

@@ -1,25 +1,11 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import {
-  getStateBbangShooter,
-  getStateBbangTarget,
-  getStateBigBbangShooter,
-  getStateBigBbangTarget,
-  getStateNormal,
-  getStateDeathInitShooter,
-  getStateDeathInitTarget,
-  getStateDeathMatchShooter,
-  getStateDeathMatchTarget,
-  getStateDeathMatchEnd,
-} from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
 import { findGameById } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
-import { animationNotification } from '../../utils/notification/animation.notification.js';
-import { gameStartNotification } from '../../utils/notification/gameStart.notification.js';
 import useCardNotification from '../../utils/notification/useCard.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
-import { deathMatchCardHandler } from './deathMatchCard.handler.js';
+import { pinkHandler } from '../character/pink.handler.js';
 import getCardHandlerByCardType from './index.js';
 
 //캐릭터 정보
@@ -33,7 +19,6 @@ import getCardHandlerByCardType from './index.js';
 // 공룡이 (CHA00012) 다른 유저에게서 미니맵 상 위치를 감춤 - 클라
 // 핑크슬라임 (CHA00013) 피격 시 가해자의 카드를 한장 가져옴. //
 
-//불꽃 버튼을 누르면 호출
 export const useCardHandler = (socket, payload) => {
   const useCardType = payload.useCardRequest.cardType; //사용 카드
   const targetUserId = payload.useCardRequest.targetUserId.low; //대상자 ID
@@ -47,22 +32,36 @@ export const useCardHandler = (socket, payload) => {
     return;
   }
 
-  // response를 반환해서 socket.write를 여기서 할지, 아니면 각 핸들러 안에서 cardUsingUser.socket.write를 해줄지
-  // 일단 지금은 후자 방식으로 구현하겠음. 나중에 공통 처리(동기화, 소켓 송신 등)가 많이 겹치면 수정하기
+  // 에러 안나면 아무것도 반환하지 않기
   const errorResponse = cardHandler(cardUsingUser, targetUser, currentGame);
   if (errorResponse) {
     // 뭔가 에러가 났음.
-    // 에러 안나면 아무것도 반환하지 않기
     console.error('카드 핸들러: 뭔가 문제 있음');
     socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, errorResponse));
     return;
-  }  
+  }
 
+  // if (!cardUsingUser.canUseBbang()) {
+  //   // 빵야 실패
+  //   const errorResponse = {
+  //     useCardResponse: {
+  //       success: false,
+  //       failCode: Packets.GlobalFailCode.ALREADY_USED_BBANG,
+  //     },
+  //   };
+  //   return errorResponse;
+  // }
   // 공통 로직
   // cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
   cardUsingUser.removeHandCard(useCardType); // 카드 사용자의 손에 들고 있던 카드 제거
   currentGame.returnCardToDeck(useCardType); // 카드 덱으로 복귀
-
+  // 카드를 사용하고 덱에서 삭제 되었을 때, 손에 남은 카드가 0이고 캐릭터가 핑크군이면 실행
+  if (
+    cardUsingUser.characterData.handCardsCount === 0 &&
+    cardUsingUser.characterData.characterType === Packets.CharacterType.PINK
+  ) {
+    pinkHandler(cardUsingUser, currentGame);
+  }
   const useCardNotificationResponse = useCardNotification(
     useCardType,
     cardUsingUser.id,

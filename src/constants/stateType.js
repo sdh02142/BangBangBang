@@ -90,7 +90,7 @@ export const getStateDeathMatchEnd = (targetUser) => {
     nextStateAt: Date.now() + seconds,
     targetUserId: targetUser,
   };
-}; // 안 쓸 거 같기도..?
+};
 
 export const getStatefleaMarketWait = () => {
   return {
@@ -155,22 +155,20 @@ export const getStateContained = (user) => {
   };
 };
 
-
-/**
- *   
- * NONE_CHARACTER_STATE = 0;
-    DEATH_MATCH_STATE = 3; // 현피 중 자신의 턴이 아닐 때
-    DEATH_MATCH_TURN_STATE = 4; // 현피 중 자신의 턴
- * 
- * 
- *   const stateType = {
-    normal:{
-        currentState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
-        nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
-        nextStateAt: Date.now(),
-        targetUserId: 0,
-    },
-    
-    
+export const getStateGuerrillaShooter = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.GUERRILLA_SHOOTER,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + seconds,
+    targetUserId: targetUser,
   };
- */
+};
+
+export const getStateGuerrillaTarget = (targetUser) => {
+  return {
+    currentState: Packets.CharacterStateType.GUERRILLA_TARGET,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + seconds,
+    targetUserId: targetUser,
+  };
+};

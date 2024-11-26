@@ -53,24 +53,23 @@ export const gamePrepareHandler = (socket, payload) => {
 
     // 캐릭터 셔플
     const characterList = [
-      { type: Packets.CharacterType.RED, hp: 4 },
-      { type: Packets.CharacterType.SHARK, hp: 4 },
-      { type: Packets.CharacterType.MALANG, hp: 4 },
-      { type: Packets.CharacterType.FROGGY, hp: 4 },
-      { type: Packets.CharacterType.PINK, hp: 4 },
-      { type: Packets.CharacterType.SWIM_GLASSES, hp: 4 },
-      { type: Packets.CharacterType.MASK, hp: 4 },
-      { type: Packets.CharacterType.DINOSAUR, hp: 3 },
-      { type: Packets.CharacterType.PINK_SLIME, hp: 3 },
+      { type: Packets.CharacterType.RED },
+      { type: Packets.CharacterType.SHARK },
+      { type: Packets.CharacterType.MALANG },
+      { type: Packets.CharacterType.FROGGY },
+      { type: Packets.CharacterType.PINK },
+      { type: Packets.CharacterType.SWIM_GLASSES },
+      { type: Packets.CharacterType.MASK },
+      { type: Packets.CharacterType.DINOSAUR },
+      { type: Packets.CharacterType.PINK_SLIME },
     ];
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
+    // WARN: TEST CODE
+    // inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
+    // inGameUsers[1].setCharacter(Packets.CharacterType.SHARK);
     inGameUsers.forEach((user, i) => {
-      user.setCharacterType(shuffledCharacter[i].type);
-      user.setHp(shuffledCharacter[i].hp);
-      // user.increaseBbangCount();
-      // if (user.characterData.characterType === Packets.characterType.RED) {
-      // }
+      user.setCharacter(shuffledCharacter[i].type);
     });
 
     // 1.RoleTypes[inGameUsers.length]
@@ -138,18 +137,29 @@ export const gamePrepareHandler = (socket, payload) => {
         tmp.push(card);
         // user.addHandCard(card); // card === type
         // { type: card, count: 1}
-        user.increaseHandCardsCount();
+        // user.increaseHandCardsCount();  // 원본 살려야 하는 코드
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);
       // user.characterData.handCards = result;
       // WARN: Test code
+      for (let i = 0; i < 2; i++) {
+        user.increaseHandCardsCount();
+      }
       user.characterData.handCards = [
-        { type: Packets.CardType.BBANG, count: 2 },
-        { type: Packets.CardType.FLEA_MARKET, count: 1 },
+        { type: Packets.CardType.BBANG, count: 5 },
+        { type: Packets.CardType.BIG_BBANG, count: 1 },
+        { type: Packets.CardType.SHIELD, count: 2 },
+        { type: Packets.CardType.DEATH_MATCH, count: 1 },
+        { type: Packets.CardType.VACCINE, count: 2 },
+        { type: Packets.CardType.CALL_119, count: 2 },
+        { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
+        { type: Packets.CardType.WIN_LOTTERY, count: 1 },
+        { type: Packets.CardType.GUERRILLA, count: 1 },
+        { type: Packets.CardType.HAND_GUN, count: 1 },
+        { type: Packets.CardType.AUTO_RIFLE, count: 1 },
         { type: Packets.CardType.DESERT_EAGLE, count: 1 },
-        { type: Packets.CardType.ABSORB, count: 1 },
-      //  { type: Packets.CardType.HALLUCINATION, count: 1 },
+        { type: Packets.CardType.SNIPER_GUN, count: 1 },
       ];
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
@@ -201,36 +211,7 @@ const transformData = (data) => {
   return result;
 };
 
-/* 게임 시작 전 역할 및 캐릭터 셔플하여 결정 후 클라로 전송
-message C2SGamePrepareRequest {
-
-}
-
-message S2CGamePrepareResponse {
-    bool success = 1;
-    GlobalFailCode failCode = 2;
-}
-    
-enum RoleType {           (2인: 타겟1, 히트맨1)
-    NONE_ROLE = 0;        (3인: 타겟1, 히트맨1, 싸이코패스1)
-    TARGET = 1;           (4인: 타겟1, 히트맨2, 싸이코패스1)
-    BODYGUARD = 2;        (5인: 타겟1, 보디가드1, 히트맨2, 싸이코패스1)
-    HITMAN = 3;           (6인: 타겟1, 보디가드1, 히트맨3, 싸이코패스1)
-    PSYCHOPATH = 4;       (7인: 타겟1, 보디가드2, 히트맨3, 싸이코패스1)
-}
-1.RoleType[inGameUsers.length]
-2.셔플(RoleType)
-3.플레이어한테 부여 array.pop
-
-const RoleType = {
-    2: [Packets.RoleType.TARGET, Packets.RoleType.HITMAN], 
-    3: [Packets.RoleType.TARGET, Packets.RoleType.HITMAN, Packets.RoleType.PSYCHOPATH], 
-    4: [Packets.RoleType.TARGET, Packets.RoleType.HITMAN, Packets.RoleType.HITMAN, Packets.RoleType.PSYCHOPATH],
-    5: [Packets.RoleType.TARGET, Packets.RoleType.BODYGUARD, Packets.RoleType.HITMAN, Packets.RoleType.HITMAN, PSYCHOPATH],
-    6: [Packets.RoleType.TARGET, Packets.RoleType.BODYGUARD, Packets.RoleType.HITMAN, Packets.RoleType.HITMAN, HITMAN, PSYCHOPATH],
-    7: [Packets.RoleType.TARGET, Packets.RoleType.BODYGUARD, Packets.RoleType.BODYGUARD, Packets.RoleType.HITMAN, Packets.RoleType.HITMAN, Packets.RoleType.HITMAN, Packets.RoleType.PSYCHOPATH],
-}
-    
+/*
 enum CharacterType {
     NONE_CHARACTER = 0;
     RED = 1; // 빨강이              (id: 1, hp: 4, phase 빵야 제한 없음)
@@ -243,17 +224,4 @@ enum CharacterType {
     DINOSAUR = 12; // 공룡이        (id: 12, hp: 3, 다른 유저들에게서 미니맵 상 위치 숨김)
     PINK_SLIME = 13; // 핑크슬라임  (id: 13, hp: 3, 피격 시 가해자의 카드 1장 획득)
 }
-*/
-/*
-const characterType = [
-{type: Packets.CharacterType.RED, hp: 4},
-{type: Packets.CharacterType.SHARK, hp: 4},
-{type: Packets.CharacterType.MALANG, hp: 4},
-{type: Packets.CharacterType.FROGGY, hp: 4},
-{type: Packets.CharacterType.PINK, hp: 4},
-{type: Packets.CharacterType.SWIM_GLASSES, hp: 4},
-{type: Packets.CharacterType.MASK, hp: 4},
-{type: Packets.CharacterType.DINOSAUR, hp: 3},
-{type: Packets.CharacterType.PINK_SLIME, hp: 3},
-]
 */

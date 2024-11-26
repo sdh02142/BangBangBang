@@ -59,7 +59,7 @@ export const useCardHandler = (socket, payload) => {
   }  
 
   // 공통 로직
-  cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
+  // cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
   cardUsingUser.removeHandCard(useCardType); // 카드 사용자의 손에 들고 있던 카드 제거
   currentGame.returnCardToDeck(useCardType); // 카드 덱으로 복귀
 

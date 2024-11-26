@@ -146,11 +146,10 @@ export const gamePrepareHandler = (socket, payload) => {
       // WARN: Test code
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 2 },
-        { type: Packets.CardType.BIG_BBANG, count: 1 },
-        { type: Packets.CardType.SHIELD, count: 2 },
-        { type: Packets.CardType.DEATH_MATCH, count: 1 },
-        { type: Packets.CardType.VACCINE, count: 2 },
-        { type: Packets.CardType.CALL_119, count: 2 },
+        { type: Packets.CardType.FLEA_MARKET, count: 1 },
+        { type: Packets.CardType.DESERT_EAGLE, count: 1 },
+        { type: Packets.CardType.ABSORB, count: 1 },
+      //  { type: Packets.CardType.HALLUCINATION, count: 1 },
       ];
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });

@@ -51,14 +51,11 @@ export const useCardHandler = (socket, payload) => {
   //   };
   //   return errorResponse;
   // }
-  console.log('pink card', cardUsingUser.characterData.handCardsCount);
   // 공통 로직
   cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
   cardUsingUser.removeHandCard(useCardType); // 카드 사용자의 손에 들고 있던 카드 제거
   currentGame.returnCardToDeck(useCardType); // 카드 덱으로 복귀
   // 카드를 사용하고 덱에서 삭제 되었을 때, 손에 남은 카드가 0이고 캐릭터가 핑크군이면 실행
-  console.log('pink card', cardUsingUser.characterData.handCardsCount);
-  console.log('pink?', cardUsingUser.characterData.characterType);
   if (
     cardUsingUser.characterData.handCardsCount === 0 &&
     cardUsingUser.characterData.characterType === Packets.CharacterType.PINK

@@ -5,6 +5,9 @@ import { findUserById, getUserBySocket } from '../../sessions/user.session.js';
 import { findGameById } from '../../sessions/game.session.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { getStateNormal } from '../../constants/stateType.js';
+import { malangHandler } from '../character/malang.handler.js';
+import { froggyHandler } from '../character/froggy.handler.js';
+import { pinkSlimeHandler } from '../character/pinkSlime.handler.js';
 
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
@@ -31,6 +34,26 @@ export const reactionHandler = (socket, payload) => {
     user.decreaseHp(1);
   }
 
+  if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
+    user.decreaseHp();
+  } else {
+    const autoSheild = Math.random();
+    // hp가 0이 되었을 때 추가
+    if (autoSheild <= 0.25) {
+      froggyHandler(user, game);
+    } else {
+      user.decreaseHp();
+    }
+  }
+
+  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
+
+  if (user.characterData.characterType === Packets.CharacterType.MALANG) {
+    malangHandler(user, game);
+  } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
+    pinkSlimeHandler(user, targetUser, game);
+  }
+  
   user.setCharacterState(getStateNormal());
   if (targetUser) {
     targetUser.setCharacterState(getStateNormal());

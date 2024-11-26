@@ -53,24 +53,23 @@ export const gamePrepareHandler = (socket, payload) => {
 
     // 캐릭터 셔플
     const characterList = [
-      { type: Packets.CharacterType.RED, hp: 4 },
-      { type: Packets.CharacterType.SHARK, hp: 4 },
-      { type: Packets.CharacterType.MALANG, hp: 4 },
-      { type: Packets.CharacterType.FROGGY, hp: 4 },
-      { type: Packets.CharacterType.PINK, hp: 4 },
-      { type: Packets.CharacterType.SWIM_GLASSES, hp: 4 },
-      { type: Packets.CharacterType.MASK, hp: 4 },
-      { type: Packets.CharacterType.DINOSAUR, hp: 3 },
-      { type: Packets.CharacterType.PINK_SLIME, hp: 3 },
+      { type: Packets.CharacterType.RED },
+      { type: Packets.CharacterType.SHARK },
+      { type: Packets.CharacterType.MALANG },
+      { type: Packets.CharacterType.FROGGY },
+      { type: Packets.CharacterType.PINK },
+      { type: Packets.CharacterType.SWIM_GLASSES },
+      { type: Packets.CharacterType.MASK },
+      { type: Packets.CharacterType.DINOSAUR },
+      { type: Packets.CharacterType.PINK_SLIME },
     ];
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
+    // WARN: TEST CODE
+    // inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
+    // inGameUsers[1].setCharacter(Packets.CharacterType.SHARK);
     inGameUsers.forEach((user, i) => {
-      user.setCharacterType(shuffledCharacter[i].type);
-      user.setHp(shuffledCharacter[i].hp);
-      // user.increaseBbangCount();
-      // if (user.characterData.characterType === Packets.characterType.RED) {
-      // }
+      user.setCharacter(shuffledCharacter[i].type);
     });
 
     // 1.RoleTypes[inGameUsers.length]
@@ -138,12 +137,15 @@ export const gamePrepareHandler = (socket, payload) => {
         tmp.push(card);
         // user.addHandCard(card); // card === type
         // { type: card, count: 1}
-        user.increaseHandCardsCount();
+        // user.increaseHandCardsCount();  // 원본 살려야 하는 코드
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);
       // user.characterData.handCards = result;
       // WARN: Test code
+      for (let i = 0; i < 2; i++) {
+        user.increaseHandCardsCount();
+      }
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 5 },
         { type: Packets.CardType.BIG_BBANG, count: 1 },

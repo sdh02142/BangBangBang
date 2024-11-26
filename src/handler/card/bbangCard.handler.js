@@ -7,6 +7,7 @@ import {
 } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
+import { sharkHandler } from '../character/shark.handelr.js';
 
 export const bbangCardHandler = (cardUsingUser, targetUser, currentGame) => {
   if (
@@ -49,6 +50,7 @@ const deathMatchBbangHandler = (cardUsingUser, targetUser, currentGame) => {
 
 const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   const currentGameUsers = currentGame.users;
+  // useCardHandler 쪽으로 보내자
   // if (!cardUsingUser.canUseBbang()) { // 이 로직을 여기에 둬야할지 생각해봐야함 빵야 카드는 사용이 되고 빵야가 안됨 카드 사용이 안되야 함
   //   // 빵야 실패
   //   const errorResponse = {
@@ -64,19 +66,22 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   // 빵야 카운트 증가
   cardUsingUser.increaseBbangCount();
 
-  // 시전자 state 변경
-  cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
-  // 대상자 state 변경
-  targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-
-  // 이벤트 등록
-  currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
-    cardUsingUser,
-    targetUser,
-    stateNormal: getStateNormal(),
-    userUpdateNotification,
-    currentGameUsers,
-  });
+  if (targetUser.characterData.characterType == Packets.CharacterType.SHARK) {
+    sharkHandler(cardUsingUser, targetUser, currentGame);
+  } else {
+    // 시전자 state 변경
+    cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
+    // 대상자 state 변경
+    targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
+    // 이벤트 등록
+    currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
+      cardUsingUser,
+      targetUser,
+      stateNormal: getStateNormal(),
+      userUpdateNotification,
+      currentGameUsers,
+    });
+  }
 
   console.log('빵야 당한 사람:', targetUser.id);
 };

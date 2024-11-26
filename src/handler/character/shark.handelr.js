@@ -1,5 +1,6 @@
 import { getStateBbangShooter, getStateBbangTarget } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
+import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 
 export const sharkHandler = (cardUsingUser, targetUser, game) => {
   // cardUsingUser: 빵야 사용자, targetUser: 상어군
@@ -13,16 +14,7 @@ export const sharkHandler = (cardUsingUser, targetUser, game) => {
       targetUser.decreaseHp();
     } else {
       targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-      // 이제 2개만 사용하게 하면 된다....
-      // 이벤트 등록
-      game.events.scheduleEvent(targetUser.id, 'finishShieldWaitShark', 5000, {
-        cardUsingUser,
-        targetUser,
-        targetStateNormal: getStateBbangTarget(cardUsingUser.id),
-        shooterStateNormal: getStateBbangShooter(targetUser.id),
-        userUpdateNotification,
-        currentGameUsers,
-      });
+      // 이제 2개만 사용하게 하면 된다.... -> useCard.handler의 공통로직에서 처리
     }
   }
 };

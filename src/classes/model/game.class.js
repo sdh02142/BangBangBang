@@ -35,6 +35,7 @@ class Game {
     this.events = new EventManager();
     this.events.init();
     this.intervalManager = new IntervalManager();
+    this.day = 1;
   }
 
   returnCardToDeck(cardType) {

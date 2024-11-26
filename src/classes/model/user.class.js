@@ -55,7 +55,6 @@ class User {
   }
   // 캐릭터 설정
   setCharacter(characterType) {
-    console.log(characterType);
     switch (characterType) {
       case Packets.CharacterType.RED:
         this.characterData.characterType = characterType;

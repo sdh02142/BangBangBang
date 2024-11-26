@@ -68,23 +68,23 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   // 시전자 state 변경
   cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
   // 대상자 state 변경
-  if (targetUser.characterData.characterType === Packets.CharacterType.SHARK) {
-    const shieldCount = targetUser.characterData.handCards.filter(
-      (card) => Packets.CardType.SHIELD === card,
-    ).length;
-    if (shieldCount != 2) {
-      targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-      targetUser.decreaseHp();
-      targetUser.setCharacterState(getStateNormal());
-    } else {
-      for (let i = 0; i < 2; i++) {
-        targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-      }
-    }
-  } else {
-    targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-  }
-
+  // if (targetUser.characterData.characterType === Packets.CharacterType.SHARK) {
+  //   const shieldCount = targetUser.characterData.handCards.filter(
+  //     (card) => Packets.CardType.SHIELD === card,
+  //   ).length;
+  //   if (shieldCount != 2) {
+  //     targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
+  //     targetUser.decreaseHp();
+  //     targetUser.setCharacterState(getStateNormal());
+  //   } else {
+  //     for (let i = 0; i < 2; i++) {
+  //       targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
+  //     }
+  //   }
+  // } else {
+  //   targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
+  // }
+  targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
   // 이벤트 등록
   currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
     cardUsingUser,

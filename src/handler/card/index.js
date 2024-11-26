@@ -11,7 +11,6 @@ import { deathMatchCardHandler } from './deathMatchCard.handler.js';
 import { hallucinationCardHandler } from './hallucinationCard.handler.js';
 import { fleaMarketCardHandler } from './fleaMarketCard.handler.js';
 import { absorbCardHandler } from './absorbCard.handler.js';
-import { hallucinationCardHandler } from './hallucinationCard.handler.js';
 import { containmentUnitCardHandler } from './containmentUnitCard.handler.js';
 import { bombCardHandler } from './bombCard.handler.js';
 import { satelliteTargetCardHandler } from './satelliteTargetCard.handler.js';

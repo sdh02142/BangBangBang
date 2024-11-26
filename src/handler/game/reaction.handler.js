@@ -46,8 +46,6 @@ export const reactionHandler = (socket, payload) => {
     }
   }
 
-  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
-
   if (user.characterData.characterType === Packets.CharacterType.MALANG) {
     malangHandler(user, game);
   } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {

@@ -58,6 +58,4 @@ class IntervalManager {
   }
 }
 
-const intervalManager = new IntervalManager();
-Object.freeze(intervalManager);
-export default intervalManager;
+export default IntervalManager;

@@ -5,6 +5,7 @@ import { Packets } from '../../init/loadProtos.js';
 import { phaseUpdateNotification } from '../../utils/notification/phaseUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
 import EventManager from '../manager/event.manager.js';
+import IntervalManager from '../manager/interval.manager.js';
 
 // 1. 방 === 게임 <--- 기존 강의나 전 팀플에서 썼던 game세션과 game 클래스 같이 써도 되지않을까?
 // IntervalManager 게임 세션별로 하나씩 두고 얘가 낮밤 관리하게
@@ -29,6 +30,7 @@ class Game {
     // this.eventQueue = [];
     this.events = new EventManager();
     this.events.init();
+    this.intervalManager = new IntervalManager();
   }
 
   returnCardToDeck(cardType) {
@@ -89,6 +91,7 @@ class Game {
 
   gameStart() {
     this.state = Packets.RoomStateType.PREPARE;
+    this.intervalManager.addGameEndNotification(this)
   }
 }
 

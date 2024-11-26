@@ -2,13 +2,8 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import { Packets } from '../../init/loadProtos.js';
 import { createResponse } from '../response/createResponse.js';
 import { removeGameSession } from '../../sessions/game.session.js';
-import intervalManager from '../../classes/manager/interval.manager.js';
 import { roomManager } from '../../classes/manager/room.manager.js';
-/**
- *
- * @param {Game} room
- * @returns
- */
+
 export const gameEndNotification = (room) => { 
   // 정상적으로 게임이 끝나는 경우
   const survivor = [];
@@ -68,16 +63,12 @@ export const gameEndNotification = (room) => {
       user.socket.write(createResponse(PACKET_TYPE.GAME_END_NOTIFICATION, 0, responsePayload));
     });
     //게임 종료 시 인터벌 제거, 세션 삭제
-    intervalManager.removeInterval(room.id, 'game');
+    room.intervalManager.removeInterval(room.id,'game');
     removeGameSession(room.id);
     roomManager.deleteRoom(room.id);
   }
-  // 비정상적으로 게임이 끝나는 경우
 
-  // 강제 종료 - 클라? 강제로 누군가 승리로?
 };
-
-//TODO: 게임이 끝난 후 다시 방을 만들고 접속이 안됨
 
 // message S2CGameEndNotification {
 //     repeated int64 winners = 1;

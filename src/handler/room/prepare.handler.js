@@ -42,12 +42,12 @@ export const gamePrepareHandler = (socket, payload) => {
     console.log('현재 게임 정보:', currentGame);
 
     /* TODO:
-                *  1. 캐릭터 셔플(CharacterType) - 완료
-                *  2. 덱 셔플 후 카드 배분 - 캐릭터 HP만큼(user.hp) user.addHandCards(card)
-                        - Packets.CardType
-                *  3. 역할 배분(RoleType) - 완료
-                *  4. CharacterType에 맞게 hp 설정 - 완료
-                */
+            *  1. 캐릭터 셔플(CharacterType) - 완료
+            *  2. 덱 셔플 후 카드 배분 - 캐릭터 HP만큼(user.hp) user.addHandCards(card)
+                    - Packets.CardType
+            *  3. 역할 배분(RoleType) - 완료
+            *  4. CharacterType에 맞게 hp 설정 - 완료
+            */
 
     const inGameUsers = currentGame.users;
 
@@ -138,7 +138,8 @@ export const gamePrepareHandler = (socket, payload) => {
         tmp.push(card);
         // user.addHandCard(card); // card === type
         // { type: card, count: 1}
-        user.increaseHandCardsCount();
+        // TEST: 이게 카드 강제로 넣었을 때 갯수가 안맞아서 계속 버그가 생겼었음
+        // user.increaseHandCardsCount();
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);
@@ -157,6 +158,8 @@ export const gamePrepareHandler = (socket, payload) => {
         // { type: Packets.CardType.GUERRILLA, count: 1 },
         // { type: Packets.CardType.HALLUCINATION, count: 1 },
       ];
+      // TEST: 이게 카드 강제로 넣었을 때 갯수가 안맞아서 계속 버그가 생겼었음
+      user.characterData.handCardsCount = 5;
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 

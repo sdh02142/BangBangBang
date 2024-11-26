@@ -66,11 +66,11 @@ export const gamePrepareHandler = (socket, payload) => {
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
     // WARN: TEST CODE
-    // inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
-    // inGameUsers[1].setCharacter(Packets.CharacterType.SHARK);
-    inGameUsers.forEach((user, i) => {
-      user.setCharacter(shuffledCharacter[i].type);
-    });
+    inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
+    inGameUsers[1].setCharacter(Packets.CharacterType.FROGGY);
+    // inGameUsers.forEach((user, i) => {
+    //   user.setCharacter(shuffledCharacter[i].type);
+    // });
 
     // 1.RoleTypes[inGameUsers.length]
     // 2.셔플(RoleType)
@@ -137,22 +137,25 @@ export const gamePrepareHandler = (socket, payload) => {
         tmp.push(card);
         // user.addHandCard(card); // card === type
         // { type: card, count: 1}
-        user.increaseHandCardsCount();
+        // user.increaseHandCardsCount();  // 원본 살려야 하는 코드
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);
       // user.characterData.handCards = result;
       // WARN: Test code
+      for (let i = 0; i < 2; i++) {
+        user.increaseHandCardsCount();
+      }
       user.characterData.handCards = [
-        { type: Packets.CardType.BBANG, count: 2 },
-        { type: Packets.CardType.BIG_BBANG, count: 1 },
-        // { type: Packets.CardType.SHIELD, count: 2 },
+        { type: Packets.CardType.BBANG, count: 1 },
+        // { type: Packets.CardType.BIG_BBANG, count: 1 },
+        { type: Packets.CardType.SHIELD, count: 1 },
         // { type: Packets.CardType.DEATH_MATCH, count: 1 },
-        // { type: Packets.CardType.VACCINE, count: 2 },
-        // { type: Packets.CardType.CALL_119, count: 2 },
+        // { type: Packets.CardType.VACCINE, count: 1 },
+        // { type: Packets.CardType.CALL_119, count: 1 },
         // { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
         // { type: Packets.CardType.WIN_LOTTERY, count: 1 },
-        { type: Packets.CardType.GUERRILLA, count: 1 },
+        // { type: Packets.CardType.GUERRILLA, count: 1 },
       ];
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });

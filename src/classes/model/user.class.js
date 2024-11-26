@@ -180,7 +180,7 @@ class User {
     // count-- => count === 0 객체를 아예 삭제
     if (index !== -1) {
       const cnt = this.characterData.handCards[index].count--;
-      this.decreaseHandCardsCount();
+      // this.decreaseHandCardsCount();  // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
       if (cnt === 0) {
         // 남은 카드 없음
         this.characterData.handCards.splice(index, 1);

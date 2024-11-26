@@ -92,6 +92,69 @@ export const getStateDeathMatchEnd = (targetUser) => {
   };
 };
 
+export const getStatefleaMarketWait = () => {
+  return {
+    currentState: Packets.CharacterStateType.FLEA_MARKET_WAIT,
+    nextState: Packets.CharacterStateType.FLEA_MARKET_TURN,
+    nextStateAt: Date.now(),
+    targetUserId: 0,
+  };
+};
+
+export const getStatefleaMarketTurnEnd = () => {
+  return {
+    currentState: Packets.CharacterStateType.FLEA_MARKET_TURN,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now(),
+    targetUserId: 0,
+  };
+};
+
+export const getStateAbsorbing = (user) => {
+  return {
+    currentState: Packets.CharacterStateType.ABSORBING,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now(),
+    targetUserId: user,
+  };
+};
+
+export const getStateAbsorbTarget = (user) => {
+  return {
+    currentState: Packets.CharacterStateType.ABSORB_TARGET,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now(),
+    targetUserId: user,
+  };
+};
+
+export const getStateHallucinating = (user) => {
+  return {
+    currentState: Packets.CharacterStateType.HALLUCINATING,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now(),
+    targetUserId: user,
+  };
+};
+
+export const getStateHallucinationTarget = (user) => {
+  return {
+    currentState: Packets.CharacterStateType.ABSORB_TARGET,
+    nextState: Packets.CharacterStateType.HALLUCINATION_TARGET,
+    nextStateAt: Date.now(),
+    targetUserId: user,
+  };
+};
+
+export const getStateContained = (user) => {
+  return {
+    currentState: Packets.CharacterStateType.CONTAINED,
+    nextState: Packets.CharacterStateType.HALLUCINATION_TARGET,
+    nextStateAt: Date.now(),
+    targetUserId: user,
+  };
+};
+
 export const getStateGuerrillaShooter = (targetUser) => {
   return {
     currentState: Packets.CharacterStateType.GUERRILLA_SHOOTER,

@@ -8,6 +8,12 @@ import { shieldCardHandler } from './shieldCard.handler.js';
 import { vaccineCardHandler } from './vaccineCard.handler.js';
 import { winLotteryCardHandler } from './winLotteryCard.handler.js';
 import { deathMatchCardHandler } from './deathMatchCard.handler.js';
+import { fleaMarketCardHandler } from './fleaMarketCard.handler.js';
+import { absorbCardHandler } from './absorbCard.handler.js';
+import { hallucinationCardHandler } from './hallucinationCard.handler.js';
+import { containmentUnitCardHandler } from './containmentUnitCard.handler.js';
+import { bombCardHandler } from './bombCard.handler.js';
+import { satelliteTargetCardHandler } from './satelliteTargetCard.handler.js';
 import { handGunCardHandler } from './handGunCard.handler.js';
 import { desertEagleCardHandler } from './desertEagleCard.handler.js';
 import { autoRifleCardHandler } from './autoRifleCard.handler.js';
@@ -29,8 +35,11 @@ const cardHandlers = {
   // GUERRILLA 7
   [7]: guerrillaCardHandler,
   // ABSORB 8
+  [8]: absorbCardHandler,
   // HALLUCINATION 9
+  [9]: hallucinationCardHandler,
   // FLEA_MARKET 10
+  [10]: fleaMarketCardHandler,
   // MATURED_SAVINGS 11
   [11]: maturedSavingsCardHandler,
   // WIN_LOTTERY 12
@@ -48,8 +57,11 @@ const cardHandlers = {
   // AUTO_SHIELD 19
   // STEALTH_SUIT 20
   // CONTAINMENT_UNIT 21
+  [21]: containmentUnitCardHandler,
   // SATELLITE_TARGET 22
+  [21]: satelliteTargetCardHandler,
   // BOMB 23
+  [23]: bombCardHandler,
 };
 
 const getCardHandlerByCardType = (useCardType) => cardHandlers[useCardType];

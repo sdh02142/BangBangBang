@@ -20,8 +20,11 @@ class Game {
     // WAIT, PREPARE, INAGAME
     this.state = Packets.RoomStateType.WAIT; // 초기값 <-- 생성 기준이니 WAIT (0)
     this.users = []; // UserData가 들어감 <-- User 클래스에서 CharacterData 관리하기
+    this.usersNum = 0;
+    this.fleaMarketUsers = [];
 
     this.deck = [];
+    this.fleaMarketDeck=[];
 
     this.currentPhase = Packets.PhaseType.DAY;
     this.nextPhase = Packets.PhaseType.END;
@@ -84,6 +87,13 @@ class Game {
     const index = this.users.findIndex((u) => u.id === user.id);
     if (index !== -1) {
       this.users.splice(index, 1);
+    }
+  }
+
+  removeUserFromFleaMarket(user) {
+    const index = this.fleaMarketUsers.findIndex((u) => u.id === user.id);
+    if (index !== -1) {
+      this.fleaMarketUsers.splice(index, 1);
     }
   }
 

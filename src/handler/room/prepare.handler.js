@@ -144,15 +144,16 @@ export const gamePrepareHandler = (socket, payload) => {
       // user.characterData.handCards = result;
       // WARN: Test code
       // 너무 많이 넣으면 UI가 안뜸(카드가 다 안뜸)
-      for (let i = 0; i < 2; i++) {
-        user.increaseHandCardsCount();
-      }
-      
       user.characterData.handCards = [
-        { type: Packets.CardType.BBANG, count: 5 },
+        { type: Packets.CardType.BBANG, count: 2 },
         { type: Packets.CardType.BIG_BBANG, count: 1 },
         { type: Packets.CardType.SHIELD, count: 2 },
+        { type: Packets.CardType.SNIPER_GUN, count: 1 },
+        { type: Packets.CardType.HAND_GUN, count: 1 },
+        { type: Packets.CardType.DESERT_EAGLE, count: 1 },
+        { type: Packets.CardType.AUTO_RIFLE, count: 1 },
       ];
+      user.characterData.handCardsCount = 9
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 

@@ -67,7 +67,7 @@ export const gamePrepareHandler = (socket, payload) => {
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
     // WARN: TEST CODE
     inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
-    inGameUsers[1].setCharacter(Packets.CharacterType.FROGGY);
+    inGameUsers[1].setCharacter(Packets.CharacterType.MASK);
     // inGameUsers.forEach((user, i) => {
     //   user.setCharacter(shuffledCharacter[i].type);
     // });

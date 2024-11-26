@@ -67,7 +67,7 @@ export const gamePrepareHandler = (socket, payload) => {
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
     // WARN: TEST CODE
     inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
-    inGameUsers[1].setCharacter(Packets.CharacterType.PINK);
+    inGameUsers[1].setCharacter(Packets.CharacterType.FROGGY);
     // inGameUsers.forEach((user, i) => {
     //   user.setCharacter(shuffledCharacter[i].type);
     // });
@@ -137,7 +137,7 @@ export const gamePrepareHandler = (socket, payload) => {
         tmp.push(card);
         // user.addHandCard(card); // card === type
         // { type: card, count: 1}
-        // user.increaseHandCardsCount();
+        // user.increaseHandCardsCount();  // 원본 살려야 하는 코드
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);

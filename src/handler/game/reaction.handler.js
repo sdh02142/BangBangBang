@@ -6,6 +6,7 @@ import { findGameById } from '../../sessions/game.session.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { getStateNormal } from '../../constants/stateType.js';
 import { malangHandler } from '../character/malang.handler.js';
+import { froggyHandler } from '../character/froggy.handler.js';
 
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
@@ -30,6 +31,11 @@ export const reactionHandler = (socket, payload) => {
   user.decreaseHp();
   if (user.characterData.characterType === Packets.CharacterType.MALANG) {
     malangHandler(user, game);
+  } else if (user.characterData.characterType === Packets.CharacterType.FROGGY) {
+    const autoSheild = Math.random();
+    if (autoSheild <= 0.25) {
+      froggyHandler(user, game);
+    }
   }
   const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
   user.setCharacterState(getStateNormal());

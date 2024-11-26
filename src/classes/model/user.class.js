@@ -23,9 +23,9 @@ class User {
   }
 
   overHandedCount() {
-    // 만약 손패가 5, 피가 4인 경우 양수 반환
-    // 음수면 ㄱㅊ
-    return this.characterData.handCards.length - this.maxHp;
+    // { type: Packets.CardType.BBANG, count: 2 }, ... 이런 형태로 관리하는데 .length를 하니 갯수가 맞을리가... 아이고..
+    return this.characterData.handCardsCount - this.maxHp;
+    // return this.characterData.handCards.length - this.maxHp;
   }
 
   resetBbangCount() {

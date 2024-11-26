@@ -7,6 +7,7 @@ import userUpdateNotification from '../../utils/notification/userUpdate.notifica
 import { getStateNormal } from '../../constants/stateType.js';
 import { malangHandler } from '../character/malang.handler.js';
 import { froggyHandler } from '../character/froggy.handler.js';
+import { pinkSlimeHandler } from '../character/pinkSlime.handler.js';
 
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
@@ -29,6 +30,7 @@ export const reactionHandler = (socket, payload) => {
   }
 
   user.decreaseHp();
+  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
   if (user.characterData.characterType === Packets.CharacterType.MALANG) {
     malangHandler(user, game);
   } else if (user.characterData.characterType === Packets.CharacterType.FROGGY) {
@@ -36,8 +38,10 @@ export const reactionHandler = (socket, payload) => {
     if (autoSheild <= 0.25) {
       froggyHandler(user, game);
     }
+  } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
+    pinkSlimeHandler(user, targetUser, game);
   }
-  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
+
   user.setCharacterState(getStateNormal());
   if (targetUser) {
     targetUser.setCharacterState(getStateNormal());

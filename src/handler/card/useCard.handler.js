@@ -30,7 +30,7 @@ export const useCardHandler = (socket, payload) => {
     console.error('카드 핸들러를 찾을 수 없습니다.');
     return;
   }
-  
+
   // 에러 안나면 아무것도 반환하지 않기
   const errorResponse = cardHandler(cardUsingUser, targetUser, currentGame);
   if (errorResponse) {
@@ -38,7 +38,18 @@ export const useCardHandler = (socket, payload) => {
     console.error('카드 핸들러: 뭔가 문제 있음');
     socket.write(createResponse(PACKET_TYPE.USE_CARD_RESPONSE, 0, errorResponse));
     return;
-  }  
+  }
+
+  // if (!cardUsingUser.canUseBbang()) {
+  //   // 빵야 실패
+  //   const errorResponse = {
+  //     useCardResponse: {
+  //       success: false,
+  //       failCode: Packets.GlobalFailCode.ALREADY_USED_BBANG,
+  //     },
+  //   };
+  //   return errorResponse;
+  // }
 
   // 공통 로직
   cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소

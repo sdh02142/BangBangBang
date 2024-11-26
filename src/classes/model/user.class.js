@@ -21,12 +21,15 @@ class User {
 
     this.maxBbangCount = 0; // 나중에 prepare에서 캐릭터 특성에 따라 처리, 게임 진행 도중 장비에 따라 증감
   }
-
+  // 빵 카운트가 음수로 클라에서 처리되고 있음
+  // 맥스가 음수로 더 내려갈 수록 빵야 쏠 수 있는 횟수가 늘어남
   canUseBbang() {
-    return this.characterData.bbangCount < this.maxBbangCount;
+    return (
+      0 >= this.characterData.bbangCount && this.characterData.bbangCount >= this.maxBbangCount
+    );
   }
 
-  setBbangCount(count) {
+  setMaxBbangCount(count) {
     this.maxBbangCount = count;
   }
 
@@ -58,57 +61,57 @@ class User {
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 4;
-        this.setBbangCount(40); // max치 빵야 횟수 설정
+        this.setMaxBbangCount(-40); // max치 빵야 횟수 설정
         break;
       case Packets.CharacterType.SHARK:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 4;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
       case Packets.CharacterType.MALANG:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 4;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
       case Packets.CharacterType.FROGGY:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 4;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
       case Packets.CharacterType.PINK:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 4;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
       // 물안경군 캐릭터 특성은 클라에서 처리
       case Packets.CharacterType.SWIM_GLASSES:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 4;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
       case Packets.CharacterType.MASK:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 4;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
       // 공룡이 캐릭터 특성은 클라에서 처리
       case Packets.CharacterType.DINOSAUR:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 3;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
       case Packets.CharacterType.PINK_SLIME:
         this.characterData.characterType = characterType;
         this.characterData.bbangCount = 0;
         this.characterData.hp = 3;
-        this.setBbangCount(1);
+        this.setMaxBbangCount(-1);
         break;
     }
   }

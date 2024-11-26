@@ -19,11 +19,51 @@ class User {
     this.roomId = null;
     this.maxHp = null;
 
-    this.maxBbangCount = 0; // 나중에 prepare에서 캐릭터 특성에 따라 처리, 게임 진행 도중 장비에 따라 증감
+    this.maxBbangCount = 0; // 나중에 prepare에서 캐릭터 특성에 따라 처리, 게임 진행 도중 장비에 따라 증감/ 원래 상태를 저장해두는 형태는 어떤지?
+    this.damage = 1;
+  }
+
+  equipWepon(weapon) {
+    switch (weapon) {
+      case Packets.CardType.HAND_GUN:
+        this.characterData.bbangCount -= 1;
+        this.maxBbangCount -= 1;
+        break;
+      case Packets.CardType.DESERT_EAGLE:
+        this.damage = 2;
+        break;
+      case Packets.CardType.AUTO_RIFLE:
+        this.characterData.bbangCount -= 10;
+        this.maxBbangCount -= 10;
+        break;
+      case Packets.CardType.SNIPER_GUN:
+        break;
+    }
+    this.setWeapon(weapon);
+  }
+
+  unequipWepon() {
+    switch (this.characterData.weapon) {
+      case Packets.CardType.HAND_GUN:
+        this.characterData.bbangCount += 1;
+        this.maxBbangCount += 1;
+        break;
+      case Packets.CardType.DESERT_EAGLE:
+        this.damage = 1;
+        break;
+      case Packets.CardType.AUTO_RIFLE:
+        this.characterData.bbangCount += 10;
+        this.maxBbangCount += 10;
+        break;
+      case Packets.CardType.SNIPER_GUN:
+        break;
+    }
+    this.setWeapon(0);
   }
   // 빵 카운트가 음수로 클라에서 처리되고 있음
   // 맥스가 음수로 더 내려갈 수록 빵야 쏠 수 있는 횟수가 늘어남
   canUseBbang() {
+    // true를 반환했을때 빵 가능
     return (
       0 >= this.characterData.bbangCount && this.characterData.bbangCount >= this.maxBbangCount
     );
@@ -128,8 +168,8 @@ class User {
     return true;
   }
 
-  decreaseHp() {
-    this.characterData.hp -= 1;
+  decreaseHp(damage) {
+    this.characterData.hp -= damage;
   }
 
   setWeapon(weapon) {

@@ -147,15 +147,19 @@ export const gamePrepareHandler = (socket, payload) => {
         user.increaseHandCardsCount();
       }
       user.characterData.handCards = [
-        { type: Packets.CardType.BBANG, count: 1 },
-        // { type: Packets.CardType.BIG_BBANG, count: 1 },
+        { type: Packets.CardType.BBANG, count: 5 },
+        { type: Packets.CardType.BIG_BBANG, count: 1 },
         { type: Packets.CardType.SHIELD, count: 2 },
-        // { type: Packets.CardType.DEATH_MATCH, count: 1 },
-        // { type: Packets.CardType.VACCINE, count: 1 },
-        // { type: Packets.CardType.CALL_119, count: 1 },
-        // { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
-        // { type: Packets.CardType.WIN_LOTTERY, count: 1 },
-        // { type: Packets.CardType.GUERRILLA, count: 1 },
+        { type: Packets.CardType.DEATH_MATCH, count: 1 },
+        { type: Packets.CardType.VACCINE, count: 2 },
+        { type: Packets.CardType.CALL_119, count: 2 },
+        { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
+        { type: Packets.CardType.WIN_LOTTERY, count: 1 },
+        { type: Packets.CardType.GUERRILLA, count: 1 },
+        { type: Packets.CardType.HAND_GUN, count: 1 },
+        { type: Packets.CardType.AUTO_RIFLE, count: 1 },
+        { type: Packets.CardType.DESERT_EAGLE, count: 1 },
+        { type: Packets.CardType.SNIPER_GUN, count: 1 },
       ];
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });

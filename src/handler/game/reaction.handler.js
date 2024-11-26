@@ -12,21 +12,26 @@ import { pinkSlimeHandler } from '../character/pinkSlime.handler.js';
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
   const game = findGameById(user.roomId);
+  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
     game.events.cancelEvent(user.id, 'finishShieldWait');
+    user.decreaseHp(targetUser.damage);
   }
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.BIG_BBANG_TARGET) {
     game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
+    user.decreaseHp(1);
   }
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
     game.events.cancelEvent(user.id, 'onDeathMatch');
+    user.decreaseHp(1);
   }
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.GUERRILLA_TARGET) {
     game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
+    user.decreaseHp(1);
   }
 
   if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
@@ -48,7 +53,7 @@ export const reactionHandler = (socket, payload) => {
   } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
     pinkSlimeHandler(user, targetUser, game);
   }
-
+  
   user.setCharacterState(getStateNormal());
   if (targetUser) {
     targetUser.setCharacterState(getStateNormal());

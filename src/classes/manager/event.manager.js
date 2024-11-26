@@ -12,6 +12,22 @@ class EventManager {
         params;
       cardUsingUser.setCharacterState(stateNormal);
       targetUser.setCharacterState(stateNormal);
+      targetUser.decreaseHp(cardUsingUser.damage);
+      userUpdateNotification(currentGameUsers);
+      console.log('5초 지나서 이제 쉴드 못씀');
+    });
+
+    this.eventEmitter.on('finishSHieldWaitShark', (params) => {
+      const {
+        cardUsingUser,
+        targetUser,
+        targetStateNormal,
+        shooterStateNormal,
+        userUpdateNotification,
+        currentGameUsers,
+      } = params;
+      cardUsingUser.setCharacterState(targetStateNormal);
+      targetUser.setCharacterState(shooterStateNormal);
       targetUser.decreaseHp();
       userUpdateNotification(currentGameUsers);
       console.log('5초 지나서 이제 쉴드 못씀');
@@ -21,16 +37,16 @@ class EventManager {
       const { user, cardUsingUser, stateNormal, userUpdateNotification, currentGameUsers } = params;
       user.setCharacterState(stateNormal);
       cardUsingUser.setCharacterState(stateNormal);
-      user.decreaseHp();
+      user.decreaseHp(1);
       userUpdateNotification(currentGameUsers);
     });
 
-
     this.eventEmitter.on('onDeathMatch', (params) => {
-      const { cardUsingUser, targetUser, stateNormal, userUpdateNotification, currentGameUsers} = params;
+      const { cardUsingUser, targetUser, stateNormal, userUpdateNotification, currentGameUsers } =
+        params;
       cardUsingUser.setCharacterState(stateNormal);
       targetUser.setCharacterState(stateNormal);
-      targetUser.decreaseHp();
+      targetUser.decreaseHp(1);
       userUpdateNotification(currentGameUsers);
     });
 
@@ -38,7 +54,7 @@ class EventManager {
       const { user, cardUsingUser, stateNormal, userUpdateNotification, currentGameUsers } = params;
       user.setCharacterState(stateNormal);
       cardUsingUser.setCharacterState(stateNormal);
-      user.decreaseHp();
+      user.decreaseHp(1);
       userUpdateNotification(currentGameUsers);
     });
   }

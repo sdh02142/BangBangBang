@@ -6,6 +6,7 @@ import { phaseUpdateNotification } from '../../utils/notification/phaseUpdate.no
 import { createResponse } from '../../utils/response/createResponse.js';
 import EventManager from '../manager/event.manager.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
+import IntervalManager from '../manager/interval.manager.js';
 
 // 1. 방 === 게임 <--- 기존 강의나 전 팀플에서 썼던 game세션과 game 클래스 같이 써도 되지않을까?
 // IntervalManager 게임 세션별로 하나씩 두고 얘가 낮밤 관리하게
@@ -21,8 +22,11 @@ class Game {
     // WAIT, PREPARE, INAGAME
     this.state = Packets.RoomStateType.WAIT; // 초기값 <-- 생성 기준이니 WAIT (0)
     this.users = []; // UserData가 들어감 <-- User 클래스에서 CharacterData 관리하기
+    this.usersNum = 0;
+    this.fleaMarketUsers = [];
 
     this.deck = [];
+    this.fleaMarketDeck=[];
 
     this.currentPhase = Packets.PhaseType.DAY;
     this.nextPhase = Packets.PhaseType.END;
@@ -30,6 +34,7 @@ class Game {
     // this.eventQueue = [];
     this.events = new EventManager();
     this.events.init();
+    this.intervalManager = new IntervalManager();
   }
 
   returnCardToDeck(cardType) {
@@ -70,6 +75,10 @@ class Game {
     return parseInt(this.users.length) >= parseInt(this.maxUserNum) ? true : false;
   }
 
+  isGamingRoom() {
+    return this.state !== Packets.RoomStateType.WAIT;
+  }
+
   addUser(user) {
     if (this.users.length >= this.maxUserNum) {
       console.error('방이 꽉 찼습니다.');
@@ -90,8 +99,16 @@ class Game {
     }
   }
 
+  removeUserFromFleaMarket(user) {
+    const index = this.fleaMarketUsers.findIndex((u) => u.id === user.id);
+    if (index !== -1) {
+      this.fleaMarketUsers.splice(index, 1);
+    }
+  }
+
   gameStart() {
     this.state = Packets.RoomStateType.PREPARE;
+    this.intervalManager.addGameEndNotification(this)
   }
 }
 

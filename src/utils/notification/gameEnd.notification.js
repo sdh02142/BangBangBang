@@ -3,6 +3,7 @@ import { Packets } from '../../init/loadProtos.js';
 import { createResponse } from '../response/createResponse.js';
 import { removeGameSession } from '../../sessions/game.session.js';
 import intervalManager from '../../classes/manager/interval.manager.js';
+import { roomManager } from '../../classes/manager/room.manager.js';
 /**
  *
  * @param {Game} room
@@ -68,8 +69,8 @@ export const gameEndNotification = (room) => {
     });
     //게임 종료 시 인터벌 제거, 세션 삭제
     intervalManager.removeInterval(room.id, 'game');
-    removeGameSession(room.id);  
-    
+    removeGameSession(room.id);
+    roomManager.deleteRoom(room.id);
   }
   // 비정상적으로 게임이 끝나는 경우
 

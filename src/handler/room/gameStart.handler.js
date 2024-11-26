@@ -1,3 +1,4 @@
+import intervalManager from '../../classes/manager/interval.manager.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
@@ -59,6 +60,8 @@ export const gameStartHandler = (socket, payload) => {
   currentGame.changePhase();
 
   socket.write(createResponse(PACKET_TYPE.GAME_START_RESPOSNE, 0, responsePayload));
+
+  intervalManager.addGameEndNotification(currentGame)
 };
 
 // GlobalFailCode:

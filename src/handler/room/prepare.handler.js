@@ -67,7 +67,7 @@ export const gamePrepareHandler = (socket, payload) => {
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
     // WARN: TEST CODE
     inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
-    inGameUsers[1].setCharacter(Packets.CharacterType.PINK_SLIME);
+    inGameUsers[1].setCharacter(Packets.CharacterType.SHARK);
     // inGameUsers.forEach((user, i) => {
     //   user.setCharacter(shuffledCharacter[i].type);
     // });
@@ -149,7 +149,7 @@ export const gamePrepareHandler = (socket, payload) => {
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 1 },
         // { type: Packets.CardType.BIG_BBANG, count: 1 },
-        { type: Packets.CardType.SHIELD, count: 1 },
+        { type: Packets.CardType.SHIELD, count: 2 },
         // { type: Packets.CardType.DEATH_MATCH, count: 1 },
         // { type: Packets.CardType.VACCINE, count: 1 },
         // { type: Packets.CardType.CALL_119, count: 1 },

@@ -1,63 +1,82 @@
 import { PACKET_TYPE } from '../../constants/header.js';
 import { Packets } from '../../init/loadProtos.js';
 import { createResponse } from '../response/createResponse.js';
-
+import { removeGameSession } from '../../sessions/game.session.js';
+import intervalManager from '../../classes/manager/interval.manager.js';
 /**
  *
  * @param {Game} room
- * @param {User} winner
  * @returns
  */
-export const gameEndNotification = (room, winner) => { //언제 돌아가야 하는지... 인터벌매니저로?
+export const gameEndNotification = (room) => { 
   // 정상적으로 게임이 끝나는 경우
-  // 보안관이 사망한 경우 or 무법자 + 배신자 사망한 경우 or 배신자만 살아남은 경우
-  // 생존한 유저(승리자) 찾기
-  // 생존한 유저의 역할 찾기
+  const survivor = [];
+  room.users.forEach((user) => {
+    if (user.characterData.hp > 0) {
+      // 생존자 확인
+      survivor.push({ id: user.id, role: user.characterData.roleType });
+    }
+  });
+
+  const isTarget = survivor.find((user) => user.role === Packets.RoleType.TARGET);
+  const isBodyguard = survivor.find((user) => user.role === Packets.RoleType.BODYGUARD);
+  const isHitman = survivor.find((user) => user.role === Packets.RoleType.HITMAN);
+  const isPsychopath = survivor.find((user) => user.role === Packets.RoleType.PSYCHOPATH);
 
   let responsePayload;
-  console.log('winner.characterData.roleType:', winner.characterData.roleType);
-  let winners = [winner.id];
-  console.log("winners:",winners)
-  if ( //보안관 승리
-    winner.characterData.roleType === Packets.RoleType.TARGET ||
-    winner.characterData.roleType === Packets.RoleType.BODYGUARD
-  ) {
+
+  if (!isTarget && isHitman) {
+    //히트맨 승리
+    console.log('히트맨 승리');
+    const winners = room.users.filter((user) => user.characterData.roleType === Packets.RoleType.HITMAN);
+    const winnerIds = winners.map((user) => user.id);
     responsePayload = {
       gameEndNotification: {
-        winners: [winner.id],
-        winType: Packets.WinType.TARGET_AND_BODYGUARD_WIN,
-      },
-    };
-  }
-  if (winner.characterData.roleType === Packets.RoleType.HITMAN) { //무법자 승리
-    responsePayload = {
-      gameEndNotification: {
-        winners: winner.id,
+        winners: winnerIds,
         winType: Packets.WinType.HITMAN_WIN,
       },
     };
   }
-  if (winner.characterData.roleType === Packets.RoleType.PSYCHOPATH) { //배신자 승리
+  if (!isTarget && !isBodyguard && !isHitman && isPsychopath) {
+    //싸이코패스 승리
+    console.log('싸이코패스 승리');
+    const winners = room.users.filter((user) => user.characterData.roleType === Packets.RoleType.PSYCHOPATH);
+    const winnerIds = winners.map((user) => user.id);
     responsePayload = {
       gameEndNotification: {
-        winners: winner.id,
+        winners: winnerIds,
         winType: Packets.WinType.PSYCHOPATH_WIN,
       },
     };
   }
+  if (!isHitman && !isPsychopath) {
+    //타겟 & 보디가드 승리
+    console.log('타겟&보디가드 승리');
+    const winners = room.users.filter((user) => user.characterData.roleType === Packets.RoleType.TARGET || user.characterData.roleType === Packets.RoleType.BODYGUARD);
+    const winnerIds = winners.map((user) => user.id);
+    responsePayload = {
+      gameEndNotification: {
+        winners: winnerIds,
+        winType: Packets.WinType.TARGET_AND_BODYGUARD_WIN,
+      },
+    };
+  }
 
-  room.users.forEach((user) => {
-    user.socket.write(createResponse(PACKET_TYPE.GAME_END_NOTIFICATION, 0, responsePayload));
-  });
-
-  // 게임 종료 시 게임 세션 삭제
-  // winner.roomId
-
+  if (responsePayload){
+    room.users.forEach((user) => {
+      user.socket.write(createResponse(PACKET_TYPE.GAME_END_NOTIFICATION, 0, responsePayload));
+    });
+    //게임 종료 시 인터벌 제거, 세션 삭제
+    intervalManager.removeInterval(room.id, 'game');
+    removeGameSession(room.id);  
+    
+  }
   // 비정상적으로 게임이 끝나는 경우
-  // 강제 종료 - 클라? 강제로 누군가 승리로?
-  
 
+  // 강제 종료 - 클라? 강제로 누군가 승리로?
 };
+
+//TODO: 게임이 끝난 후 다시 방을 만들고 접속이 안됨
 
 // message S2CGameEndNotification {
 //     repeated int64 winners = 1;

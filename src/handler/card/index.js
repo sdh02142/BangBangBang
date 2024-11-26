@@ -8,6 +8,7 @@ import { shieldCardHandler } from './shieldCard.handler.js';
 import { vaccineCardHandler } from './vaccineCard.handler.js';
 import { winLotteryCardHandler } from './winLotteryCard.handler.js';
 import { deathMatchCardHandler } from './deathMatchCard.handler.js';
+import { hallucinationCardHandler } from './hallucinationCard.handler.js';
 import { fleaMarketCardHandler } from './fleaMarketCard.handler.js';
 import { absorbCardHandler } from './absorbCard.handler.js';
 import { hallucinationCardHandler } from './hallucinationCard.handler.js';

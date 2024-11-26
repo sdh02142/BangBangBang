@@ -60,6 +60,17 @@ class User {
     }
     this.setWeapon(0);
   }
+
+  overHandedCount() {
+    // { type: Packets.CardType.BBANG, count: 2 }, ... 이런 형태로 관리하는데 .length를 하니 갯수가 맞을리가... 아이고..
+    return this.characterData.handCardsCount - this.maxHp;
+    // return this.characterData.handCards.length - this.maxHp;
+  }
+
+  resetBbangCount() {
+    this.characterData.bbangCount = this.maxBbangCount;
+  }
+
   // 빵 카운트가 음수로 클라에서 처리되고 있음
   // 맥스가 음수로 더 내려갈 수록 빵야 쏠 수 있는 횟수가 늘어남
   canUseBbang() {

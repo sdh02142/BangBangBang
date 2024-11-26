@@ -42,12 +42,12 @@ export const gamePrepareHandler = (socket, payload) => {
     console.log('현재 게임 정보:', currentGame);
 
     /* TODO:
-        *  1. 캐릭터 셔플(CharacterType) - 완료
-        *  2. 덱 셔플 후 카드 배분 - 캐릭터 HP만큼(user.hp) user.addHandCards(card)
-                - Packets.CardType
-        *  3. 역할 배분(RoleType) - 완료
-        *  4. CharacterType에 맞게 hp 설정 - 완료
-        */
+            *  1. 캐릭터 셔플(CharacterType) - 완료
+            *  2. 덱 셔플 후 카드 배분 - 캐릭터 HP만큼(user.hp) user.addHandCards(card)
+                    - Packets.CardType
+            *  3. 역할 배분(RoleType) - 완료
+            *  4. CharacterType에 맞게 hp 설정 - 완료
+            */
 
     const inGameUsers = currentGame.users;
 
@@ -143,23 +143,15 @@ export const gamePrepareHandler = (socket, payload) => {
       const result = transformData(tmp);
       // user.characterData.handCards = result;
       // WARN: Test code
+      // 너무 많이 넣으면 UI가 안뜸(카드가 다 안뜸)
       for (let i = 0; i < 2; i++) {
         user.increaseHandCardsCount();
       }
+      
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 5 },
         { type: Packets.CardType.BIG_BBANG, count: 1 },
         { type: Packets.CardType.SHIELD, count: 2 },
-        { type: Packets.CardType.DEATH_MATCH, count: 1 },
-        { type: Packets.CardType.VACCINE, count: 2 },
-        { type: Packets.CardType.CALL_119, count: 2 },
-        { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
-        { type: Packets.CardType.WIN_LOTTERY, count: 1 },
-        { type: Packets.CardType.GUERRILLA, count: 1 },
-        { type: Packets.CardType.HAND_GUN, count: 1 },
-        { type: Packets.CardType.AUTO_RIFLE, count: 1 },
-        { type: Packets.CardType.DESERT_EAGLE, count: 1 },
-        { type: Packets.CardType.SNIPER_GUN, count: 1 },
       ];
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });

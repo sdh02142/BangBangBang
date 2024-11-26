@@ -62,9 +62,9 @@ class User {
   }
 
   overHandedCount() {
-    // { type: Packets.CardType.BBANG, count: 2 }, ... 이런 형태로 관리하는데 .length를 하니 갯수가 맞을리가... 아이고..
-    return this.characterData.handCardsCount - this.maxHp;
-    // return this.characterData.handCards.length - this.maxHp;
+    console.log(`현재 카드 수: ${this.characterData.handCardsCount}`)
+    console.log(`현재 HP: ${this.characterData.hp}`)
+    return this.characterData.handCardsCount - this.characterData.hp;
   }
 
   resetBbangCount() {
@@ -109,7 +109,7 @@ class User {
     switch (characterType) {
       case Packets.CharacterType.RED:
         this.characterData.characterType = characterType;
-        this.characterData.bbangCount = 0;
+        this.characterData.bbangCount = -40;
         this.characterData.hp = 4;
         this.setMaxBbangCount(-40); // max치 빵야 횟수 설정
         break;
@@ -179,7 +179,7 @@ class User {
     return true;
   }
 
-  decreaseHp(damage) {
+  decreaseHp(damage = 1) {
     this.characterData.hp -= damage;
   }
 
@@ -224,6 +224,7 @@ class User {
   }
 
   removeHandCard(usingCard) {
+    console.log(`${usingCard} 삭제`)
     const index = this.characterData.handCards.findIndex((card) => card.type === usingCard);
 
     // { type: enum, count: 1} enum값이 handCards에 존재하면 count++
@@ -231,7 +232,7 @@ class User {
     // count-- => count === 0 객체를 아예 삭제
     if (index !== -1) {
       const cnt = this.characterData.handCards[index].count--;
-      // this.decreaseHandCardsCount();  // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
+      this.decreaseHandCardsCount();  // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
       if (cnt === 0) {
         // 남은 카드 없음
         this.characterData.handCards.splice(index, 1);

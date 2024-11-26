@@ -4,7 +4,7 @@ import {
 } from '../../constants/stateType.js';
 import { fleaMarketNotification } from '../../utils/notification/fleaMarket.notification.js'
 
-export const fleaMarketCardHandler = (cardUsingUser, targetUser, currentGame) => {
+export const fleaMarketCardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
   const fleaMarketDeck = currentGame.fleaMarketDeck;
   const currentUsers = currentGame.users;
   const fleaMarketUsers = currentGame.fleaMarketUsers;

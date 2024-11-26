@@ -33,7 +33,7 @@ export const useCardHandler = (socket, payload) => {
   }
 
   // 에러 안나면 아무것도 반환하지 않기
-  const errorResponse = cardHandler(cardUsingUser, targetUser, currentGame);
+  const errorResponse = cardHandler(cardUsingUser, targetUser, currentGame, useCardType);
   if (errorResponse) {
     // 뭔가 에러가 났음.
     console.error('카드 핸들러: 뭔가 문제 있음');
@@ -55,6 +55,8 @@ export const useCardHandler = (socket, payload) => {
   // cardUsingUser.decreaseHandCardsCount(); // 카드 사용자의 손에 들고 있던 카드 수 감소
   cardUsingUser.removeHandCard(useCardType); // 카드 사용자의 손에 들고 있던 카드 제거
   currentGame.returnCardToDeck(useCardType); // 카드 덱으로 복귀
+  
+  
   // 카드를 사용하고 덱에서 삭제 되었을 때, 손에 남은 카드가 0이고 캐릭터가 핑크군이면 실행
   if (
     cardUsingUser.characterData.handCardsCount === 0 &&

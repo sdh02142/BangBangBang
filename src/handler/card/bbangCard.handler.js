@@ -9,7 +9,7 @@ import { Packets } from '../../init/loadProtos.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { sharkHandler } from '../character/shark.handelr.js';
 
-export const bbangCardHandler = (cardUsingUser, targetUser, currentGame) => {
+export const bbangCardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
   if (
     cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.NONE_CHARACTER_STATE
   ) {
@@ -50,17 +50,16 @@ const deathMatchBbangHandler = (cardUsingUser, targetUser, currentGame) => {
 
 const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   const currentGameUsers = currentGame.users;
-  // useCardHandler 쪽으로 보내자
-  // if (!cardUsingUser.canUseBbang()) { // 이 로직을 여기에 둬야할지 생각해봐야함 빵야 카드는 사용이 되고 빵야가 안됨 카드 사용이 안되야 함
-  //   // 빵야 실패
-  //   const errorResponse = {
-  //     useCardResponse: {
-  //       success: false,
-  //       failCode: Packets.GlobalFailCode.ALREADY_USED_BBANG,
-  //     },
-  //   };
-  //   return errorResponse;
-  // }
+  if (!cardUsingUser.canUseBbang()) {
+    // 빵야 실패
+    const errorResponse = {
+      useCardResponse: {
+        success: false,
+        failCode: Packets.GlobalFailCode.ALREADY_USED_BBANG,
+      },
+    };
+    return errorResponse;
+  }
 
   // 여기서부터 빵야 사용 로직
   // 빵야 카운트 증가

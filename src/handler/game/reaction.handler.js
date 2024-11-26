@@ -29,15 +29,22 @@ export const reactionHandler = (socket, payload) => {
     game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
   }
 
-  user.decreaseHp();
-  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
-  if (user.characterData.characterType === Packets.CharacterType.MALANG) {
-    malangHandler(user, game);
-  } else if (user.characterData.characterType === Packets.CharacterType.FROGGY) {
+  if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
+    user.decreaseHp();
+  } else {
     const autoSheild = Math.random();
+    // hp가 0이 되었을 때 추가
     if (autoSheild <= 0.25) {
       froggyHandler(user, game);
+    } else {
+      user.decreaseHp();
     }
+  }
+
+  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
+
+  if (user.characterData.characterType === Packets.CharacterType.MALANG) {
+    malangHandler(user, game);
   } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
     pinkSlimeHandler(user, targetUser, game);
   }

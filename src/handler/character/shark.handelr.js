@@ -1,4 +1,4 @@
-import { getStateBbangTarget } from '../../constants/stateType.js';
+import { getStateBbangShooter, getStateBbangTarget } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
 
 export const sharkHandler = (cardUsingUser, targetUser, game) => {
@@ -14,6 +14,15 @@ export const sharkHandler = (cardUsingUser, targetUser, game) => {
     } else {
       targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
       // 이제 2개만 사용하게 하면 된다....
+      // 이벤트 등록
+      game.events.scheduleEvent(targetUser.id, 'finishShieldWaitShark', 5000, {
+        cardUsingUser,
+        targetUser,
+        targetStateNormal: getStateBbangTarget(cardUsingUser.id),
+        shooterStateNormal: getStateBbangShooter(targetUser.id),
+        userUpdateNotification,
+        currentGameUsers,
+      });
     }
   }
 };

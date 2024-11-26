@@ -1,6 +1,7 @@
 import phaseTime from '../../constants/phaseTime.js';
 import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
+import userUpdateNotification from './userUpdate.notification.js';
 
 export const phaseUpdateNotification = (game) => {
   // 낮인 경우만 위치가 다시 셔플돼서 updatePosition
@@ -29,12 +30,13 @@ export const phaseUpdateNotification = (game) => {
     // 낮이 시작되면 카드 버려주기(어차피 hp보다 적거나 같으면 안버리면 됨)
     inGameUsers.forEach((user) => {
       const userOverHandedCount = user.overHandedCount();
+      console.log(`[${user.nickname}] ${userOverHandedCount}개 카드 버려짐`);
       if (userOverHandedCount > 0) {
         for (let i = 0; i < userOverHandedCount; i++) {
           // 오버한 갯수만큼 랜덤하게 손패 삭제
           const userDeck = user.characterData.handCards;
           const randomCard = userDeck[Math.floor(Math.random() * userDeck.length)];
-          user.removeHandCard(randomCard); // 저장될 때 객체로 되면 .type 붙여줘야함
+          user.removeHandCard(randomCard.type);
         }
       }
     });

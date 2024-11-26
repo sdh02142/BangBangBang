@@ -17,22 +17,6 @@ class EventManager {
       console.log('5초 지나서 이제 쉴드 못씀');
     });
 
-    this.eventEmitter.on('finishSHieldWaitShark', (params) => {
-      const {
-        cardUsingUser,
-        targetUser,
-        targetStateNormal,
-        shooterStateNormal,
-        userUpdateNotification,
-        currentGameUsers,
-      } = params;
-      cardUsingUser.setCharacterState(targetStateNormal);
-      targetUser.setCharacterState(shooterStateNormal);
-      targetUser.decreaseHp();
-      userUpdateNotification(currentGameUsers);
-      console.log('5초 지나서 이제 쉴드 못씀');
-    });
-
     this.eventEmitter.on('finishShieldWaitOnBigBbang', (params) => {
       const { user, cardUsingUser, stateNormal, userUpdateNotification, currentGameUsers } = params;
       user.setCharacterState(stateNormal);

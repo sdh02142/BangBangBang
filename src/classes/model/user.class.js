@@ -36,6 +36,8 @@ class User {
         this.characterData.bbangCount -= 10;
         this.maxBbangCount -= 10;
         break;
+      case Packets.CardType.SNIPER_GUN:
+        break;
     }
     this.setWeapon(weapon);
   }
@@ -52,6 +54,8 @@ class User {
       case Packets.CardType.AUTO_RIFLE:
         this.characterData.bbangCount += 10;
         this.maxBbangCount += 10;
+        break;
+      case Packets.CardType.SNIPER_GUN:
         break;
     }
     this.setWeapon(0);

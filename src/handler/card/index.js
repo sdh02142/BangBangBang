@@ -11,6 +11,7 @@ import { deathMatchCardHandler } from './deathMatchCard.handler.js';
 import { handGunCardHandler } from './handGunCard.handler.js';
 import { desertEagleCardHandler } from './desertEagleCard.handler.js';
 import { autoRifleCardHandler } from './autoRifleCard.handler.js';
+import { sniperGunCardHandler } from './sniperGunCard.handler.js';
 
 const cardHandlers = {
   // BBANG 1
@@ -35,7 +36,7 @@ const cardHandlers = {
   // WIN_LOTTERY 12
   [12]: winLotteryCardHandler,
   // SNIPER_GUN 13
-  // [13]: sniperGunCardHandler,
+  [13]: sniperGunCardHandler,
   // HAND_GUN 14
   [14]: handGunCardHandler,
   // DESERT_EAGLE 15

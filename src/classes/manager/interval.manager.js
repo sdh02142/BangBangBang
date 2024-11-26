@@ -1,3 +1,5 @@
+import { gameEndNotification } from "../../utils/notification/gameEnd.notification.js";
+
 class IntervalManager {
   constructor() {
     this.intervals = new Map();
@@ -20,6 +22,11 @@ class IntervalManager {
   // 따로 매니저로 빼도 됨
   addUpdatePosition() {
     this.addPlayer(playerId, callback, interval, 'updatePosition');
+  }
+
+  addGameEndNotification(room, interval = 1000) {
+    const callback = () => gameEndNotification(room);
+    this.addGame(room.id, callback, interval);
   }
 
   removePlayer(playerId) {
@@ -51,4 +58,6 @@ class IntervalManager {
   }
 }
 
-export default IntervalManager;
+const intervalManager = new IntervalManager();
+Object.freeze(intervalManager);
+export default intervalManager;

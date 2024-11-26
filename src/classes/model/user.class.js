@@ -26,18 +26,31 @@ class User {
   equipWepon(weapon) {
     switch (weapon) {
       case Packets.CardType.HAND_GUN:
-        this.maxBbangCount = 1;
-        setWeapon(weapon);
+        this.maxBbangCount += 1;
         break;
       case Packets.CardType.DESERT_EAGLE:
         this.damage = 2;
-        setWeapon(weapon);
         break;
       case Packets.CardType.AUTO_RIFLE:
-        this.maxBbangCount = 10;
-        setWeapon(weapon);
+        this.maxBbangCount += 10;
         break;
     }
+    setWeapon(weapon);
+  }
+
+  unequipWepon() {
+    switch (this.characterData.weapon) {
+      case Packets.CardType.HAND_GUN:
+        this.maxBbangCount -= 1;
+        break;
+      case Packets.CardType.DESERT_EAGLE:
+        this.damage = 1;
+        break;
+      case Packets.CardType.AUTO_RIFLE:
+        this.maxBbangCount -= 10;
+        break;
+    }
+    setWeapon(0);
   }
 
   canUseBbang() {
@@ -82,8 +95,8 @@ class User {
     return true;
   }
 
-  decreaseHp() {
-    this.characterData.hp -= 1;
+  decreaseHp(damage) {
+    this.characterData.hp -= damage;
   }
 
   setWeapon(weapon) {

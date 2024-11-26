@@ -14,34 +14,32 @@ export const reactionHandler = (socket, payload) => {
   const game = findGameById(user.roomId);
   const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
 
-  if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
-    game.events.cancelEvent(user.id, 'finishShieldWait');
-    user.decreaseHp(targetUser.damage);
-  }
-
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.BIG_BBANG_TARGET) {
     game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
-    user.decreaseHp(1);
   }
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
     game.events.cancelEvent(user.id, 'onDeathMatch');
-    user.decreaseHp(1);
   }
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.GUERRILLA_TARGET) {
     game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
-    user.decreaseHp(1);
   }
 
   if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
-    user.decreaseHp();
+    if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
+      game.events.cancelEvent(user.id, 'finishShieldWait');
+      user.decreaseHp(targetUser.damage);
+    } else {
+      user.decreaseHp();
+    }
   } else {
+    // 개굴군만 해당
     const autoSheild = Math.random();
-    // hp가 0이 되었을 때 추가
-    if (autoSheild <= 0.25) {
+    if (autoSheild < 0.25) {
       froggyHandler(user, game);
     } else {
+      game.events.cancelEvent(user.id, 'finishShieldWait');
       user.decreaseHp();
     }
   }

@@ -219,6 +219,11 @@ class User {
     this.characterData.debuffs.push(debuff);
   }
 
+  selectRandomHandCard() {
+    const randomIndex = Math.floor(Math.random() * this.characterData.handCards.length);
+    return this.characterData.handCards[randomIndex].type;
+  }
+
   addHandCard(card) {
     this.characterData.handCards.push(card);
   }

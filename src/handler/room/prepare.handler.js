@@ -55,13 +55,13 @@ export const gamePrepareHandler = (socket, payload) => {
     const characterList = [
       // { type: Packets.CharacterType.RED },
       { type: Packets.CharacterType.SHARK },
-      // { type: Packets.CharacterType.MALANG },
+      { type: Packets.CharacterType.MALANG },
       { type: Packets.CharacterType.FROGGY },
       // { type: Packets.CharacterType.PINK },
       // { type: Packets.CharacterType.SWIM_GLASSES },
       { type: Packets.CharacterType.MASK },
       // { type: Packets.CharacterType.DINOSAUR },
-      { type: Packets.CharacterType.PINK_SLIME },
+      // { type: Packets.CharacterType.PINK_SLIME },
     ];
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
@@ -147,11 +147,11 @@ export const gamePrepareHandler = (socket, payload) => {
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 2 },
         { type: Packets.CardType.BIG_BBANG, count: 1 },
-        { type: Packets.CardType.SHIELD, count: 2 },
-        { type: Packets.CardType.SNIPER_GUN, count: 1 },
-        { type: Packets.CardType.HAND_GUN, count: 1 },
-        { type: Packets.CardType.DESERT_EAGLE, count: 1 },
-        { type: Packets.CardType.AUTO_RIFLE, count: 1 },
+        { type: Packets.CardType.SHIELD, count: 3 },
+        { type: Packets.CardType.LASER_POINTER, count: 1 },
+        { type: Packets.CardType.RADAR, count: 1 },
+        { type: Packets.CardType.AUTO_SHIELD, count: 1 },
+        { type: Packets.CardType.STEALTH_SUIT, count: 1 },
       ];
       user.characterData.handCardsCount = 9;
       // console.log(user.id, '의 handCards:', user.characterData.handCards);

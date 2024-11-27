@@ -14,7 +14,7 @@ export const maskHandler = (game) => {
     );
     const deathUserCards = deathUser.characterData.handCards;
     const cardsLength = deathUserCards.length;
-    console.dir(deathUserCards, { depth: null });
+    // console.dir(deathUserCards, { depth: null });
     for (let i = 0; i < cardsLength; i++) {
       for (let j = 0; j < deathUserCards[i].count; j++) {
         maskUser.addHandCard(deathUserCards[i].type);

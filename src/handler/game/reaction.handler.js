@@ -26,22 +26,13 @@ export const reactionHandler = (socket, payload) => {
     game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
   }
 
-  if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
-    if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
-      game.events.cancelEvent(user.id, 'finishShieldWait');
-      user.decreaseHp(targetUser.damage);
-    } else {
-      user.decreaseHp();
-    }
+  if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
+    //빵야의 타겟인 경우
+    game.events.cancelEvent(user.id, 'finishShieldWait');
+    user.decreaseHp(targetUser.damage);
   } else {
-    // 개굴군만 해당 TODO: 쉴드 애니메이션
-    const autoSheild = Math.random();
-    if (autoSheild < 0.25) {
-      froggyHandler(user, game);
-    } else {
-      game.events.cancelEvent(user.id, 'finishShieldWait');
-      user.decreaseHp();
-    }
+    //빵야 예외인 경우
+    user.decreaseHp();
   }
 
   if (user.characterData.characterType === Packets.CharacterType.MALANG) {

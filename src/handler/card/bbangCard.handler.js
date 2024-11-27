@@ -65,7 +65,7 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   // 빵야 카운트 증가
   cardUsingUser.increaseBbangCount();
 
-  if (targetUser.characterData.characterType == Packets.CharacterType.SHARK) {
+  if (cardUsingUser.characterData.characterType === Packets.CharacterType.SHARK) {
     sharkHandler(cardUsingUser, targetUser, currentGame);
   } else {
     // 시전자 state 변경

@@ -26,7 +26,7 @@ class Game {
     this.fleaMarketUsers = [];
 
     this.deck = [];
-    this.fleaMarketDeck=[];
+    this.fleaMarketDeck = [];
 
     this.currentPhase = Packets.PhaseType.DAY;
     this.nextPhase = Packets.PhaseType.END;
@@ -109,7 +109,8 @@ class Game {
 
   gameStart() {
     this.state = Packets.RoomStateType.PREPARE;
-    this.intervalManager.addGameEndNotification(this)
+    this.intervalManager.addGameEndNotification(this);
+    this.intervalManager.addDeathPlayer(this);
   }
 }
 

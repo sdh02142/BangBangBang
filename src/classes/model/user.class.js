@@ -62,8 +62,8 @@ class User {
   }
 
   overHandedCount() {
-    console.log(`현재 카드 수: ${this.characterData.handCardsCount}`)
-    console.log(`현재 HP: ${this.characterData.hp}`)
+    console.log(`현재 카드 수: ${this.characterData.handCardsCount}`);
+    console.log(`현재 HP: ${this.characterData.hp}`);
     return this.characterData.handCardsCount - this.characterData.hp;
   }
 
@@ -219,12 +219,25 @@ class User {
     this.characterData.debuffs.push(debuff);
   }
 
-  addHandCard(card) {
-    this.characterData.handCards.push(card);
+  addHandCard(addCard) {
+    const index = this.characterData.handCards.findIndex((card) => card.type === addCard);
+
+    // { type: enum, count: 1} enum값이 handCards에 존재하면 count++
+    // 존재하지 않으면 addHandCard({ type: newType, count: 1})
+    if (index !== -1) {
+      const cnt = this.characterData.handCards[index].count++;
+      this.increaseHandCardsCount(); // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
+    } else {
+      const tmp = {
+        type: addCard,
+        count: 1,
+      };
+      this.characterData.handCards.push(tmp);
+    }
   }
 
   removeHandCard(usingCard) {
-    console.log(`${usingCard} 삭제`)
+    console.log(`${usingCard} 삭제`);
     const index = this.characterData.handCards.findIndex((card) => card.type === usingCard);
 
     // { type: enum, count: 1} enum값이 handCards에 존재하면 count++
@@ -232,7 +245,7 @@ class User {
     // count-- => count === 0 객체를 아예 삭제
     if (index !== -1) {
       const cnt = this.characterData.handCards[index].count--;
-      this.decreaseHandCardsCount();  // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
+      this.decreaseHandCardsCount(); // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
       if (cnt === 0) {
         // 남은 카드 없음
         this.characterData.handCards.splice(index, 1);
@@ -313,6 +326,7 @@ class User {
         roleType: this.characterData.roleType, // 2
         hp: this.characterData.hp, // 3
         weapon: this.characterData.weapon,
+        alive: this.characterData.alive,
         stateInfo: {
           state: this.characterData.stateInfo.state,
           nextState: this.characterData.stateInfo.nextState,

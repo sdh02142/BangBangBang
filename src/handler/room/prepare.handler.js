@@ -56,7 +56,7 @@ export const gamePrepareHandler = (socket, payload) => {
       // { type: Packets.CharacterType.RED },
       { type: Packets.CharacterType.SHARK },
       // { type: Packets.CharacterType.MALANG },
-      // { type: Packets.CharacterType.FROGGY },
+      { type: Packets.CharacterType.FROGGY },
       // { type: Packets.CharacterType.PINK },
       // { type: Packets.CharacterType.SWIM_GLASSES },
       { type: Packets.CharacterType.MASK },

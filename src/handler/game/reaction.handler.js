@@ -34,7 +34,7 @@ export const reactionHandler = (socket, payload) => {
       user.decreaseHp();
     }
   } else {
-    // 개굴군만 해당
+    // 개굴군만 해당 TODO: 쉴드 애니메이션
     const autoSheild = Math.random();
     if (autoSheild < 0.25) {
       froggyHandler(user, game);
@@ -49,7 +49,7 @@ export const reactionHandler = (socket, payload) => {
   } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
     pinkSlimeHandler(user, targetUser, game);
   }
-  
+
   user.setCharacterState(getStateNormal());
   if (targetUser) {
     targetUser.setCharacterState(getStateNormal());

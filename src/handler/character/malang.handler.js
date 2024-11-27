@@ -4,7 +4,6 @@ export const malangHandler = (user, game) => {
   const loseHp = user.maxHp - user.characterData.hp;
   for (let i = 0; i < loseHp; i++) {
     const card = game.deck.shift();
-    user.addHandCard({ type: card, count: 1 });
-    user.increaseHandCardsCount();
+    user.addHandCard(card.type);
   }
 };

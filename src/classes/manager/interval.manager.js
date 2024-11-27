@@ -1,4 +1,5 @@
-import { gameEndNotification } from "../../utils/notification/gameEnd.notification.js";
+import { maskHandler } from '../../handler/character/mask.handler.js';
+import { gameEndNotification } from '../../utils/notification/gameEnd.notification.js';
 
 class IntervalManager {
   constructor() {
@@ -26,6 +27,11 @@ class IntervalManager {
 
   addGameEndNotification(room, interval = 1000) {
     const callback = () => gameEndNotification(room);
+    this.addGame(room.id, callback, interval);
+  }
+
+  addDeathPlayer(room, interval = 1000) {
+    const callback = () => maskHandler(room);
     this.addGame(room.id, callback, interval);
   }
 

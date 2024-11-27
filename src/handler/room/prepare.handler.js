@@ -53,14 +53,14 @@ export const gamePrepareHandler = (socket, payload) => {
 
     // 캐릭터 셔플
     const characterList = [
-      { type: Packets.CharacterType.RED },
+      // { type: Packets.CharacterType.RED },
       { type: Packets.CharacterType.SHARK },
-      { type: Packets.CharacterType.MALANG },
-      { type: Packets.CharacterType.FROGGY },
-      { type: Packets.CharacterType.PINK },
-      { type: Packets.CharacterType.SWIM_GLASSES },
+      // { type: Packets.CharacterType.MALANG },
+      // { type: Packets.CharacterType.FROGGY },
+      // { type: Packets.CharacterType.PINK },
+      // { type: Packets.CharacterType.SWIM_GLASSES },
       { type: Packets.CharacterType.MASK },
-      { type: Packets.CharacterType.DINOSAUR },
+      // { type: Packets.CharacterType.DINOSAUR },
       { type: Packets.CharacterType.PINK_SLIME },
     ];
 
@@ -153,7 +153,7 @@ export const gamePrepareHandler = (socket, payload) => {
         { type: Packets.CardType.DESERT_EAGLE, count: 1 },
         { type: Packets.CardType.AUTO_RIFLE, count: 1 },
       ];
-      user.characterData.handCardsCount = 9
+      user.characterData.handCardsCount = 9;
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 

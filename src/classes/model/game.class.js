@@ -104,11 +104,15 @@ class Game {
     }
   }
 
-  removeUserFromFleaMarket(user) {
-    const index = this.fleaMarketUsers.findIndex((u) => u.id === user.id);
-    if (index !== -1) {
-      this.fleaMarketUsers.splice(index, 1);
-    }
+  removeUserFromFleaMarket() {
+    // const index = this.fleaMarketUsers.findIndex((u) => u.id === user.id);
+    // if (index !== -1) {
+    // }
+    this.fleaMarketUsers.splice(0, 1);
+  }
+
+  removeCardFromFleaMarketDeck() {
+    this.fleaMarketDeck.splice(0, 1)
   }
 
   gameStart() {

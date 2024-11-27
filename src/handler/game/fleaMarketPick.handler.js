@@ -5,9 +5,11 @@ import { findGameById } from '../../sessions/game.session.js';
 import { getUserBySocket } from '../../sessions/user.session.js';
 import {
     getStateNormal,
+    getStatefleaMarketWait,
     getStatefleaMarketTurnEnd,
   } from '../../constants/stateType.js';
 import { createResponse } from '../../utils/response/createResponse.js';
+import userUpdateNotification from '../../utils/notification/userUpdate.notification.js'
 
 export const fleaMarketPickHandler = (socket, payload) => {
   const gainCardUser = getUserBySocket(socket);
@@ -16,27 +18,46 @@ export const fleaMarketPickHandler = (socket, payload) => {
   const fleaMarketUsers = currentGame.fleaMarketUsers;
   const pickIndex = payload.fleaMarketPickRequest.pickIndex;
   console.log(fleaMarketDeck);
-  console.log(fleaMarketUsers);
   console.log('페이로드: ' + pickIndex);
-  // 왼쪽 카드의 순서는 0부터 시작
-  gainCardUser.addHandCard({ type: fleaMarketDeck[pickIndex], count: 1 });
-  gainCardUser.increaseHandCardsCount();
 
-fleaMarketDeck.splice(pickIndex, 1); // 플리마켓 덱에서 선택한 카드 삭제
-gainCardUser.setCharacterState(getStateNormal()); // 플리마켓 카드 선택한 유저 상태 정상화
-console.log('카드 선택 후 플리마켓 덱: ' + fleaMarketDeck);
-currentGame.removeUserFromFleaMarket(gainCardUser); // 플리마켓 대기 배열에서 카드 선택한 유저 삭제
-console.log('남은 플리마켓 대기 유저: ' + fleaMarketUsers.length);
-fleaMarketUsers[0].setCharacterState(getStatefleaMarketTurnEnd()); // 플리마켓 대기 배열에 남아있는 첫번째 유저 상태 변경
-console.log(fleaMarketUsers[0].id);
-fleaMarketNotification(gainCardUser, fleaMarketDeck, fleaMarketUsers.length, currentGame.users, fleaMarketUsers);
-const responsePayload = {
-    FleaMarketPickResponse: {
-      success: true,
-      failCode: Packets.GlobalFailCode.NONE_FAILCODE,
-    },
-  };
-socket.write(createResponse(PACKET_TYPE.FLEA_MARKET_PICK_RESPONSE, 0, responsePayload));
+  const alreadyPicked = currentGame.fleaMarketPickIndex.findIndex((pick) => pick === pickIndex);
+  if (alreadyPicked !== -1) {
+    console.error('이미 선택된 카드')
+    const errorResponse = {
+      fleaMarketPickResponse: {
+        success: false,
+        failCode: Packets.GlobalFailCode.INVALID_REQUEST
+      }
+    }
+
+    socket.write(createResponse(PACKET_TYPE.FLEA_MARKET_PICK_RESPONSE, 0, errorResponse))
+    return;
+  }
+
+  currentGame.fleaMarketTurn++;
+
+  // 왼쪽 카드의 순서는 0부터 시작
+  gainCardUser.addHandCard(fleaMarketDeck[pickIndex]);
+  // gainCardUser.increaseHandCardsCount();
+
+  // fleaMarketDeck.splice(pickIndex, 1); // 플리마켓 덱에서 선택한 카드 삭제
+  gainCardUser.setCharacterState(getStateNormal()); // 플리마켓 카드 선택한 유저 상태 정상화
+  // gainCardUser.setCharacterState(getStatefleaMarketWait()); // 플리마켓 카드 선택한 유저 상태 정상화
+  console.log('카드 선택 후 플리마켓 덱: ' + fleaMarketDeck);
+  // currentGame.removeUserFromFleaMarket(gainCardUser); // 플리마켓 대기 배열에서 카드 선택한 유저 삭제
+  console.log('남은 플리마켓 대기 유저: ' + fleaMarketUsers.length);
+
+  fleaMarketUsers[currentGame.fleaMarketTurn].setCharacterState(getStatefleaMarketTurnEnd()); // 플리마켓 대기 배열에 남아있는 첫번째 유저 상태 변경
+  console.log(fleaMarketUsers[currentGame.fleaMarketTurn].id);
+  userUpdateNotification(fleaMarketUsers)
+  fleaMarketNotification(fleaMarketDeck, currentGame.fleaMarketPickIndex.push(pickIndex), fleaMarketUsers);
+  const responsePayload = {
+      fleaMarketPickResponse: {
+        success: true,
+        failCode: Packets.GlobalFailCode.NONE_FAILCODE,
+      },
+    };
+  socket.write(createResponse(PACKET_TYPE.FLEA_MARKET_PICK_RESPONSE, 0, responsePayload));
 };
 // 노티피케이션을 먼저 보내주고(게임 인원수 만큼 
 // 카드 뽑아서 배열에 넣고 카드 타입으로 보내주고

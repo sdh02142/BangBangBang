@@ -148,7 +148,7 @@ export const gamePrepareHandler = (socket, payload) => {
         { type: Packets.CardType.BBANG, count: 2 },
         { type: Packets.CardType.ABSORB, count: 1 },
         { type: Packets.CardType.SHIELD, count: 1 },
-        { type: Packets.CardType.SNIPER_GUN, count: 1 },
+        { type: Packets.CardType.FLEA_MARKET, count: 1 },
         // { type: Packets.CardType.HAND_GUN, count: 1 },
         // { type: Packets.CardType.DESERT_EAGLE, count: 1 },
         // { type: Packets.CardType.AUTO_RIFLE, count: 1 },

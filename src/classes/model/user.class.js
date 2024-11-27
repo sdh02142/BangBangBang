@@ -224,8 +224,17 @@ class User {
     return this.characterData.handCards[randomIndex].type;
   }
 
-  addHandCard(card) {
-    this.characterData.handCards.push(card);
+  addHandCard(useCard) {
+    const index = this.characterData.handCards.findIndex((card) => card.type === useCard);
+
+    if (index !== -1) {
+      this.characterData.handCards[index].count++;
+    } else {
+      const tmp = { type: useCard, count: 1};
+      this.characterData.handCards.push(tmp)
+    }
+    // 새로 생성, 기존 카드 수 증가 관계없이 handCardsCount는 증가되어야 함
+    this.increaseHandCardsCount();  // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
   }
 
   removeHandCard(usingCard) {

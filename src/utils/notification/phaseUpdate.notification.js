@@ -1,11 +1,15 @@
 import phaseTime from '../../constants/phaseTime.js';
 import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
+import userUpdateNotification from './userUpdate.notification.js';
 
 export const phaseUpdateNotification = (game) => {
   // 낮인 경우만 위치가 다시 셔플돼서 updatePosition
   // 밤에는 현재 위치
   if (game.currentPhase === Packets.PhaseType.DAY) {
+    game.day++;
+    console.log(`${game.day}번째 낮`)
+    
     const inGameUsers = game.users;
     // 랜덤 위치 뽑기
     const selectedPositions = new Set();
@@ -25,6 +29,23 @@ export const phaseUpdateNotification = (game) => {
       // UPDATE: 초기 좌표 세팅
       inGameUsers[i].updatePosition(posArr[i].x, posArr[i].y);
     }
+
+    // 낮이 시작되면 카드 버려주기(어차피 hp보다 적거나 같으면 안버리면 됨)
+    inGameUsers.forEach((user) => {
+      const userOverHandedCount = user.overHandedCount();
+      console.log(`[${user.nickname}]: 카드 ${userOverHandedCount} 장 자동 삭제`)
+      if (userOverHandedCount > 0) {
+        for (let i = 0; i < userOverHandedCount; i++) {
+          // 오버한 갯수만큼 랜덤하게 손패 삭제
+          const randomCard = user.characterData.handCards[Math.floor(Math.random() * user.characterData.handCards.length)];
+          user.removeHandCard(randomCard.type);
+        }
+      }
+    });
+
+    inGameUsers.forEach((user) => {
+      user.resetBbangCount();
+    });
   }
 
   // inGameUsers.forEach((user) => {

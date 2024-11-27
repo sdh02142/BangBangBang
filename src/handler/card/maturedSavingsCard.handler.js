@@ -1,4 +1,4 @@
-export const maturedSavingsCardHandler = (cardUsingUser, targetUser, currentGame) => {
+export const maturedSavingsCardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
   // 사용자 : cardUsingUser, 타겟 : npc
   // 패킷 타입: USE_CARD_REQUEST
   // 버전: 1.0.0

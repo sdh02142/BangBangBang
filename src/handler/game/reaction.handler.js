@@ -5,14 +5,14 @@ import { findUserById, getUserBySocket } from '../../sessions/user.session.js';
 import { findGameById } from '../../sessions/game.session.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { getStateNormal } from '../../constants/stateType.js';
+import { malangHandler } from '../character/malang.handler.js';
+import { froggyHandler } from '../character/froggy.handler.js';
+import { pinkSlimeHandler } from '../character/pinkSlime.handler.js';
 
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
   const game = findGameById(user.roomId);
-
-  if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
-    game.events.cancelEvent(user.id, 'finishShieldWait');
-  }
+  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
 
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.BIG_BBANG_TARGET) {
     game.events.cancelEvent(user.id, 'finishShieldWaitOnBigBbang');
@@ -21,14 +21,35 @@ export const reactionHandler = (socket, payload) => {
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
     game.events.cancelEvent(user.id, 'onDeathMatch');
   }
-  
+
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.GUERRILLA_TARGET) {
     game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
   }
-  
-  user.decreaseHp();
 
-  const targetUser = findUserById(user.characterData.stateInfo.stateTargetUserId);
+  if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
+    if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
+      game.events.cancelEvent(user.id, 'finishShieldWait');
+      user.decreaseHp(targetUser.damage);
+    } else {
+      user.decreaseHp();
+    }
+  } else {
+    // 개굴군만 해당
+    const autoSheild = Math.random();
+    if (autoSheild < 0.25) {
+      froggyHandler(user, game);
+    } else {
+      game.events.cancelEvent(user.id, 'finishShieldWait');
+      user.decreaseHp();
+    }
+  }
+
+  if (user.characterData.characterType === Packets.CharacterType.MALANG) {
+    malangHandler(user, game);
+  } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
+    pinkSlimeHandler(user, targetUser, game);
+  }
+  
   user.setCharacterState(getStateNormal());
   if (targetUser) {
     targetUser.setCharacterState(getStateNormal());
@@ -41,6 +62,6 @@ export const reactionHandler = (socket, payload) => {
       failCode: Packets.GlobalFailCode.NONE_FAILCODE,
     },
   };
-  
+
   socket.write(createResponse(PACKET_TYPE.REACTION_RESPONSE, 0, responsePayload));
 };

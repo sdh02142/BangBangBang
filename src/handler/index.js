@@ -11,6 +11,9 @@ import { gameStartHandler } from './room/gameStart.handler.js';
 import { useCardHandler } from './card/useCard.handler.js';
 import { positionUpdateHandler } from './game/positionUpdate.handler.js';
 import { reactionHandler } from './game/reaction.handler.js';
+import { destroyCardHandler } from './card/destroyCard.handler.js';
+import { fleaMarketPickHandler } from './game/fleaMarketPick.handler.js';
+import { cardSelectHandler } from './card/cardSelect.handler.js';
 
 const handlers = {
   // 회원가입 및 로그인
@@ -23,12 +26,12 @@ const handlers = {
   [PACKET_TYPE.LEAVE_ROOM_REQUEST]: { handler: leaveRoomHandler },
   [PACKET_TYPE.GAME_PREPARE_REQUEST]: { handler: gamePrepareHandler },
   [PACKET_TYPE.GAME_START_REQUEST]: { handler: gameStartHandler },
-  [PACKET_TYPE.USE_CARD_REQUEST]: { handler: useCardHandler }, //v
+  [PACKET_TYPE.USE_CARD_REQUEST]: { handler: useCardHandler },
   [PACKET_TYPE.POSITION_UPDATE_REQUEST]: { handler: positionUpdateHandler },
   [PACKET_TYPE.REACTION_REQUEST]: { handler: reactionHandler },
-  // [PACKET_TYPE.DESTROY_CARD_REQUEST]: { handler: destroyCardHandler }, //v
-  // [PACKET_TYPE.FLEA_MARKET_PICK_REQUEST]: { handler: fleaMarketPickHandler },
-  // [PACKET_TYPE.CARD_SELECT_REQUEST]: { handler: cardSelectHandler }, //v
+  [PACKET_TYPE.DESTROY_CARD_REQUEST]: { handler: destroyCardHandler },
+  [PACKET_TYPE.FLEA_MARKET_PICK_REQUEST]: { handler: fleaMarketPickHandler },
+  [PACKET_TYPE.CARD_SELECT_REQUEST]: { handler: cardSelectHandler }, //v
   // [PACKET_TYPE.PASS_DEBUFF_REQUEST]: { handler: passDebuffHandler },
 };
 

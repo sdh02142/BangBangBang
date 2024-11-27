@@ -5,10 +5,12 @@ import { findGameById } from "../../sessions/game.session.js"
 import { getUserBySocket } from "../../sessions/user.session.js"
 import { gameStartNotification } from "../../utils/notification/gameStart.notification.js"
 import { createResponse } from "../../utils/response/createResponse.js"
+import useCardNotification from "../../utils/notification/useCard.notification.js"
 
 export const cardSelectHandler = (socket, payload) => {
-
-}
+    console.log('카드 선택 핸들러 로그: ' + payload.cardSelectRequest.C2SCardSelectRequest)
+    // useCardNotification
+};
 
 
 /**

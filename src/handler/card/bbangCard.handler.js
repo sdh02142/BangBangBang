@@ -7,13 +7,17 @@ import {
 } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
+import { sharkHandler } from '../character/shark.handelr.js';
 
-// bbang 카드랑 실드 카드가 좀 특수한 경우가 있어서 어떻게 나눠야 할지 고민중
-export const bbangCardHandler = (cardUsingUser, targetUser, currentGame) => {
-  // TODO: user.prevState가 NONE이면 일반 빵야 핸들러, 현피면 현피 핸들러 호출하기
-  if (cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.NONE_CHARACTER_STATE) {
+export const bbangCardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
+  if (
+    cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.NONE_CHARACTER_STATE
+  ) {
     normalBbangHandler(cardUsingUser, targetUser, currentGame);
-  } else if (cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.DEATH_MATCH_TURN_STATE) {
+  } else if (
+    cardUsingUser.characterData.stateInfo.state ===
+    Packets.CharacterStateType.DEATH_MATCH_TURN_STATE
+  ) {
     deathMatchBbangHandler(cardUsingUser, targetUser, currentGame);
   } else if (
     cardUsingUser.characterData.stateInfo.state === Packets.CharacterStateType.GUERRILLA_TARGET
@@ -30,17 +34,23 @@ const guerrillaBbangHandler = (cardUsingUser, targetUser, currentGame) => {
 
 const deathMatchBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   currentGame.events.cancelEvent(cardUsingUser.id, 'onDeathMatch');
-  currentGame.events.scheduleEvent(targetUser.id, 'onDeathMatch', 5000, { cardUsingUser, targetUser, stateNormal: getStateNormal(), userUpdateNotification, currentGameUsers: currentGame.users})
+  currentGame.events.scheduleEvent(targetUser.id, 'onDeathMatch', 5000, {
+    cardUsingUser,
+    targetUser,
+    stateNormal: getStateNormal(),
+    userUpdateNotification,
+    currentGameUsers: currentGame.users,
+  });
 
   // 시전자 state 변경(빵야 카드 사용 시: 현피 기다림)
   cardUsingUser.setCharacterState(getStateDeathInitShooter(targetUser.id));
   // 대상자 state 변경(현피 대상: 빵야 카드 소지 여부 및 사용 여부)
   targetUser.setCharacterState(getStateDeathInitTarget(cardUsingUser.id));
-}
+};
 
 const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   const currentGameUsers = currentGame.users;
-  if (cardUsingUser.canUseBbang()) {
+  if (!cardUsingUser.canUseBbang()) {
     // 빵야 실패
     const errorResponse = {
       useCardResponse: {
@@ -55,19 +65,22 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   // 빵야 카운트 증가
   cardUsingUser.increaseBbangCount();
 
-  // 시전자 state 변경
-  cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
-  // 대상자 state 변경
-  targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-
-  // 이벤트 등록
-  currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
-    cardUsingUser,
-    targetUser,
-    stateNormal: getStateNormal(),
-    userUpdateNotification,
-    currentGameUsers,
-  });
+  if (targetUser.characterData.characterType == Packets.CharacterType.SHARK) {
+    sharkHandler(cardUsingUser, targetUser, currentGame);
+  } else {
+    // 시전자 state 변경
+    cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
+    // 대상자 state 변경
+    targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
+    // 이벤트 등록
+    currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
+      cardUsingUser,
+      targetUser,
+      stateNormal: getStateNormal(),
+      userUpdateNotification,
+      currentGameUsers,
+    });
+  }
 
   console.log('빵야 당한 사람:', targetUser.id);
 };

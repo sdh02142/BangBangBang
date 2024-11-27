@@ -1,4 +1,4 @@
-export const call119CardHandler = (cardUsingUser, targetUser, currentGame) => {
+export const call119CardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
   // 타겟이 나 일때 (사용자: cardUsingUser, 타겟: targetUser)
   // payload
   // {"useCardRequest":{"cardType":"CALL_119"}}

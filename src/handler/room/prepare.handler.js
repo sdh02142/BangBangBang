@@ -42,35 +42,34 @@ export const gamePrepareHandler = (socket, payload) => {
     console.log('현재 게임 정보:', currentGame);
 
     /* TODO:
-        *  1. 캐릭터 셔플(CharacterType) - 완료
-        *  2. 덱 셔플 후 카드 배분 - 캐릭터 HP만큼(user.hp) user.addHandCards(card)
-                - Packets.CardType
-        *  3. 역할 배분(RoleType) - 완료
-        *  4. CharacterType에 맞게 hp 설정 - 완료
-        */
+            *  1. 캐릭터 셔플(CharacterType) - 완료
+            *  2. 덱 셔플 후 카드 배분 - 캐릭터 HP만큼(user.hp) user.addHandCards(card)
+                    - Packets.CardType
+            *  3. 역할 배분(RoleType) - 완료
+            *  4. CharacterType에 맞게 hp 설정 - 완료
+            */
 
     const inGameUsers = currentGame.users;
 
     // 캐릭터 셔플
     const characterList = [
-      { type: Packets.CharacterType.RED, hp: 4 },
-      { type: Packets.CharacterType.SHARK, hp: 4 },
-      { type: Packets.CharacterType.MALANG, hp: 4 },
-      { type: Packets.CharacterType.FROGGY, hp: 4 },
-      { type: Packets.CharacterType.PINK, hp: 4 },
-      { type: Packets.CharacterType.SWIM_GLASSES, hp: 4 },
-      { type: Packets.CharacterType.MASK, hp: 4 },
-      { type: Packets.CharacterType.DINOSAUR, hp: 3 },
-      { type: Packets.CharacterType.PINK_SLIME, hp: 3 },
+      { type: Packets.CharacterType.RED },
+      { type: Packets.CharacterType.SHARK },
+      { type: Packets.CharacterType.MALANG },
+      { type: Packets.CharacterType.FROGGY },
+      { type: Packets.CharacterType.PINK },
+      { type: Packets.CharacterType.SWIM_GLASSES },
+      { type: Packets.CharacterType.MASK },
+      { type: Packets.CharacterType.DINOSAUR },
+      { type: Packets.CharacterType.PINK_SLIME },
     ];
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
+    // WARN: TEST CODE
+    // inGameUsers[0].setCharacter(Packets.CharacterType.MALANG);
+    // inGameUsers[1].setCharacter(Packets.CharacterType.SHARK);
     inGameUsers.forEach((user, i) => {
-      user.setCharacterType(shuffledCharacter[i].type);
-      user.setHp(shuffledCharacter[i].hp);
-      // user.increaseBbangCount();
-      // if (user.characterData.characterType === Packets.characterType.RED) {
-      // }
+      user.setCharacter(shuffledCharacter[i].type);
     });
 
     // 1.RoleTypes[inGameUsers.length]
@@ -138,23 +137,23 @@ export const gamePrepareHandler = (socket, payload) => {
         tmp.push(card);
         // user.addHandCard(card); // card === type
         // { type: card, count: 1}
-        user.increaseHandCardsCount();
+        // user.increaseHandCardsCount();  // 원본 살려야 하는 코드
       }
       // 2. 한 번에 추가
       const result = transformData(tmp);
       // user.characterData.handCards = result;
       // WARN: Test code
+      // 너무 많이 넣으면 UI가 안뜸(카드가 다 안뜸)
       user.characterData.handCards = [
         { type: Packets.CardType.BBANG, count: 2 },
         { type: Packets.CardType.BIG_BBANG, count: 1 },
         { type: Packets.CardType.SHIELD, count: 2 },
-        { type: Packets.CardType.DEATH_MATCH, count: 1 },
-        { type: Packets.CardType.VACCINE, count: 2 },
-        { type: Packets.CardType.CALL_119, count: 2 },
-        { type: Packets.CardType.MATURED_SAVINGS, count: 1 },
-        { type: Packets.CardType.WIN_LOTTERY, count: 1 },
-        { type: Packets.CardType.GUERRILLA, count: 1 },
+        { type: Packets.CardType.SNIPER_GUN, count: 1 },
+        { type: Packets.CardType.HAND_GUN, count: 1 },
+        { type: Packets.CardType.DESERT_EAGLE, count: 1 },
+        { type: Packets.CardType.AUTO_RIFLE, count: 1 },
       ];
+      user.characterData.handCardsCount = 9
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 

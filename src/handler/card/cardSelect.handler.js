@@ -19,15 +19,20 @@ export const cardSelectHandler = (socket, payload) => {
     const targetUser = currentGame.findInGameUserByState(Packets.CharacterStateType.ABSORB_TARGET);
     console.log("타켓 유저 불러오기 성공: " + targetUser.id);
     console.log(payload.cardSelectRequest.selectType);
-    payload.cardSelectRequest.selectType
-    if (payload.cardSelectRequest.selectType === 2) {
-        targetUser.setWeapon(0);
-        const absorbedCard = payload.cardSelectRequest.selectCardType;
-        cardSelectUser.addHandCard({ type: absorbedCard, count: 1 });
-        cardSelectUser.increaseHandCardsCount();
-    } else if (payload.cardSelectRequest.selectType === 1) {
+    const selectType = payload.cardSelectRequest.selectType;
 
-    } else if (payload.cardSelectRequest.selectType === 3) {
+    switch (selectType) {
+
+    }
+
+    if (payload.cardSelectRequest.selectType === Packets.SelectCardType.WEAPON) {
+        targetUser.setWeapon(0); // <--
+        const absorbedCard = payload.cardSelectRequest.selectCardType;
+        cardSelectUser.addHandCard(absorbedCard);
+        cardSelectUser.increaseHandCardsCount();
+    } else if (payload.cardSelectRequest.selectType === Packets.SelectCardType.EQUIP) {
+
+    } else if (payload.cardSelectRequest.selectType === Packets.SelectCardType.DEBUFF) {
 
     } else {
         const randomHandCard = targetUser.selectRandomHandCard();

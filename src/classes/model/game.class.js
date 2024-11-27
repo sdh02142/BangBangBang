@@ -93,6 +93,10 @@ class Game {
     return this.users.find((user) => user.id === userId);
   }
 
+  findInGameUserByState(state) {
+    return this.users.find((user) => user.characterData.stateInfo.state === state);
+  }
+
   removeUser(user) {
     const index = this.users.findIndex((u) => u.id === user.id);
     if (index !== -1) {

@@ -53,14 +53,14 @@ export const gamePrepareHandler = (socket, payload) => {
 
     // 캐릭터 셔플
     const characterList = [
-      { type: Packets.CharacterType.RED },
+      // { type: Packets.CharacterType.RED },
       { type: Packets.CharacterType.SHARK },
-      { type: Packets.CharacterType.MALANG },
-      { type: Packets.CharacterType.FROGGY },
-      { type: Packets.CharacterType.PINK },
-      { type: Packets.CharacterType.SWIM_GLASSES },
+      // { type: Packets.CharacterType.MALANG },
+      // { type: Packets.CharacterType.FROGGY },
+      // { type: Packets.CharacterType.PINK },
+      // { type: Packets.CharacterType.SWIM_GLASSES },
       { type: Packets.CharacterType.MASK },
-      { type: Packets.CharacterType.DINOSAUR },
+      // { type: Packets.CharacterType.DINOSAUR },
       { type: Packets.CharacterType.PINK_SLIME },
     ];
 

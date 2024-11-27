@@ -14,7 +14,6 @@ export const sharkHandler = (cardUsingUser, targetUser, game) => {
       targetUser.decreaseHp();
     } else {
       targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-      // 이제 2개만 사용하게 하면 된다.... -> useCard.handler의 공통로직에서 처리
     }
   }
 };

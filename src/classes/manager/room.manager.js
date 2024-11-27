@@ -1,7 +1,20 @@
 class RoomManager {
     constructor() {
+        if (RoomManager.instance) {
+            return RoomManager.instance;
+        }
+
         this.availableIds = []; // 삭제된 ID를 추적
         this.nextId = 1;        // 다음 생성될 방 ID
+
+        RoomManager.instance = this; // 인스턴스를 저장
+    }
+
+    static getInstance() {
+        if (!RoomManager.instance) {
+            RoomManager.instance = new RoomManager();
+        }
+        return RoomManager.instance;
     }
 
     createRoom() {
@@ -26,4 +39,4 @@ class RoomManager {
     }
 }
 
-export const roomManager = new RoomManager();
+export const roomManager = RoomManager.getInstance();

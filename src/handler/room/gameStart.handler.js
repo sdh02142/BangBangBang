@@ -55,6 +55,9 @@ export const gameStartHandler = (socket, payload) => {
     },
   };
 
+  //게임 상태 인게임으로 변경
+  currentGame.state = Packets.RoomStateType.INAGAME
+
   // 페이즈 시작
   currentGame.changePhase();
 

@@ -3,6 +3,7 @@ import { Packets } from '../../init/loadProtos.js';
 import { createResponse } from '../response/createResponse.js';
 import { removeGameSession } from '../../sessions/game.session.js';
 import { roomManager } from '../../classes/manager/room.manager.js';
+import { intervalManager } from '../../classes/manager/interval.manager.js';
 
 export const gameEndNotification = (room) => {
   const survivor = [];
@@ -65,7 +66,7 @@ export const gameEndNotification = (room) => {
       user.socket.write(createResponse(PACKET_TYPE.GAME_END_NOTIFICATION, 0, responsePayload));
     });
     //게임 종료 시 인터벌 제거, 세션 삭제
-    room.intervalManager.removeInterval(room.id, 'game');
+    intervalManager.removeInterval(room.id, 'game');
     removeGameSession(room.id);
     roomManager.deleteRoom(room.id);
   }

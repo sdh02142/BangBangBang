@@ -3,7 +3,11 @@ import { deadCheck } from '../../utils/notification/deadCheck.notification.js';
 
 class IntervalManager {
   constructor() {
+    if (IntervalManager.instance) {
+      return IntervalManager.instance;
+    }
     this.intervals = new Map();
+    IntervalManager.instance = this;
   }
 
   // 이름 바꿔서 type을 활용해서 위치 동기화나 게임관련이나 이런곳에 써도 됨
@@ -64,4 +68,4 @@ class IntervalManager {
   }
 }
 
-export default IntervalManager;
+export const intervalManager = new IntervalManager();

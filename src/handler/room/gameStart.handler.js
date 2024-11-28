@@ -1,3 +1,4 @@
+import { intervalManager } from '../../classes/manager/interval.manager.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
@@ -65,7 +66,7 @@ export const gameStartHandler = (socket, payload) => {
   console.log('마스크군 존재 여부:', isMask);
   if (isMask) {
     console.log('마스크군 존재');
-    currentGame.intervalManager.addDeathPlayer(currentGame); //마스크군이 존재할 때
+    intervalManager.addDeathPlayer(currentGame); //마스크군이 존재할 때
   }
 
   // 페이즈 시작

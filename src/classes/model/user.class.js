@@ -244,6 +244,10 @@ class User {
       };
       this.characterData.handCards.push(tmp);
     }
+
+  selectRandomHandCard() {
+    const randomIndex = Math.floor(Math.random() * this.characterData.handCards.length);
+    return this.characterData.handCards[randomIndex].type;
   }
 
   removeHandCard(usingCard) {

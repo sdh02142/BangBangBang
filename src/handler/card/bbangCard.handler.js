@@ -73,9 +73,11 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
     //자동 방어 실패 시
 
     // 시전자 state 변경
+
     cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
     // 대상자 state 변경
     targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
+
     // 이벤트 등록
     currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
       cardUsingUser,
@@ -114,7 +116,7 @@ const autoShieldCheck = (targetUser, currentGame) => {
     //오토 쉴드 장비
     const autoSheild = Math.random();
     if (autoSheild < 0.99) {
-      animationNotification(currentGame.users, targetUser, Packets.AnimationType.SHIELD_ANIMATION);
+      // animationNotification(currentGame.users, targetUser, Packets.AnimationType.SHIELD_ANIMATION);
       return true;
     }
   }
@@ -136,5 +138,7 @@ const needShieldCheck = (cardUsingUser, targetUser, currentGame, needShield) => 
     targetUser.decreaseHp(cardUsingUser.damage);
     //이벤트 캔슬
     currentGame.events.cancelEvent(cardUsingUser.id, 'finishShieldWait');
+    cardUsingUser.setCharacterState(getStateNormal());
+    targetUser.setCharacterState(getStateNormal());
   }
 };

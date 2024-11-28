@@ -1,6 +1,6 @@
 const phaseTime = {
   // Packets.PhaseType.DAY
-  [1]: 180000,
+  [1]: 30000, // 180000
   // Packets.PhaseType.EVENING
   [2]: 30000,
   // Packets.PhaseType.END

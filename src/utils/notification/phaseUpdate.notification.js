@@ -36,6 +36,7 @@ export const phaseUpdateNotification = (game) => {
     inGameUsers.forEach((user) => {
       const userOverHandedCount = user.overHandedCount();
       console.log(`[${user.nickname}]: 카드 ${userOverHandedCount} 장 자동 삭제`);
+
       if (userOverHandedCount > 0) {
         for (let i = 0; i < userOverHandedCount; i++) {
           // 오버한 갯수만큼 랜덤하게 손패 삭제
@@ -43,9 +44,19 @@ export const phaseUpdateNotification = (game) => {
             user.characterData.handCards[
               Math.floor(Math.random() * user.characterData.handCards.length)
             ];
-          user.removeHandCard(randomCard.type);
+          user.removeHandCard(randomCard.type); // <- randomCard 값이 안읽히는 것 같음
         }
       }
+    });
+
+    // 빵야 카운트 리셋, 카드 두 개씩 주기
+    inGameUsers.forEach((user) => {
+      for (let i = 0; i < 2; i++) {
+        const card = game.deck.shift();
+        user.addHandCard(card);
+      }
+
+      user.resetBbangCount();
     });
 
     // 페이즈 전환시 25퍼 확률로 감옥가는 로직

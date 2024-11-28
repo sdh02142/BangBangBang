@@ -59,7 +59,7 @@ const cardHandlers = {
   // CONTAINMENT_UNIT 21
   [21]: containmentUnitCardHandler,
   // SATELLITE_TARGET 22
-  [21]: satelliteTargetCardHandler,
+  [22]: satelliteTargetCardHandler,
   // BOMB 23
   [23]: bombCardHandler,
 };

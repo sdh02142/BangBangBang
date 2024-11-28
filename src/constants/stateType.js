@@ -105,7 +105,16 @@ export const getStatefleaMarketTurnEnd = () => {
   return {
     currentState: Packets.CharacterStateType.FLEA_MARKET_TURN,
     nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
-    nextStateAt: Date.now(),
+    nextStateAt: Date.now() + seconds,
+    targetUserId: 0,
+  };
+};
+
+export const getStatefleaMarketTurnOver = () => {
+  return {
+    currentState: Packets.CharacterStateType.FLEA_MARKET_WAIT,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
+    nextStateAt: Date.now() + seconds,
     targetUserId: 0,
   };
 };

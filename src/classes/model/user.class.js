@@ -236,7 +236,6 @@ class User {
     // 존재하지 않으면 addHandCard({ type: newType, count: 1})
     if (index !== -1) {
       const cnt = this.characterData.handCards[index].count++;
-      this.increaseHandCardsCount(); // removeHandCard에서 카드 카운트를 한 번 더해버려 손패 개수가 카드 한 장 사용할 때마다 2장씩 빠짐
     } else {
       const tmp = {
         type: addCard,
@@ -244,6 +243,8 @@ class User {
       };
       this.characterData.handCards.push(tmp);
     }
+    this.increaseHandCardsCount();
+  }
 
   selectRandomHandCard() {
     const randomIndex = Math.floor(Math.random() * this.characterData.handCards.length);
@@ -263,6 +264,38 @@ class User {
       if (cnt === 0) {
         // 남은 카드 없음
         this.characterData.handCards.splice(index, 1);
+      }
+    }
+  }
+
+  removeEquipCard(usingCard) {
+    console.log(`${usingCard} 삭제`)
+    const index = this.characterData.equips.findIndex((card) => card.type === usingCard);
+
+    // { type: enum, count: 1} enum값이 handCards에 존재하면 count++
+    // 존재하지 않으면 addHandCard({ type: newType, count: 1})
+    // count-- => count === 0 객체를 아예 삭제
+    if (index !== -1) {
+      const cnt = this.characterData.equips[index].count--;
+      if (cnt === 0) {
+        // 남은 카드 없음
+        this.characterData.equips.splice(index, 1);
+      }
+    }
+  }
+
+  removeDebuffCard(usingCard) {
+    console.log(`${usingCard} 삭제`)
+    const index = this.characterData.debuffs.findIndex((card) => card.type === usingCard);
+
+    // { type: enum, count: 1} enum값이 handCards에 존재하면 count++
+    // 존재하지 않으면 addHandCard({ type: newType, count: 1})
+    // count-- => count === 0 객체를 아예 삭제
+    if (index !== -1) {
+      const cnt = this.characterData.debuffs[index].count--;
+      if (cnt === 0) {
+        // 남은 카드 없음
+        this.characterData.debuffs.splice(index, 1);
       }
     }
   }

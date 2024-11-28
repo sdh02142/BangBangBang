@@ -146,12 +146,12 @@ export const getStateHallucinationTarget = (user) => {
   };
 };
 
-export const getStateContained = (user) => {
+export const getStateContained = () => {
   return {
     currentState: Packets.CharacterStateType.CONTAINED,
-    nextState: Packets.CharacterStateType.HALLUCINATION_TARGET,
+    nextState: Packets.CharacterStateType.NONE_CHARACTER_STATE,
     nextStateAt: Date.now(),
-    targetUserId: user,
+    targetUserId: 0,
   };
 };
 

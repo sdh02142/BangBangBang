@@ -212,7 +212,14 @@ class User {
   }
 
   addEquip(equip) {
+    if (this.characterData.equips.includes(equip) || this.characterData.equips.length >= 4) {
+      return;
+    }
     this.characterData.equips.push(equip);
+  }
+
+  removeEquip() {
+    this.characterData.equips = [];
   }
 
   addDebuff(debuff) {

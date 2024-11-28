@@ -1,3 +1,3 @@
-export const radarHandler = (cardUsingUser, cardType) => {
-  cardUsingUser.addEquip(cardType);
+export const radarHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
+  cardUsingUser.addEquip(useCardType);
 };

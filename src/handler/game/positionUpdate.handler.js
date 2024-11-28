@@ -5,7 +5,7 @@ import { getUserBySocket } from '../../sessions/user.session.js';
 import positionUpdateNotification from '../../utils/notification/positionUpdate.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
 
-// TODO: 추측항법 적용하면 좋음. 근데 latency를 계산하기 위한 Ping을 구현해야함.
+// 위치 동기화는 Response가 없었음
 export const positionUpdateHandler = (socket, payload) => {
   const { x, y } = payload.positionUpdateRequest;
 
@@ -17,14 +17,14 @@ export const positionUpdateHandler = (socket, payload) => {
   // 한번에 10 이상 이동했다
   if (distance > 10) {
     console.error('한 번에 10 이동함. 핵 아님?');
-    const errorResponsePayload = {
-      positionUpdateResponse: {
-        success: false,
-        failCode: Packets.GlobalFailCode.CHARACTER_STATE_ERROR,
-      },
-    };
+    // const errorResponsePayload = {
+    //   positionUpdateResponse: {
+    //     success: false,
+    //     failCode: Packets.GlobalFailCode.CHARACTER_STATE_ERROR,
+    //   },
+    // };
 
-    socket.write(createResponse(PACKET_TYPE.POSITION_UPDATE_RESPONSE, 0, errorResponsePayload));
+    // socket.write(createResponse(PACKET_TYPE.POSITION_UPDATE_RESPONSE, 0, errorResponsePayload));
     return;
   }
 
@@ -40,14 +40,6 @@ export const positionUpdateHandler = (socket, payload) => {
       createResponse(PACKET_TYPE.POSITION_UPDATE_NOTIFICATION, 0, notificationPayload),
     );
   });
-
-  const responsePayload = {
-    positionUpdateResponse: {
-      success: true,
-      failCode: Packets.GlobalFailCode.NONE_FAILCODE,
-    },
-  };
-  socket.write(createResponse(PACKET_TYPE.POSITION_UPDATE_RESPONSE, 0, responsePayload));
 };
 
 /*

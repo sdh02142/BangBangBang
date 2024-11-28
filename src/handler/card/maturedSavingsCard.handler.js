@@ -10,7 +10,6 @@ export const maturedSavingsCardHandler = (cardUsingUser, targetUser, currentGame
   // addHandCard, inGame.deck 에서 shift 두번
   for (let i = 0; i < 2; i++) {
     const gainCard = currentGame.deck.shift(); // return값 없
-    cardUsingUser.addHandCard({ type: gainCard, count: 1 });
-    cardUsingUser.increaseHandCardsCount();
+    cardUsingUser.addHandCard(gainCard.type);
   }
 };

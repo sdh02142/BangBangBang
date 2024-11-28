@@ -14,6 +14,7 @@ class CharacterData {
     this.handCards = []; // CardData Object
     this.bbangCount = 0;
     this.handCardsCount = 0;
+    this.alive = true;
   }
   // CardData를 이용하여 handCards 관련 매서드 고려
 }

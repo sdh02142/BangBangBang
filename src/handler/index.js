@@ -14,6 +14,7 @@ import { reactionHandler } from './game/reaction.handler.js';
 import { destroyCardHandler } from './card/destroyCard.handler.js';
 import { fleaMarketPickHandler } from './game/fleaMarketPick.handler.js';
 import { cardSelectHandler } from './card/cardSelect.handler.js';
+import { passDebuffHandler } from './game/passDebuff.handler.js';
 
 const handlers = {
   // 회원가입 및 로그인
@@ -32,7 +33,7 @@ const handlers = {
   [PACKET_TYPE.DESTROY_CARD_REQUEST]: { handler: destroyCardHandler },
   [PACKET_TYPE.FLEA_MARKET_PICK_REQUEST]: { handler: fleaMarketPickHandler },
   [PACKET_TYPE.CARD_SELECT_REQUEST]: { handler: cardSelectHandler }, //v
-  // [PACKET_TYPE.PASS_DEBUFF_REQUEST]: { handler: passDebuffHandler },
+  [PACKET_TYPE.PASS_DEBUFF_REQUEST]: { handler: passDebuffHandler },
 };
 
 export const getHandlerByPacketType = (packetType) => {

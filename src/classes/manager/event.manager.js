@@ -41,6 +41,16 @@ class EventManager {
       user.decreaseHp(1);
       userUpdateNotification(currentGameUsers);
     });
+
+    this.eventEmitter.on('bombTimer', (params) => {
+      const { targetUser, bombAni, userUpdateNotification, currentGameUsers, cardType } = params;
+      targetUser.characterData.debuffs = targetUser.characterData.debuffs.filter(
+        (debuff) => debuff !== cardType,
+      );
+      targetUser.decreaseHp(3);
+      bombAni();
+      userUpdateNotification(currentGameUsers);
+    });
   }
 
   // 이벤트 예약

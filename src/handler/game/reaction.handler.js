@@ -5,9 +5,6 @@ import { findUserById, getUserBySocket } from '../../sessions/user.session.js';
 import { findGameById } from '../../sessions/game.session.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import { getStateNormal } from '../../constants/stateType.js';
-import { malangHandler } from '../character/malang.handler.js';
-import { froggyHandler } from '../character/froggy.handler.js';
-import { pinkSlimeHandler } from '../character/pinkSlime.handler.js';
 
 export const reactionHandler = (socket, payload) => {
   const user = getUserBySocket(socket);
@@ -25,31 +22,18 @@ export const reactionHandler = (socket, payload) => {
   if (user.characterData.stateInfo.state === Packets.CharacterStateType.GUERRILLA_TARGET) {
     game.events.cancelEvent(user.id, 'finishBbangWaitOnGuerrilla');
   }
-
-  if (user.characterData.characterType !== Packets.CharacterType.FROGGY) {
-    if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
-      game.events.cancelEvent(user.id, 'finishShieldWait');
-      user.decreaseHp(targetUser.damage);
-    } else {
-      user.decreaseHp();
-    }
+  let lostHp = 1;
+  if (user.characterData.stateInfo.state === Packets.CharacterStateType.BBANG_TARGET) {
+    //빵야의 타겟인 경우
+    lostHp = targetUser.damage;
+    game.events.cancelEvent(user.id, 'finishShieldWait');
+    user.decreaseHp(lostHp);
   } else {
-    // 개굴군만 해당
-    const autoSheild = Math.random();
-    if (autoSheild < 0.25) {
-      froggyHandler(user, game);
-    } else {
-      game.events.cancelEvent(user.id, 'finishShieldWait');
-      user.decreaseHp();
-    }
+    //빵야 예외인 경우
+    user.decreaseHp(lostHp);
   }
+  characterTypeGetCard(user, targetUser, game, lostHp);
 
-  if (user.characterData.characterType === Packets.CharacterType.MALANG) {
-    malangHandler(user, game);
-  } else if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
-    pinkSlimeHandler(user, targetUser, game);
-  }
-  
   user.setCharacterState(getStateNormal());
   if (targetUser) {
     targetUser.setCharacterState(getStateNormal());
@@ -64,4 +48,23 @@ export const reactionHandler = (socket, payload) => {
   };
 
   socket.write(createResponse(PACKET_TYPE.REACTION_RESPONSE, 0, responsePayload));
+};
+
+//캐릭터 특성 - 말랑이, 핑크슬라임
+const characterTypeGetCard = (user, targetUser, game, lostHp) => {
+  if (user.characterData.characterType === Packets.CharacterType.MALANG) {
+    for (let i = 0; i < lostHp; i++) {
+      const card = game.deck.shift();
+      user.addHandCard(card);
+    }
+  }
+
+  if (user.characterData.characterType === Packets.CharacterType.PINK_SLIME) {
+    const card =
+      targetUser.characterData.handCards[
+        Math.floor(Math.random() * targetUser.characterData.handCardsCount)
+      ];
+    targetUser.removeHandCard(card.type);
+    user.addHandCard(card.type);
+  }
 };

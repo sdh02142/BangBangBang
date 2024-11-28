@@ -8,9 +8,6 @@ import {
 import { Packets } from '../../init/loadProtos.js';
 import { animationNotification } from '../../utils/notification/animation.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
-import { froggyHandler } from '../character/froggy.handler.js';
-import { sharkHandler } from '../character/shark.handelr.js';
-import { laserPointerHandler } from './laserPointer.handler.js';
 
 export const bbangCardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
   if (
@@ -67,58 +64,77 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
   // 여기서부터 빵야 사용 로직
   // 빵야 카운트 증가
   cardUsingUser.increaseBbangCount();
-  const autoSheildSuccess = autoSheildCheck(targetUser, currentGame);
+  const autoSheildSuccess = autoShieldCheck(targetUser, currentGame);
+
+  console.log('오토 쉴드 체크', autoSheildSuccess);
   if (autoSheildSuccess) {
     //자동 방어 성공 시
   } else {
     //자동 방어 실패 시
 
+    // 시전자 state 변경
+    cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
+    // 대상자 state 변경
+    targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
+    // 이벤트 등록
+    currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
+      cardUsingUser,
+      targetUser,
+      stateNormal: getStateNormal(),
+      userUpdateNotification,
+      currentGameUsers,
+    });
+
     const isLaserUser = cardUsingUser.characterData.equips.find((card) => {
       if (card === Packets.CardType.LASER_POINTER) return true;
     });
-    // 상어군이 조준경을 착용하고 빵야를 쏘면 쉴드 쓸래말래가 뜨려면 타겟의 쉴드가 3개 필요함
-    if (cardUsingUser.characterData.characterType === Packets.CharacterType.SHARK) {
-      sharkHandler(cardUsingUser, targetUser);
-    } else if (isLaserUser) {
-      laserPointerHandler(cardUsingUser, targetUser);
-    } else {
-      // 시전자 state 변경
-      cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
-      // 대상자 state 변경
-      targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
-      // 이벤트 등록
-      currentGame.events.scheduleEvent(targetUser.id, 'finishShieldWait', 5000, {
-        cardUsingUser,
-        targetUser,
-        stateNormal: getStateNormal(),
-        userUpdateNotification,
-        currentGameUsers,
-      });
+
+    if (cardUsingUser.characterData.characterType === Packets.CharacterType.SHARK && isLaserUser) {
+      const needShield = 3;
+      needShieldCheck(cardUsingUser, targetUser, currentGame, needShield); // 3
+    } else if (
+      cardUsingUser.characterData.characterType === Packets.CharacterType.SHARK ||
+      isLaserUser
+    ) {
+      const needShield = 2;
+      needShieldCheck(cardUsingUser, targetUser, currentGame, needShield); // 2
     }
   }
 
   console.log('빵야 당한 사람:', targetUser.id);
 };
 
-const autoSheildCheck = (targetUser, currentGame) => {
+//캐릭터 특성 - 개굴군, 장비 특성 - 자동 방어
+const autoShieldCheck = (targetUser, currentGame) => {
   const isAutoSheildUser = targetUser.characterData.equips.find((equipment) => {
     if (equipment === Packets.CardType.AUTO_SHIELD) return true;
   });
 
-  if (isAutoSheildUser) {
+  if (isAutoSheildUser || targetUser.characterData.characterType === Packets.CharacterType.FROGGY) {
     //오토 쉴드 장비
     const autoSheild = Math.random();
     if (autoSheild < 0.99) {
       animationNotification(currentGame.users, targetUser, Packets.AnimationType.SHIELD_ANIMATION);
       return true;
     }
-  } else if (targetUser.characterData.characterType === Packets.CharacterType.FROGGY) {
-    // 개굴군 캐릭터
-    const autoSheild = Math.random();
-    if (autoSheild < 0.99) {
-      froggyHandler(targetUser, currentGame);
-      return true;
-    }
   }
   return false;
+};
+
+//캐릭터 특성 - 상어군, 장비 특성 - 레이저
+const needShieldCheck = (cardUsingUser, targetUser, currentGame, needShield) => {
+  const shieldCount = targetUser.characterData.handCards.find((card) => {
+    if (card.type === Packets.CardType.SHIELD) {
+      return card.count;
+    } else {
+      return 0;
+    }
+  });
+  console.log(`쉴드 개수 ${shieldCount}`);
+
+  if (shieldCount < needShield) {
+    targetUser.decreaseHp(cardUsingUser.damage);
+    //이벤트 캔슬
+    currentGame.events.cancelEvent(cardUsingUser.id, 'finishShieldWait');
+  }
 };

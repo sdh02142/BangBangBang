@@ -1,5 +1,5 @@
-import { maskHandler } from '../../handler/character/mask.handler.js';
 import { gameEndNotification } from '../../utils/notification/gameEnd.notification.js';
+import { deadCheck } from '../../utils/notification/deadCheck.notification.js';
 
 class IntervalManager {
   constructor() {
@@ -31,7 +31,7 @@ class IntervalManager {
   }
 
   addDeathPlayer(room, interval = 1000) {
-    const callback = () => maskHandler(room);
+    const callback = () => deadCheck(room);
     this.addGame(room.id, callback, interval);
   }
 

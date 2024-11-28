@@ -1,5 +1,6 @@
 import { Packets } from '../../init/loadProtos.js';
 import { animationNotification } from '../../utils/notification/animation.notification.js';
+import { cardEffectNotification } from '../../utils/notification/cardEffect.notification.js';
 import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import warningNotification from '../../utils/notification/warning.notification.js';
 
@@ -11,7 +12,7 @@ export const bombCardHandler = (cardUsingUser, targetUser, currentGame, useCardT
 
   // 이게 잘 안보내지는 것 같음..
   warningNotification(targetUser, Packets.WarningType.BOMB_WANING, Date.now() + 30000);
-
+  cardEffectNotification(currentGame, Packets.CardType.BOMB, cardUsingUser);
   currentGame.events.scheduleEvent(targetUser.id, 'bombTimer', 30000, {
     targetUser,
     bombAni,

@@ -73,7 +73,6 @@ const normalBbangHandler = (cardUsingUser, targetUser, currentGame) => {
     //자동 방어 실패 시
 
     // 시전자 state 변경
-
     cardUsingUser.setCharacterState(getStateBbangShooter(targetUser.id));
     // 대상자 state 변경
     targetUser.setCharacterState(getStateBbangTarget(cardUsingUser.id));
@@ -116,7 +115,7 @@ const autoShieldCheck = (targetUser, currentGame) => {
     //오토 쉴드 장비
     const autoSheild = Math.random();
     if (autoSheild < 0.99) {
-      // animationNotification(currentGame.users, targetUser, Packets.AnimationType.SHIELD_ANIMATION);
+      animationNotification(currentGame.users, targetUser, Packets.AnimationType.SHIELD_ANIMATION);
       return true;
     }
   }

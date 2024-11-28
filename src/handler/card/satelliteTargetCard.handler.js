@@ -1,7 +1,9 @@
 import { Packets } from '../../init/loadProtos.js';
+import { cardEffectNotification } from '../../utils/notification/cardEffect.notification.js';
 
 export const satelliteTargetCardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
   targetUser.characterData.debuffs.push(Packets.CardType.SATELLITE_TARGET);
+  cardEffectNotification(currentGame, Packets.CardType.SATELLITE_TARGET, targetUser);
 };
 
 //   enum AnimationType {

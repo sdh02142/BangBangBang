@@ -1,8 +1,10 @@
 import { getStateNormal, getStateContained } from '../../constants/stateType.js';
 import { Packets } from '../../init/loadProtos.js';
+import { cardEffectNotification } from '../../utils/notification/cardEffect.notification.js';
 
 export const containmentUnitCardHandler = (cardUsingUser, targetUser, currentGame, useCardType) => {
   targetUser.characterData.debuffs.push(Packets.CardType.CONTAINMENT_UNIT);
+  cardEffectNotification(currentGame, Packets.CardType.CONTAINMENT_UNIT, targetUser);
 };
 
 // 상태를 Contained 로 바꾸면 클라이언트상에서 움직일 수 없음

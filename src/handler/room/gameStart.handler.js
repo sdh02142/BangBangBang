@@ -56,7 +56,17 @@ export const gameStartHandler = (socket, payload) => {
   };
 
   //게임 상태 인게임으로 변경
-  currentGame.state = Packets.RoomStateType.INAGAME
+  currentGame.state = Packets.RoomStateType.INAGAME;
+
+  // 죽은 유저 체크
+  const isMask = currentGame.users.find(
+    (user) => user.characterData.characterType === Packets.CharacterType.MASK,
+  );
+  console.log('마스크군 존재 여부:', isMask);
+  if (isMask) {
+    console.log('마스크군 존재');
+    currentGame.intervalManager.addDeathPlayer(currentGame); //마스크군이 존재할 때
+  }
 
   // 페이즈 시작
   currentGame.changePhase();

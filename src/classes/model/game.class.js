@@ -110,7 +110,6 @@ class Game {
   gameStart() {
     this.state = Packets.RoomStateType.PREPARE;
     this.intervalManager.addGameEndNotification(this);
-    this.intervalManager.addDeathPlayer(this);
   }
 }
 

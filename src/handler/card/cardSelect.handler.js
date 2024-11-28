@@ -20,31 +20,39 @@ export const cardSelectHandler = (socket, payload) => {
     console.log("타켓 유저 불러오기 성공: " + targetUser.id);
     console.log(payload.cardSelectRequest.selectType);
     const selectType = payload.cardSelectRequest.selectType;
+    const absorbedCard = payload.cardSelectRequest.selectCardType;
 
-    switch (selectType) {
-
-    }
-
-    if (payload.cardSelectRequest.selectType === Packets.SelectCardType.WEAPON) {
-        targetUser.setWeapon(0); // <--
-        const absorbedCard = payload.cardSelectRequest.selectCardType;
+    console.log('흡수 대상 유저의 흡수 전 장착된 무기 상태: ' + targetUser.characterData.weapon);
+    if (selectType === Packets.SelectCardType.WEAPON) {
+        targetUser.unequipWepon(); // <-- 클라에서는 장착된 상태로 표시됨(기능도 작동됨)
         cardSelectUser.addHandCard(absorbedCard);
-        cardSelectUser.increaseHandCardsCount();
-    } else if (payload.cardSelectRequest.selectType === Packets.SelectCardType.EQUIP) {
-
-    } else if (payload.cardSelectRequest.selectType === Packets.SelectCardType.DEBUFF) {
-
+    } else if (selectType === Packets.SelectCardType.EQUIP) {
+        targetUser.removeEquipCard(absorbedCard);
+        cardSelectUser.addHandCard(absorbedCard);
+    } else if (selectType === Packets.SelectCardType.DEBUFF) {
+        targetUser.removeDebuffCard(absorbedCard);
+        cardSelectUser.addHandCard(absorbedCard);
     } else {
         const randomHandCard = targetUser.selectRandomHandCard();
         console.log(randomHandCard);
         targetUser.removeHandCard(randomHandCard);
-        cardSelectUser.addHandCard({ type: randomHandCard, count: 1 });
-        cardSelectUser.increaseHandCardsCount();
+        cardSelectUser.addHandCard(randomHandCard);
     };
+
     cardSelectUser.setCharacterState(getStateNormal());
     targetUser.setCharacterState(getStateNormal());
     userUpdateNotification(currentGame.users)
+    console.log('흡수 대상 유저의 장착된 무기 상태: ' + targetUser.characterData.weapon);
     // useCardNotification
+
+    const responsePayload = {
+        cardSelectResponse: {
+            success: true,
+            failCode: Packets.GlobalFailCode.NONE_FAILCODE
+        }
+    }
+
+    socket.write(createResponse(PACKET_TYPE.CARD_SELECT_RESPONSE, 0, responsePayload))
 };
 
 

@@ -152,8 +152,11 @@ export const gamePrepareHandler = (socket, payload) => {
         { type: Packets.CardType.HAND_GUN, count: 1 },
         { type: Packets.CardType.DESERT_EAGLE, count: 1 },
         { type: Packets.CardType.AUTO_RIFLE, count: 1 },
+        { type: Packets.CardType.CONTAINMENT_UNIT, count: 1 },
+        { type: Packets.CardType.SATELLITE_TARGET, count: 1 },
+        { type: Packets.CardType.BOMB, count: 1 },
       ];
-      user.characterData.handCardsCount = 9
+      user.characterData.handCardsCount = 9;
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 

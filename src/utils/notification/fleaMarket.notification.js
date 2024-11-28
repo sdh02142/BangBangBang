@@ -3,6 +3,7 @@ import { createResponse } from '../response/createResponse.js';
 
 export const fleaMarketNotification = (cardTypes, pickIndex, currentGameUsers) => {
   console.log('fleaMarketNotification 호출됨')
+  console.log(pickIndex)
   const responsePayload = {
     fleaMarketNotification: {
       cardTypes: cardTypes,

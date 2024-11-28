@@ -18,6 +18,10 @@ import { handGunCardHandler } from './handGunCard.handler.js';
 import { desertEagleCardHandler } from './desertEagleCard.handler.js';
 import { autoRifleCardHandler } from './autoRifleCard.handler.js';
 import { sniperGunCardHandler } from './sniperGunCard.handler.js';
+import { laserPointerHandler } from './laserPointer.handler.js';
+import { radarHandler } from './radarCard.handler.js';
+import { autoShieldHandler } from './autoShieldCard.handler.js';
+import { stealthSuitHandler } from './stealthSuitCard.handler.js';
 
 const cardHandlers = {
   // BBANG 1
@@ -53,9 +57,13 @@ const cardHandlers = {
   // AUTO_RIFLE 16
   [16]: autoRifleCardHandler,
   // LASER_POINTER 17
+  [17]: laserPointerHandler,
   // RADAR 18
+  [18]: radarHandler,
   // AUTO_SHIELD 19
+  [19]: autoShieldHandler,
   // STEALTH_SUIT 20
+  [20]: stealthSuitHandler,
   // CONTAINMENT_UNIT 21
   [21]: containmentUnitCardHandler,
   // SATELLITE_TARGET 22

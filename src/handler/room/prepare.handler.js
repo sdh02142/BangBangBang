@@ -53,15 +53,15 @@ export const gamePrepareHandler = (socket, payload) => {
 
     // 캐릭터 셔플
     const characterList = [
-      { type: Packets.CharacterType.RED },
-      { type: Packets.CharacterType.SHARK },
-      { type: Packets.CharacterType.MALANG },
-      { type: Packets.CharacterType.FROGGY },
+      // { type: Packets.CharacterType.RED },
+      // { type: Packets.CharacterType.SHARK },
+      // { type: Packets.CharacterType.MALANG },
+      // { type: Packets.CharacterType.FROGGY },
       { type: Packets.CharacterType.PINK },
-      { type: Packets.CharacterType.SWIM_GLASSES },
+      // { type: Packets.CharacterType.SWIM_GLASSES },
       { type: Packets.CharacterType.MASK },
-      { type: Packets.CharacterType.DINOSAUR },
-      { type: Packets.CharacterType.PINK_SLIME },
+      // { type: Packets.CharacterType.DINOSAUR },
+      // { type: Packets.CharacterType.PINK_SLIME },
     ];
 
     const shuffledCharacter = shuffle(characterList).splice(0, inGameUsers.length);
@@ -145,18 +145,16 @@ export const gamePrepareHandler = (socket, payload) => {
       // WARN: Test code
       // 너무 많이 넣으면 UI가 안뜸(카드가 다 안뜸)
       user.characterData.handCards = [
-        { type: Packets.CardType.BBANG, count: 2 },
-        { type: Packets.CardType.BIG_BBANG, count: 1 },
-        { type: Packets.CardType.SHIELD, count: 2 },
-        { type: Packets.CardType.SNIPER_GUN, count: 1 },
-        { type: Packets.CardType.HAND_GUN, count: 1 },
+        { type: Packets.CardType.BBANG, count: 1 },
+        // { type: Packets.CardType.BIG_BBANG, count: 1 },
+        // { type: Packets.CardType.SHIELD, count: 3 },
+        { type: Packets.CardType.LASER_POINTER, count: 1 },
+        // { type: Packets.CardType.RADAR, count: 1 },
+        // { type: Packets.CardType.AUTO_SHIELD, count: 1 },
+        // { type: Packets.CardType.STEALTH_SUIT, count: 1 },
         { type: Packets.CardType.DESERT_EAGLE, count: 1 },
-        { type: Packets.CardType.AUTO_RIFLE, count: 1 },
-        { type: Packets.CardType.CONTAINMENT_UNIT, count: 1 },
-        { type: Packets.CardType.SATELLITE_TARGET, count: 1 },
-        { type: Packets.CardType.BOMB, count: 1 },
       ];
-      user.characterData.handCardsCount = 9;
+      user.characterData.handCardsCount = 3;
       // console.log(user.id, '의 handCards:', user.characterData.handCards);
     });
 

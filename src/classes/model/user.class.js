@@ -218,8 +218,11 @@ class User {
     this.characterData.equips.push(equip);
   }
 
-  removeEquip() {
-    this.characterData.equips = [];
+  removeEquip(equip) {
+    const index = this.characterData.equips.findIndex((element) => element === equip);
+    if (index !== -1) {
+      this.characterData.equips.splice(index, 1);
+    }
   }
 
   addDebuff(debuff) {
